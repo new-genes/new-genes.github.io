@@ -231,7 +231,7 @@
             
           </div>
           <div class="text-left ml-5 mt-3 w-full">
-            <Button class="text-left -my-3 py-2 bg-violet-50 text-violet-500 focus:text-violet-800 text-base border-violet-200 focus:outline-none focus:border-violet-200 focus:ring-1 focus:ring-violet-200 focus:bg-violet-50 rounded-full w-full">Click to find the PatientID!</Button>
+            <Button class="text-left -my-3 py-2 bg-violet-50 text-violet-400 focus:text-violet-800 text-base border-violet-200 focus:outline-none focus:border-violet-200 focus:ring-1 focus:ring-violet-200 focus:bg-violet-50 rounded-full w-full">Click to find the PatientID!</Button>
             <Dropdown class="text-align-start overflow-y-auto px-3 pb-3 text-sm h-40 w-full">
               <div class="bg-white outline-none px-1" slot="header">
                 <Search class="h-10 text-left bg-white text-neutral-500 focus:text-neutral-500 text-base border-white focus:outline-none focus:border-white focus:ring-1 focus:ring-white focus:bg-whiite" size="md"  bind:value={searchTerm} />
