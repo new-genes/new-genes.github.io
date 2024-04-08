@@ -208,61 +208,34 @@
     </p>  
     {#if $patientIDnumber[calculateIndex(currentPage)]}
       <div class="bg-violet-100 mx-10 rounded-2xl border px-5 pb-5 pt-3 mt-8 border-violet-100">
-        <div class="ml-0 mr-5 justify-between flex rounded-3xl py-1 mt-0">
-          <div class="rounded-2xl py-1 cursor-pointer -mt-1 w-52 flex text-left justify-start text-xl font-medium text-violet-300 h-full">
-            <div class="rounded-2xl flex">
-              <Button class="focus:ring-zinc-600 text-violet-500 text-xl">Patient ID</Button>
-              <img
-              id="searchIcon"
-              src="invertedtriangle2.svg"
-              class="cursor-pointer w-4 h-4 mt-5 h-fit text-center"
-              alt="Tutorial Logo"/> 
-            </div>
-            <Dropdown class="place-items-start place-content-start justify-items-start focus:ring-inherit rounded bg-violet-100 w-48 p-1 space-y-1">
-              <li class="place-items-start place-content-start justify-items-start rounded-2xl py-1 text-neutral-300 hover:bg-zinc-600 dark:hover:bg-gray-600">
-                <input id="Patient" class="-ml-7 mr-2 focus:ring-transparent rounded-2xl text-neutral-300" type="radio" name="group2" bind:group={group2} value={1}/>
-                <label class="text-base text-violet-400 peer-checked/draft:text-sky-500" for="Patient">Patient ID</label>
-              </li>
-              <li class="place-content-start justify-start rounded-2xl py-1 hover:bg-zinc-600 dark:hover:bg-gray-600">
-                <input id="Page" class="focus:ring-transparent rounded-2xl text-neutral-300" type="radio" name="group2" bind:group={group2} value={2}/>
-                <label class="mr-2 text-base text-violet-400 peer-checked/draft:text-sky-500" for="Page">Page Number</label>
-              </li>
-            </Dropdown> 
-            
-          </div>
-          <div class="text-left ml-5 mt-3 w-full">
-            <Button class="text-left -my-3 py-2 bg-violet-50 text-violet-500 focus:text-violet-700 text-base border-violet-200 focus:outline-none focus:border-violet-200 focus:ring-1 focus:ring-violet-200 focus:bg-violet-50 rounded-full w-full">Click to find the PatientID!</Button>
-            <Dropdown class="text-align-start overflow-y-auto px-3 pb-3 text-sm h-40 w-full">
-              <div class="bg-white outline-none px-1" slot="header">
-                <Search class="h-10 text-left bg-white text-neutral-500 focus:text-neutral-500 text-base border-white focus:outline-none focus:border-white focus:ring-1 focus:ring-white focus:bg-whiite" size="md"  bind:value={searchTerm} />
-              </div>
-              {#each filteredItems as patientid, num}
-              <li class="text-neutral-400 rounded rounded-full p-1 focus:ring-transparent hover:bg-violet-50 hover:text-violet-400 dark:hover:bg-gray-600">
-                <Button class="focus:ring-transparent text-neutral-400 hover:text-violet-400 focus:text-violet-400 flex" 
-                  on:click={() => {
-                  changePage(patientIDnumberstr.indexOf(patientid)+1);
-                  scrollToTop(); // 페이지 변경 시 맨 위로 스크롤
-                }}>{patientid}
-                </Button>
-              </li>
-              {/each}
-              <a slot="footer" href="/" class="flex items-center p-3 -mb-1 text-sm font-medium text-red-600 bg-white hover:bg-gray-100 dark:bg-gray-700 dark:hover:bg-gray-600 dark:text-red-500 hover:underline">
-              </a>
-            </Dropdown>
-          </div>
-          <div class="py-1 mt-1 flex items-center justify-end text-xl text-center font-medium mx-0 text-violet-400 h-full">
-            <img
-            id="searchicon2"
-            src="searchicon3.svg"
-            class="cursor-pointer w-5 h-5 my-1 ml-8 mr-0 mt-1 h-fit text-center"
-            alt="Tutorial Logo"
-            /> 
+        <div class="relative mt-3 ml-3 mb-3 flex">
+          <p class="mb-5 ml-10 mt-5 justify-center text-2xl text-center font-semibold text-violet-800 font-medium">{patientIDnumberstr[calculateIndex(currentPage)]}'s Analysis Result</p>
+          <div class="z-40 absolute right-0 mr-10 justify-between flex rounded-sm">
+            <div class="z-40 text-left ml-5 mt-3 w-full"> <!-- 부모 요소에 flex 클래스 추가 -->
+              <Button class="px-5 text-left py-3 bg-violet-50 text-violet-400 focus:text-violet-600 text-base border border-violet-200 focus:outline-none focus:border-violet-200 focus:ring-2 focus:ring-violet-200 focus:bg-violet-50 rounded-xl">
+                Click to search the Patient ID!
+              </Button>
+              <Dropdown class="text-left overflow-y-auto px-3 pb-3 text-sm h-40 w-full ml-auto"> <!-- 드롭다운 요소에 ml-auto 클래스 추가 -->
+                <div class="bg-white outline-none px-1" slot="header">
+                  <Search class="h-10 text-left bg-white text-neutral-500 focus:text-neutral-500 text-base border-white focus:outline-none focus:border-white focus:ring-1 focus:ring-white focus:bg-whiite" size="md"  bind:value={searchTerm} />
+                </div>
+                {#each filteredItems as patientid, num}
+                <li class="text-left text-neutral-400 rounded rounded-full p-1 focus:ring-transparent hover:bg-violet-50 hover:text-violet-400 dark:hover:bg-gray-600">
+                  <Button class="focus:ring-transparent text-neutral-400 hover:text-violet-400 focus:text-violet-400 flex" 
+                    on:click={() => {
+                    changePage(patientIDnumberstr.indexOf(patientid)+1);
+                    scrollToTop(); // 페이지 변경 시 맨 위로 스크롤
+                  }}>{patientid}
+                  </Button>
+                </li>
+                {/each}
+                <a slot="footer" href="/" class="flex items-center p-3 -mb-1 text-sm font-medium text-red-600 bg-white hover:bg-gray-100 dark:bg-gray-700 dark:hover:bg-gray-600 dark:text-red-500 hover:underline">
+                </a>
+              </Dropdown>
+            </div>          
           </div>
         </div>
         <hr class="mb-5 mt-0 border-violet-200"/>
-        <div class="mt-5 ml-3 mb-3 flex">
-          <p class="ml-10 mt-16 justify-center text-2xl text-center font-semibold text-violet-800 font-medium mt-5">{patientIDnumberstr[calculateIndex(currentPage)]}'s Analysis Result</p>
-        </div>
         <div class="cursor-pointer rounded-2xl justify-end text-lg mx-12 flex">
           <div class="border border-violet-200 bg-white rounded-2xl px-3 py-1 mx-1 flex">
             <img
