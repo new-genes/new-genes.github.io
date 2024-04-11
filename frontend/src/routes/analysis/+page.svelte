@@ -216,8 +216,6 @@
         }
       }
 
-      // console.log("geneexpressionperpatient1: ", geneexpressionperpatient)
-
       for (let i=0; i<Object.keys(geneexpressionperpatient).length; i++) {
         for (let j=0; j<Object.keys(aliase).length; j++) {
           geneexpressionperpatient[Object.keys(geneexpressionperpatient)[i]][Object.keys(aliase)[j]] = 0
@@ -232,7 +230,6 @@
             //console.log("checkcolumnidx.includes(j+1): ", checkcolumnidx.includes(j+1))
             if (checkcolumnidx.includes(j+1) == false) {
               let originalgenename = "";
-              //console.log("false idx: ", i, j)
               // 선택한 column의 값을 alise에 따라 변환하여 저장
               for (let n=0; n<Object.keys(aliase).length; n++) {
                 //console.log("fileRows[i][truecolumnidx]: ", fileRows[i][truecolumnidx])
@@ -246,7 +243,6 @@
                   }
                 }
               }
-              // console.log("original gene expression: ", fileRows[i][j])
               geneexpressionperpatient[fileRows[truerowidx][j]][originalgenename] = fileRows[i][j];
             }
           }

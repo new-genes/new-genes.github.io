@@ -232,18 +232,17 @@
           </div>
           <div class="text-left ml-5 mt-3 w-full">
             <Button class="text-left -my-3 py-2 bg-violet-50 text-violet-400 focus:text-violet-800 text-base border-violet-200 focus:outline-none focus:border-violet-200 focus:ring-1 focus:ring-violet-200 focus:bg-violet-50 rounded-full w-full">Click to find the PatientID!</Button>
-            <Dropdown class="text-align-start overflow-y-auto px-3 pb-3 text-sm h-40 w-full">
+            <Dropdown class="text-left overflow-y-auto px-3 pb-3 text-sm h-40 w-full ml-auto"> <!-- 드롭다운 요소에 ml-auto 클래스 추가 -->
               <div class="bg-white outline-none px-1" slot="header">
                 <Search class="h-10 text-left bg-white text-neutral-500 focus:text-neutral-500 text-base border-white focus:outline-none focus:border-white focus:ring-1 focus:ring-white focus:bg-whiite" size="md"  bind:value={searchTerm} />
               </div>
               {#each filteredItems as patientid, num}
-              <li class="text-neutral-400 rounded rounded-full p-1 focus:ring-transparent hover:bg-violet-50 hover:text-violet-400 dark:hover:bg-gray-600">
+              <li class="text-left text-neutral-400 rounded rounded-full p-1 focus:ring-transparent hover:bg-violet-50 hover:text-violet-400 dark:hover:bg-gray-600">
                 <Button class="focus:ring-transparent text-neutral-400 hover:text-violet-400 focus:text-violet-400 flex" 
                   on:click={() => {
-                  changePage(num+1);
+                  changePage(patientIDnumberstr.indexOf(patientid)+1);
                   scrollToTop(); // 페이지 변경 시 맨 위로 스크롤
-                }}>
-                  <P class="focus:ring-transparent text-neutral-400 hover:text-violet-400 focus:text-violet-400 flex">{patientid}</P>
+                }}>{patientid}
                 </Button>
               </li>
               {/each}
