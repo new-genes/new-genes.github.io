@@ -238,12 +238,15 @@
         }
       }
 
+      console.log("geneexpressionperpatient: ", geneexpressionperpatient)
+
       let ABL1averageResultObject = {};
       let CRLF2averageResultObject = {};
       let ABL1_LikeaverageResultObject = {};
 
       // geneexpressionperpatient에 저장한 값을 기반으로 필요한 값을 구한다. 
       for (let i=0; i<Object.keys(geneexpressionperpatient).length; i++) {
+        console.log("patient: ", Object.keys(geneexpressionperpatient)[i])
         let geneExpressions = geneexpressionperpatient[Object.keys(geneexpressionperpatient)[i]];
 
         if (selectedmethod == "RPKM") {
