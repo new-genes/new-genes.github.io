@@ -203,13 +203,20 @@
       // 각 체크된 row와 column의 index를 구한다
       let truecolumnidx = selectedcolumnChecks.indexOf(true)-1;
       let truerowidx = selectedrowChecks.indexOf(true)-1;
+
+      console.log("truecolumnidx: ", truecolumnidx)
+      console.log("truerowidx: ", truerowidx)
+
       let geneexpressionperpatient = {};
 
       for (let j=0; j<fileRows[0].length; j++) {
         if (checkcolumnidx.includes(j+1) == false) {
+          console.log(fileRows[truerowidx][j])
           geneexpressionperpatient[fileRows[truerowidx][j]] = {};
         }
       }
+
+      // console.log("geneexpressionperpatient1: ", geneexpressionperpatient)
 
       for (let i=0; i<Object.keys(geneexpressionperpatient).length; i++) {
         for (let j=0; j<Object.keys(aliase).length; j++) {
@@ -217,21 +224,29 @@
         }
       }
 
-      //파일에서 checkcolumnidx와 checkrowidx 안에 없는 인덱스의 값만 가져와 저장한다.
+      // 파일에서 checkcolumnidx와 checkrowidx 안에 없는 인덱스의 값만 가져와 저장한다.
       for (let i=0; i<fileRows.length; i++) {
+        //console.log("checkrowidx.includes(i+1): ", checkrowidx.includes(i+1))
         if (checkrowidx.includes(i+1) == false) {
           for (let j=0; j<fileRows[0].length; j++) {
+            //console.log("checkcolumnidx.includes(j+1): ", checkcolumnidx.includes(j+1))
             if (checkcolumnidx.includes(j+1) == false) {
               let originalgenename = "";
-
+              //console.log("false idx: ", i, j)
               // 선택한 column의 값을 alise에 따라 변환하여 저장
-              for (let n=0; n<aliase.length; n++) {
-                for (let k=0; k<aliase[Object.keys(Object.keys)[n]].length; k++){
-                  if (fileRows[i][truecolumnidx] == aliase[n][k]) {
+              for (let n=0; n<Object.keys(aliase).length; n++) {
+                //console.log("fileRows[i][truecolumnidx]: ", fileRows[i][truecolumnidx])
+                for (let k=0; k<aliase[Object.keys(aliase)[n]].length; k++){
+
+                  //console.log("fileRows[i][truecolumnidx]: ", fileRows[i][truecolumnidx])
+
+                  if (fileRows[i][truecolumnidx] == aliase[Object.keys(aliase)[n]][k]) {
                     originalgenename = Object.keys(aliase)[n];
+                    //console.log("original gene name: ", originalgenename)
                   }
                 }
               }
+              // console.log("original gene expression: ", fileRows[i][j])
               geneexpressionperpatient[fileRows[truerowidx][j]][originalgenename] = fileRows[i][j];
             }
           }
@@ -246,7 +261,6 @@
 
       // geneexpressionperpatient에 저장한 값을 기반으로 필요한 값을 구한다. 
       for (let i=0; i<Object.keys(geneexpressionperpatient).length; i++) {
-        console.log("patient: ", Object.keys(geneexpressionperpatient)[i])
         let geneExpressions = geneexpressionperpatient[Object.keys(geneexpressionperpatient)[i]];
 
         if (selectedmethod == "RPKM") {
