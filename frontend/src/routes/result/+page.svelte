@@ -325,7 +325,7 @@
                     <p class="text-sm text-[#FFD32A] font-semibold">ABL1 Class</p>
                 </div>
                 <hr class="mb-2 border-1 border-neutral-200" />
-                <p class="text-xs text-neutral-400">The probability of ABL1 class is <span class="ml-0 font-semibold text-neutral-500 dark:text-white">{ABL1averageResultstr[calculateIndex(currentPage)]}</span>.</p>
+                <p class="text-xs text-neutral-400">The probability of ABL1 class is <span class="ml-0 font-semibold text-neutral-500 dark:text-white">{ABL1averageResultstr[calculateIndex(currentPage)].toFixed(4)}</span>.</p>
               </Popover>
             {/if}
             {#if $CRLF2selected == 'true'}
@@ -347,7 +347,7 @@
                     <p class="text-sm text-[#FF3F34] font-semibold">CRLF2 Class</p>
                 </div>
                 <hr class="mb-2 border-1 border-neutral-200" />
-                <p class="text-xs text-neutral-400">The probability of CRLF2 class is   <span class="ml-0 font-semibold text-neutral-500 dark:text-white">{CRLF2averageResultstr[calculateIndex(currentPage)]}</span>.</p>
+                <p class="text-xs text-neutral-400">The probability of CRLF2 class is   <span class="ml-0 font-semibold text-neutral-500 dark:text-white">{CRLF2averageResultstr[calculateIndex(currentPage)].toFixed(4)}</span>.</p>
               </Popover>
             {/if}
             {#if $ABL1_LikeSelected == 'true'}
@@ -369,7 +369,7 @@
                   <p class="text-sm text-[#00D8D6] font-semibold">ABL1 Like Class</p>
               </div>
               <hr class="mb-2 border-1 border-neutral-200" />
-              <p class="text-xs text-neutral-400">The probability of ABL1 Like class is <span class="ml-0 font-semibold text-neutral-500 dark:text-white">{ABL1_LikeaverageResultstr[calculateIndex(currentPage)]}</span>.</p>
+              <p class="text-xs text-neutral-400">The probability of ABL1 Like class is <span class="ml-0 font-semibold text-neutral-500 dark:text-white">{ABL1_LikeaverageResultstr[calculateIndex(currentPage)].toFixed(4)}</span>.</p>
             </Popover>
             {/if}
           </div>
@@ -379,7 +379,7 @@
             <div class="mb-10">
               <div class="-ml-5 flex mt-5">
                 <p class="ml-3 text-lg text-violet-600 font-medium">ABL1 Class</p>
-                <p class="ml-1 text-lg text-violet-400 font-lg">: {ABL1averageResultstr[calculateIndex(currentPage)]}</p>
+                <p class="ml-1 text-lg text-violet-400 font-lg">: {ABL1averageResultstr[calculateIndex(currentPage)].toFixed(4)}</p>
               </div>
               <div class="-mx-5 mt-5 cursor-pointer py-1 relative flex bg-violet-300 text-white flex rounded-full rounded-full">
                 <div class="flex ml-3 justify-start">
@@ -424,7 +424,7 @@
                       <p class="text-sm text-[#FFD32A] font-semibold">ABL1 Class</p>
                   </div>
                   <hr class="mb-2 border-1 border-neutral-200" />
-                  <p class="text-xs text-neutral-400">The probability of ABL1 class is <span class="ml-0 font-semibold text-neutral-500 dark:text-white">{ABL1averageResultstr[calculateIndex(currentPage)]}</span>.</p>
+                  <p class="text-xs text-neutral-400">The probability of ABL1 class is <span class="ml-0 font-semibold text-neutral-500 dark:text-white">{ABL1averageResultstr[calculateIndex(currentPage)].toFixed(4)}</span>.</p>
                 </Popover>
               </div>
               <hr class="-mx-5 my-10 border-violet-200"/>
@@ -434,7 +434,7 @@
             <div class="my-10">
               <div class="-ml-5 flex mt-10">
                 <p class="ml-3 text-lg text-violet-600 font-medium mt-5">CRLF2 Class</p>
-                <p class="mt-5 ml-1 text-lg text-violet-400 font-lg mt-5">: {CRLF2averageResultstr[calculateIndex(currentPage)]}</p>
+                <p class="mt-5 ml-1 text-lg text-violet-400 font-lg mt-5">: {CRLF2averageResultstr[calculateIndex(currentPage)].toFixed(4)}</p>
               </div>
               <div class="-mx-5 mt-5 cursor-pointer py-1 relative flex bg-violet-300 text-white flex rounded-full rounded-full">
                 <div class="flex ml-3 justify-start">
@@ -479,7 +479,7 @@
                       <p class="text-sm text-[#FF3F34] font-semibold">CRLF2 Class</p>
                   </div>
                   <hr class="mb-2 border-1 border-neutral-200" />
-                  <p class="text-xs text-neutral-400">The probability of CRLF2 class is   <span class="ml-0 font-semibold text-neutral-500 dark:text-white">{CRLF2averageResultstr[calculateIndex(currentPage)]}</span>.</p>
+                  <p class="text-xs text-neutral-400">The probability of CRLF2 class is   <span class="ml-0 font-semibold text-neutral-500 dark:text-white">{CRLF2averageResultstr[calculateIndex(currentPage)].toFixed(4)}</span>.</p>
                 </Popover>
               </div>
               <hr class="-mx-5 my-10 border-violet-200"/>
@@ -489,7 +489,7 @@
             <div class="my-10">
               <div class="-ml-5 flex mt-10">
                 <p class="ml-3 text-lg text-violet-600 font-medium mt-5">ABL1-Like Class</p>
-                <p class="mt-5 ml-1 text-lg text-violet-400 font-lg mt-5">: {ABL1_LikeaverageResultstr[calculateIndex(currentPage)]}</p>
+                <p class="mt-5 ml-1 text-lg text-violet-400 font-lg mt-5">: {ABL1_LikeaverageResultstr[calculateIndex(currentPage)].toFixed(4)}</p>
               </div>
               <div class="-mx-5 mt-5 cursor-pointer py-1 relative flex bg-violet-300 text-white flex rounded-full rounded-full">
                 <div class="flex ml-3 justify-start">
@@ -534,7 +534,7 @@
                       <p class="text-sm text-[#00D8D6] font-semibold">ABL1 Like Class</p>
                   </div>
                   <hr class="mb-2 border-1 border-neutral-200" />
-                  <p class="text-xs text-neutral-400">The probability of ABL1 Like class is <span class="ml-0 font-semibold text-neutral-500 dark:text-white">{ABL1_LikeaverageResultstr[calculateIndex(currentPage)]}</span>.</p>
+                  <p class="text-xs text-neutral-400">The probability of ABL1 Like class is <span class="ml-0 font-semibold text-neutral-500 dark:text-white">{ABL1_LikeaverageResultstr[calculateIndex(currentPage)].toFixed(4)}</span>.</p>
                 </Popover>
               </div>
             </div>              
