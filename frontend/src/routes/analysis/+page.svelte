@@ -177,6 +177,7 @@
   let transposed = false;
 
   function tabletranspose() {
+    console.log("Transpose Button Pressed")
     transposed = !transposed;  
   }
 
