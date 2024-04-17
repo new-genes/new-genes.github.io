@@ -174,6 +174,12 @@
     }
   }
 
+  let transposed = false;
+
+  function tabletranspose() {
+    transposed = !transposed;  
+  }
+
   // 버튼 클릭 시 결과 페이지로 이동하는 함수
   async function handlePredictProbability() { 
     let column_true_length = selectedcolumnChecks.filter(element => element == true).length;
@@ -536,136 +542,35 @@
               (Select Column & Row)
             </p>
           </div>
-          <div class="-ml-0 -mt-1 overflow-x-auto p-2">
-            <table class="text-sm text-neutral-400">
-              {#if fileRows.length < 10}
-                {#each fileRows.slice(0, fileRows.length) as row, rowIndex}
-                  {#if rowIndex === 0}
-                    <tr>
-                      <th class="text-center text-white text-sm bg-transparent py-2 px-5 mr-5">
-                        <span class="sr-only">Check</span>
-                      </th>
-                      {#if row.length < 10}
-                        {#each row.slice(0, row.length) as cell, cellIndex}
-                          {#if checkcolumnidx.includes(parseInt(cellIndex+1)) == true}
-                            <th class="place-content-center text-center py-2 px-2">
-                              <Checkbox
-                                id="column_{cellIndex+1}"
-                                bind:checked={selectedcolumnChecks[cellIndex+1]}
-                                class="text-center cursor-pointer mr-2 w-4 h-4 bg-inherit checked:bg-violet-500 focus:ring-transparent"
-                                on:click={() => toggleColumn(cellIndex+1, 0)}
-                              />
-                            </th>
-                          {:else}
-                            <th class="py-2 px-5">
-                              <span class="sr-only">Check</span>
-                            </th>
-                          {/if}
-                        {/each}
-                      {:else}
-                        {#each row.slice(0, 10) as cell, cellIndex}
-                          <th class="place-content-center text-center text-white text-sm bg-transparent py-2 px-2 mr-5">
-                            <Checkbox
-                              id="column_{cellIndex+1}"
-                              bind:checked={selectedcolumnChecks[cellIndex+1]}
-                              class="text-center cursor-pointer mr-2 w-4 h-4 bg-inherit checked:bg-violet-500 focus:ring-transparent"
-                              on:click={() => toggleColumn(cellIndex+1, 0)}
-                            />
-                          </th>
-                        {/each}
-                      {/if}
-                    </tr>
-                    <tr>
-                      {#if checkrowidx.includes(parseInt(rowIndex+1)) == true}
-                        <td class="place-content-center mr-2 text-center text-sm py-2 px-2">
-                          <Checkbox
-                            id="row_{rowIndex+1}"
-                            bind:checked={selectedrowChecks[rowIndex+1]}
-                            class="text-center cursor-pointer mr-2 w-4 h-4 bg-inherit checked:bg-violet-500 focus:ring-transparent"
-                            on:click={() => toggleColumn(0, rowIndex+1)}
-                          />
-                        </td>
-                      {:else}
-                        <td class="mr-2 text-center text-sm py-2 px-2">
+          {#if !transposed}
+            <div class="-ml-0 -mt-1 overflow-x-auto p-2">
+              <table class="text-sm text-neutral-400">
+                {#if fileRows.length < 10}
+                  {#each fileRows.slice(0, fileRows.length) as row, rowIndex}
+                    {#if rowIndex === 0}
+                      <tr>
+                        <th class="text-center text-white text-sm bg-transparent py-2 px-5 mr-5">
                           <span class="sr-only">Check</span>
-                        </td>
-                      {/if}
-                      {#each row.slice(0, 10) as cell, cellIndex}
-                        {#if selectedcolumnChecks[cellIndex+1] == true}
-                          {#if selectedrowChecks[rowIndex+1] == true}
-                            <td class="{crossCheckedclass}">
-                              {cell}
-                            </td>
-                          {:else}
-                            <td class="{columnCheckedclass}">
-                              {cell}
-                            </td>
-                          {/if}
+                        </th>
+                        {#if row.length < 10}
+                          {#each row.slice(0, row.length) as cell, cellIndex}
+                            {#if checkcolumnidx.includes(parseInt(cellIndex+1)) == true}
+                              <th class="place-content-center text-center py-2 px-2">
+                                <Checkbox
+                                  id="column_{cellIndex+1}"
+                                  bind:checked={selectedcolumnChecks[cellIndex+1]}
+                                  class="text-center cursor-pointer mr-2 w-4 h-4 bg-inherit checked:bg-violet-500 focus:ring-transparent"
+                                  on:click={() => toggleColumn(cellIndex+1, 0)}
+                                />
+                              </th>
+                            {:else}
+                              <th class="py-2 px-5">
+                                <span class="sr-only">Check</span>
+                              </th>
+                            {/if}
+                          {/each}
                         {:else}
-                          {#if selectedrowChecks[rowIndex+1] == true}
-                            <td class="{rowCheckedclass}">
-                              {cell}
-                            </td>
-                          {:else}
-                          <td class="{Defaultclass}">
-                            {cell}
-                          </td>
-                          {/if}
-                        {/if}
-                      {/each}
-                    </tr>
-                  {:else}
-                    <tr>
-                      {#if checkrowidx.includes(parseInt(rowIndex+1)) == true}
-                        <td class="place-content-center mr-2 text-center text-sm py-2 px-2">
-                          <Checkbox
-                            id="row_{rowIndex+1}"
-                            bind:checked={selectedrowChecks[rowIndex+1]}
-                            class="text-center cursor-pointer mr-2 w-4 h-4 bg-inherit checked:bg-violet-500 focus:ring-transparent"
-                            on:click={() => toggleColumn(0, rowIndex+1)}
-                          />
-                        </td>
-                      {:else}
-                        <td class="mr-2 text-center text-sm py-2 px-2">
-                          <span class="sr-only">Check</span>
-                        </td>
-                      {/if}
-                        {#each row.slice(0, 10) as cell, cellIndex}
-                          {#if selectedcolumnChecks[cellIndex+1] == true}
-                            {#if selectedrowChecks[rowIndex+1] == true}
-                              <td class="{crossCheckedclass}">
-                                {cell}
-                              </td>
-                            {:else}
-                              <td class="{columnCheckedclass}">
-                                {cell}
-                              </td>
-                            {/if}
-                          {:else}
-                            {#if selectedrowChecks[rowIndex+1] == true}
-                              <td class="{rowCheckedclass}">
-                                {cell}
-                              </td>
-                            {:else}
-                            <td class="{Defaultclass}">
-                              {cell}
-                            </td>
-                            {/if}
-                          {/if}
-                        {/each}
-                    </tr>
-                  {/if}
-                {/each}
-              {:else}
-                {#each fileRows.slice(0, 10) as row, rowIndex}
-                  {#if rowIndex === 0}
-                    <tr>
-                      <th class="text-center text-white text-sm bg-transparent py-2 px-5 mr-5">
-                        <span class="sr-only">Check</span>
-                      </th>
-                      {#if row.length < 10}
-                        {#each row.slice(0, row.length) as cell, cellIndex}
-                          {#if checkcolumnidx.includes(parseInt(cellIndex+1)) == true}
+                          {#each row.slice(0, 10) as cell, cellIndex}
                             <th class="place-content-center text-center text-white text-sm bg-transparent py-2 px-2 mr-5">
                               <Checkbox
                                 id="column_{cellIndex+1}"
@@ -674,80 +579,24 @@
                                 on:click={() => toggleColumn(cellIndex+1, 0)}
                               />
                             </th>
-                          {:else}
-                            <th class="text-center text-white text-sm bg-transparent py-2 px-5 mr-5">
-                              <span class="sr-only">Check</span>
-                            </th>
-                          {/if}
-                        {/each}
-                      {:else}
-                        {#each row.slice(0, 10) as cell, cellIndex}
-                          <th class="place-content-center text-center text-white text-sm bg-transparent py-2 px-2 mr-5">
-                            <Checkbox
-                              id="column_{cellIndex+1}"
-                              bind:checked={selectedcolumnChecks[cellIndex+1]}
-                              class="text-center cursor-pointer mr-2 w-4 h-4 bg-inherit checked:bg-violet-500 focus:ring-transparent"
-                              on:click={() => toggleColumn(cellIndex+1, 0)}
-                            />
-                          </th>
-                        {/each}
-                      {/if}
-                    </tr>
-                    <tr>
-                      {#if checkrowidx.includes(parseInt(rowIndex+1)) == true}
-                        <td class="place-content-center mr-2 text-center text-sm py-2 px-2">
-                          <Checkbox
-                            id="row_{rowIndex+1}"
-                            bind:checked={selectedrowChecks[rowIndex+1]}
-                            class="text-center cursor-pointer mr-2 w-4 h-4 bg-inherit checked:bg-violet-500 focus:ring-transparent"
-                            on:click={() => toggleColumn(0, rowIndex+1)}
-                          />
-                        </td>
-                      {:else}
-                        <td class="mr-2 text-center text-sm py-2 px-2">
-                          <span class="sr-only">Check</span>
-                        </td>
-                      {/if}
-                      {#each row.slice(0, 10) as cell, cellIndex}
-                        {#if selectedcolumnChecks[cellIndex+1] == true}
-                          {#if selectedrowChecks[rowIndex+1] == true}
-                            <td class="{crossCheckedclass}">
-                              {cell}
-                            </td>
-                          {:else}
-                            <td class="{columnCheckedclass}">
-                              {cell}
-                            </td>
-                          {/if}
-                        {:else}
-                          {#if selectedrowChecks[rowIndex+1] == true}
-                            <td class="{rowCheckedclass}">
-                              {cell}
-                            </td>
-                          {:else}
-                          <td class="{Defaultclass}">
-                            {cell}
-                          </td>
-                          {/if}
+                          {/each}
                         {/if}
-                      {/each}
-                    </tr>
-                  {:else}
-                    <tr>
-                      {#if checkrowidx.includes(parseInt(rowIndex+1)) == true}
-                        <td class="place-content-center mr-2 text-center text-sm py-2 px-2">
-                          <Checkbox
-                            id="row_{rowIndex+1}"
-                            bind:checked={selectedrowChecks[rowIndex+1]}
-                            class="text-center cursor-pointer mr-2 w-4 h-4 bg-inherit checked:bg-violet-500 focus:ring-transparent"
-                            on:click={() => toggleColumn(0, rowIndex+1)}
-                          />
-                        </td>
-                      {:else}
-                        <td class="mr-2 text-center text-sm py-2 px-2">
-                          <span class="sr-only">Check</span>
-                        </td>
-                      {/if}
+                      </tr>
+                      <tr>
+                        {#if checkrowidx.includes(parseInt(rowIndex+1)) == true}
+                          <td class="place-content-center mr-2 text-center text-sm py-2 px-2">
+                            <Checkbox
+                              id="row_{rowIndex+1}"
+                              bind:checked={selectedrowChecks[rowIndex+1]}
+                              class="text-center cursor-pointer mr-2 w-4 h-4 bg-inherit checked:bg-violet-500 focus:ring-transparent"
+                              on:click={() => toggleColumn(0, rowIndex+1)}
+                            />
+                          </td>
+                        {:else}
+                          <td class="mr-2 text-center text-sm py-2 px-2">
+                            <span class="sr-only">Check</span>
+                          </td>
+                        {/if}
                         {#each row.slice(0, 10) as cell, cellIndex}
                           {#if selectedcolumnChecks[cellIndex+1] == true}
                             {#if selectedrowChecks[rowIndex+1] == true}
@@ -771,11 +620,255 @@
                             {/if}
                           {/if}
                         {/each}
-                    </tr>
-                  {/if}
-                {/each}
-              {/if}
-            </table>  
+                      </tr>
+                    {:else}
+                      <tr>
+                        {#if checkrowidx.includes(parseInt(rowIndex+1)) == true}
+                          <td class="place-content-center mr-2 text-center text-sm py-2 px-2">
+                            <Checkbox
+                              id="row_{rowIndex+1}"
+                              bind:checked={selectedrowChecks[rowIndex+1]}
+                              class="text-center cursor-pointer mr-2 w-4 h-4 bg-inherit checked:bg-violet-500 focus:ring-transparent"
+                              on:click={() => toggleColumn(0, rowIndex+1)}
+                            />
+                          </td>
+                        {:else}
+                          <td class="mr-2 text-center text-sm py-2 px-2">
+                            <span class="sr-only">Check</span>
+                          </td>
+                        {/if}
+                          {#each row.slice(0, 10) as cell, cellIndex}
+                            {#if selectedcolumnChecks[cellIndex+1] == true}
+                              {#if selectedrowChecks[rowIndex+1] == true}
+                                <td class="{crossCheckedclass}">
+                                  {cell}
+                                </td>
+                              {:else}
+                                <td class="{columnCheckedclass}">
+                                  {cell}
+                                </td>
+                              {/if}
+                            {:else}
+                              {#if selectedrowChecks[rowIndex+1] == true}
+                                <td class="{rowCheckedclass}">
+                                  {cell}
+                                </td>
+                              {:else}
+                              <td class="{Defaultclass}">
+                                {cell}
+                              </td>
+                              {/if}
+                            {/if}
+                          {/each}
+                      </tr>
+                    {/if}
+                  {/each}
+                {:else}
+                  {#each fileRows.slice(0, 10) as row, rowIndex}
+                    {#if rowIndex === 0}
+                      <tr>
+                        <th class="text-center text-white text-sm bg-transparent py-2 px-5 mr-5">
+                          <span class="sr-only">Check</span>
+                        </th>
+                        {#if row.length < 10}
+                          {#each row.slice(0, row.length) as cell, cellIndex}
+                            {#if checkcolumnidx.includes(parseInt(cellIndex+1)) == true}
+                              <th class="place-content-center text-center text-white text-sm bg-transparent py-2 px-2 mr-5">
+                                <Checkbox
+                                  id="column_{cellIndex+1}"
+                                  bind:checked={selectedcolumnChecks[cellIndex+1]}
+                                  class="text-center cursor-pointer mr-2 w-4 h-4 bg-inherit checked:bg-violet-500 focus:ring-transparent"
+                                  on:click={() => toggleColumn(cellIndex+1, 0)}
+                                />
+                              </th>
+                            {:else}
+                              <th class="text-center text-white text-sm bg-transparent py-2 px-5 mr-5">
+                                <span class="sr-only">Check</span>
+                              </th>
+                            {/if}
+                          {/each}
+                        {:else}
+                          {#each row.slice(0, 10) as cell, cellIndex}
+                            <th class="place-content-center text-center text-white text-sm bg-transparent py-2 px-2 mr-5">
+                              <Checkbox
+                                id="column_{cellIndex+1}"
+                                bind:checked={selectedcolumnChecks[cellIndex+1]}
+                                class="text-center cursor-pointer mr-2 w-4 h-4 bg-inherit checked:bg-violet-500 focus:ring-transparent"
+                                on:click={() => toggleColumn(cellIndex+1, 0)}
+                              />
+                            </th>
+                          {/each}
+                        {/if}
+                      </tr>
+                      <tr>
+                        {#if checkrowidx.includes(parseInt(rowIndex+1)) == true}
+                          <td class="place-content-center mr-2 text-center text-sm py-2 px-2">
+                            <Checkbox
+                              id="row_{rowIndex+1}"
+                              bind:checked={selectedrowChecks[rowIndex+1]}
+                              class="text-center cursor-pointer mr-2 w-4 h-4 bg-inherit checked:bg-violet-500 focus:ring-transparent"
+                              on:click={() => toggleColumn(0, rowIndex+1)}
+                            />
+                          </td>
+                        {:else}
+                          <td class="mr-2 text-center text-sm py-2 px-2">
+                            <span class="sr-only">Check</span>
+                          </td>
+                        {/if}
+                        {#each row.slice(0, 10) as cell, cellIndex}
+                          {#if selectedcolumnChecks[cellIndex+1] == true}
+                            {#if selectedrowChecks[rowIndex+1] == true}
+                              <td class="{crossCheckedclass}">
+                                {cell}
+                              </td>
+                            {:else}
+                              <td class="{columnCheckedclass}">
+                                {cell}
+                              </td>
+                            {/if}
+                          {:else}
+                            {#if selectedrowChecks[rowIndex+1] == true}
+                              <td class="{rowCheckedclass}">
+                                {cell}
+                              </td>
+                            {:else}
+                            <td class="{Defaultclass}">
+                              {cell}
+                            </td>
+                            {/if}
+                          {/if}
+                        {/each}
+                      </tr>
+                    {:else}
+                      <tr>
+                        {#if checkrowidx.includes(parseInt(rowIndex+1)) == true}
+                          <td class="place-content-center mr-2 text-center text-sm py-2 px-2">
+                            <Checkbox
+                              id="row_{rowIndex+1}"
+                              bind:checked={selectedrowChecks[rowIndex+1]}
+                              class="text-center cursor-pointer mr-2 w-4 h-4 bg-inherit checked:bg-violet-500 focus:ring-transparent"
+                              on:click={() => toggleColumn(0, rowIndex+1)}
+                            />
+                          </td>
+                        {:else}
+                          <td class="mr-2 text-center text-sm py-2 px-2">
+                            <span class="sr-only">Check</span>
+                          </td>
+                        {/if}
+                          {#each row.slice(0, 10) as cell, cellIndex}
+                            {#if selectedcolumnChecks[cellIndex+1] == true}
+                              {#if selectedrowChecks[rowIndex+1] == true}
+                                <td class="{crossCheckedclass}">
+                                  {cell}
+                                </td>
+                              {:else}
+                                <td class="{columnCheckedclass}">
+                                  {cell}
+                                </td>
+                              {/if}
+                            {:else}
+                              {#if selectedrowChecks[rowIndex+1] == true}
+                                <td class="{rowCheckedclass}">
+                                  {cell}
+                                </td>
+                              {:else}
+                              <td class="{Defaultclass}">
+                                {cell}
+                              </td>
+                              {/if}
+                            {/if}
+                          {/each}
+                      </tr>
+                    {/if}
+                  {/each}
+                {/if}
+              </table>  
+            </div>
+          {:else}
+            <div class="-ml-0 -mt-1 overflow-x-auto p-2">
+              <table class="text-sm text-neutral-400">
+                  {#each Array.from({ length: Math.min(10, fileRows[0].length) }) as _, cellIndex}
+                      <tr>
+                          <th class="text-center text-white text-sm bg-transparent py-2 px-5 mr-5">
+                              <span class="sr-only">Check</span>
+                          </th>
+                          {#each fileRows as row, rowIndex}
+                              {#if rowIndex === 0}
+                                  {#if row.length < 10}
+                                      {#each row.slice(0, row.length) as cell, cellIndex}
+                                          {#if checkcolumnidx.includes(parseInt(cellIndex+1))}
+                                              <th class="place-content-center text-center py-2 px-2">
+                                                  <Checkbox
+                                                      id="column_{cellIndex+1}"
+                                                      bind:checked={selectedcolumnChecks[cellIndex+1]}
+                                                      class="text-center cursor-pointer mr-2 w-4 h-4 bg-inherit checked:bg-violet-500 focus:ring-transparent"
+                                                      on:click={() => toggleColumn(cellIndex+1, 0)}
+                                                  />
+                                              </th>
+                                          {:else}
+                                              <th class="py-2 px-5">
+                                                  <span class="sr-only">Check</span>
+                                              </th>
+                                          {/if}
+                                      {/each}
+                                  {:else}
+                                      {#each row.slice(0, 10) as cell, cellIndex}
+                                          <th class="place-content-center text-center text-white text-sm bg-transparent py-2 px-2 mr-5">
+                                              <Checkbox
+                                                  id="column_{cellIndex+1}"
+                                                  bind:checked={selectedcolumnChecks[cellIndex+1]}
+                                                  class="text-center cursor-pointer mr-2 w-4 h-4 bg-inherit checked:bg-violet-500 focus:ring-transparent"
+                                                  on:click={() => toggleColumn(cellIndex+1, 0)}
+                                              />
+                                          </th>
+                                      {/each}
+                                  {/if}
+                              {/if}
+                          {/each}
+                      </tr>
+                      {#each fileRows as row, rowIndex}
+                          <tr>
+                              {#if checkrowidx.includes(parseInt(rowIndex+1))}
+                                  <td class="place-content-center mr-2 text-center text-sm py-2 px-2">
+                                      <Checkbox
+                                          id="row_{rowIndex+1}"
+                                          bind:checked={selectedrowChecks[rowIndex+1]}
+                                          class="text-center cursor-pointer mr-2 w-4 h-4 bg-inherit checked:bg-violet-500 focus:ring-transparent"
+                                          on:click={() => toggleColumn(0, rowIndex+1)}
+                                      />
+                                  </td>
+                              {:else}
+                                  <td class="mr-2 text-center text-sm py-2 px-2">
+                                      <span class="sr-only">Check</span>
+                                  </td>
+                              {/if}
+                              {#each fileRows as row}
+                                  {#if selectedcolumnChecks[rowIndex+1]}
+                                      {#if selectedrowChecks[cellIndex+1]}
+                                          <td class="{crossCheckedclass}">{row[cellIndex]}</td>
+                                      {:else}
+                                          <td class="{columnCheckedclass}">{row[cellIndex]}</td>
+                                      {/if}
+                                  {:else}
+                                      {#if selectedrowChecks[cellIndex+1]}
+                                          <td class="{rowCheckedclass}">{row[cellIndex]}</td>
+                                      {:else}
+                                          <td class="{Defaultclass}">{row[cellIndex]}</td>
+                                      {/if}
+                                  {/if}
+                              {/each}
+                          </tr>
+                      {/each}
+                  {/each}
+              </table>  
+            </div>
+          {/if}
+          
+          <div class="mt-3 relative bg-white justify-items-end">
+            <Button class="text-xm font-semibold bg-violet-700 text-white absolute right-0 place-self-end hover:bg-violet-800 focus:ring-transparent"
+            on:click={tabletranspose}>
+              Transpose
+            </Button>
           </div> 
         {/if}
         <p class="mt-20 text-3xl text-violet-700 font-medium">Settings</p>   
