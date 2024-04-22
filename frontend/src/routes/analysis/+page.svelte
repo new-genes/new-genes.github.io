@@ -1,4 +1,5 @@
 <script>
+  import { Toggle } from 'flowbite-svelte';
   import { onMount } from 'svelte';
   import { goto } from '$app/navigation';
   import { Select } from "flowbite-svelte";
@@ -502,6 +503,13 @@
       selectedrowChecks[rowIndex] = !selectedrowChecks[rowIndex];
     }
   }
+
+  function testdata() {
+    test_file_name = "test_data.txt";
+    updateFileName;
+    processFile("test_data.txt");
+  }
+
 </script>
 
 <style>
@@ -526,6 +534,7 @@
         <p class="mt-2 text-violet-400 text-base font-medium">
           Upload your RPKM matrix file ( txt, csv, tsv, or ... )
         </p>           
+        <Toggle class="mt-3 text-violet-300 checked:ring-transparent focus:ring-transparent" size="small" color="purple" checked={false} on:click={testdata}>Use Test Data!</Toggle>
         <div class="flex">
           <Label for="fileInput" class="cursor-pointer font-Catamaran w-28 rounded-lg text-center text-white mt-3 py-2 bg-violet-400 hover:bg-violet-500 text-base font-semibold hover:ring-transparent">
             Select File
