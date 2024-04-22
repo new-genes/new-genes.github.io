@@ -211,24 +211,13 @@
         <div class="ml-0 mr-5 justify-between flex rounded-3xl py-1 mt-0">
           <div class="rounded-2xl py-1 cursor-pointer -mt-1 w-52 flex text-left justify-start text-xl font-medium text-violet-300 h-full">
             <div class="rounded-2xl flex">
-              <Button class="focus:ring-zinc-600 text-violet-500 text-xl">Patient ID</Button>
+              <Button class="focus:ring-transparent text-violet-500 text-xl">Patient ID</Button>
               <img
               id="searchIcon"
               src="invertedtriangle2.svg"
               class="cursor-pointer w-4 h-4 mt-5 h-fit text-center"
               alt="Tutorial Logo"/> 
             </div>
-            <Dropdown class="place-items-start place-content-start justify-items-start focus:ring-inherit rounded bg-violet-100 w-48 p-1 space-y-1">
-              <li class="place-items-start place-content-start justify-items-start rounded-2xl py-1 text-neutral-300 hover:bg-zinc-600 dark:hover:bg-gray-600">
-                <input id="Patient" class="-ml-7 mr-2 focus:ring-transparent rounded-2xl text-neutral-300" type="radio" name="group2" bind:group={group2} value={1}/>
-                <label class="text-base text-violet-400 peer-checked/draft:text-sky-500" for="Patient">Patient ID</label>
-              </li>
-              <li class="place-content-start justify-start rounded-2xl py-1 hover:bg-zinc-600 dark:hover:bg-gray-600">
-                <input id="Page" class="focus:ring-transparent rounded-2xl text-neutral-300" type="radio" name="group2" bind:group={group2} value={2}/>
-                <label class="mr-2 text-base text-violet-400 peer-checked/draft:text-sky-500" for="Page">Page Number</label>
-              </li>
-            </Dropdown> 
-            
           </div>
           <div class="text-left ml-5 mt-3 w-full">
             <Button class="text-left -my-3 py-2 bg-violet-50 text-violet-400 focus:text-violet-800 text-base border-violet-200 focus:outline-none focus:border-violet-200 focus:ring-1 focus:ring-violet-200 focus:bg-violet-50 rounded-full w-full">Click to find the PatientID!</Button>
