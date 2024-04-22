@@ -283,7 +283,7 @@
         </div>
         <div class="bg-violet-50 mx-10 rounded-2xl px-20 py-5 mt-3">
           <div>
-            <p class="-ml-5 mb-10 text-lg text-violet-600 font-medium mt-3">Total class</p>
+            <p class="-ml-5 mb-10 text-lg text-violet-600 font-medium mt-5">Total class</p>
             <div class="relative mt-1 flex font-semibold">
               <p class="ml-4 text-xs text-indigo-500">BALLNOS</p>
               <p class="absolute right-2 text-xs text-pink-500">Other Classes</p>
@@ -294,7 +294,7 @@
               <div class="text-center absolute right-[0%] -mt-2 h-12 w-1/2 bg-pink-300 rounded-full border-2 border-white"><p class="text-pink-500 mt-3 ml-16">High Confidence</p></div>
               <div class="text-center absolute right-[40%] -mt-2 h-12 w-[11%] bg-pink-200 border-2 border-white"><p class="text-pink-400 text-xs mt-2 ml-0">Low <br> Confidence</p></div>
             </div>  
-            <div class="mb-7 relative mt-0 flex font-semibold text-xs">
+            <div class="mb-10 relative mt-0 flex font-semibold text-xs">
               <p class="absolute left-1 text-left ml-3 text-indigo-400">-1</p>
               <p class="absolute ml-3 left-[37%] text-indigo-300">-0.2</p>
               <p class="absolute ml-3 left-[48%] text-neutral-300">0</p>
@@ -307,7 +307,7 @@
               <img
               id = "Total_ABL1"
               src="Star_yellow3.svg"
-              class="cursor-pointer absolute w-6 h-6 ml-3 -mt-[92px] h-fit text-center"
+              class="cursor-pointer absolute w-6 h-6 ml-3 -mt-[105px] h-fit text-center"
               style="left: {`${starlocation(ABL1averageResultstr[calculateIndex(currentPage)])}%`}"
               alt="Tutorial Logo"
               />
@@ -329,7 +329,7 @@
               <img
               id="Total_CRLF2"
               src="Star_red3.svg"
-              class="cursor-pointer absolute w-6 h-6 ml-3 -mt-[92px] h-fit text-center"
+              class="cursor-pointer absolute w-6 h-6 ml-3 -mt-[105px] h-fit text-center"
               style="left: {`${starlocation(CRLF2averageResultstr[calculateIndex(currentPage)])}%`}"
               alt="Tutorial Logo"
               />
@@ -351,7 +351,7 @@
             <img
             id="Total_ABL1_Like"
             src="Star_mint3.svg"
-            class="cursor-pointer absolute w-6 h-6 ml-3 -mt-[92px] h-fit text-center"
+            class="cursor-pointer absolute w-6 h-6 ml-3 -mt-[105px] h-fit text-center"
             style="left: {`${starlocation(ABL1_LikeaverageResultstr[calculateIndex(currentPage)])}%`}"
             alt="Tutorial Logo"
             />
