@@ -318,7 +318,7 @@
               <img
               id = "Total_ABL1"
               src="Star_yellow3.svg"
-              class="cursor-pointer absolute w-6 h-6 ml-3 -mt-24 h-fit text-center"
+              class="cursor-pointer absolute w-6 h-6 ml-3 -mt-[92px] h-fit text-center"
               style="left: {`${starlocation(ABL1averageResultstr[calculateIndex(currentPage)])}%`}"
               alt="Tutorial Logo"
               />
@@ -340,7 +340,7 @@
               <img
               id="Total_CRLF2"
               src="Star_red3.svg"
-              class="cursor-pointer absolute w-6 h-6 ml-3 -mt-24 h-fit text-center"
+              class="cursor-pointer absolute w-6 h-6 ml-3 -mt-[92px] h-fit text-center"
               style="left: {`${starlocation(CRLF2averageResultstr[calculateIndex(currentPage)])}%`}"
               alt="Tutorial Logo"
               />
@@ -362,7 +362,7 @@
             <img
             id="Total_ABL1_Like"
             src="Star_mint3.svg"
-            class="cursor-pointer absolute w-6 h-6 ml-3 -mt-24 h-fit text-center"
+            class="cursor-pointer absolute w-6 h-6 ml-3 -mt-[92px] h-fit text-center"
             style="left: {`${starlocation(ABL1_LikeaverageResultstr[calculateIndex(currentPage)])}%`}"
             alt="Tutorial Logo"
             />
