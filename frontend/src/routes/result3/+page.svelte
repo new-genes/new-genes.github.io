@@ -264,32 +264,32 @@
           <p class="ml-10 mt-16 justify-center text-2xl text-center font-semibold text-violet-800 font-medium mt-5">{patientIDnumberstr[calculateIndex(currentPage)]}'s Analysis Result</p>
         </div>
         <div class="cursor-pointer rounded-2xl justify-end text-lg mx-12 flex">
-          <div class="border border-violet-200 bg-white rounded-2xl px-3 py-1 mx-1 flex">
+          <div class="border border-violet-200 bg-violet-200 rounded-2xl px-3 py-1 mx-1 flex">
             <img
             id = "ABL1_star"
-            src="Star_yellow.svg"
+            src="Star_yellow3.svg"
             class="cursor-pointer w-4 h-4 mr-1 h-fit text-center"
             alt="Tutorial Logo2"
             />
-            <p class="cursor-pointer text-sm text-violet-500">ABL1 Class</p>
+            <p class="cursor-pointer text-xs font-semibold text-violet-400">ABL1 Class</p>
           </div>
-          <div class="border border-violet-200 bg-white ursor-pointer rounded-2xl px-3 py-1 mx-1 flex">
+          <div class="border border-violet-200 bg-violet-200 ursor-pointer rounded-2xl px-3 py-1 mx-1 flex">
             <img
             id = "CRLF2_star"
-            src="Star_red.svg"
+            src="Star_red3.svg"
             class="cursor-pointer w-4 h-4 mr-1 h-fit text-center"
             alt="Tutorial Logo2"
             />
-            <p class="cursor-pointer text-sm text-violet-500">CRLF2 Class</p>
+            <p class="cursor-pointer text-xs font-semibold text-violet-400">CRLF2 Class</p>
           </div>
-          <div class="border border-violet-200 bg-white cursor-pointer rounded-2xl px-3 py-1 mx-1 flex">
+          <div class="border border-violet-200 bg-violet-200 cursor-pointer rounded-2xl px-3 py-1 mx-1 flex">
             <img
             id = "ABL1_Like_star"
-            src="Star_mint.svg"
+            src="Star_mint3.svg"
             class="cursor-pointer w-4 h-4 mr-1 h-fit text-center"
             alt="Tutorial Logo2"
             />
-            <p class="cursor-pointer text-sm text-violet-500">ABL1-Like Class</p>
+            <p class="cursor-pointer text-xs font-semibold text-violet-400">ABL1-Like Class</p>
           </div>
         </div>
         <div class="bg-violet-50 mx-10 rounded-2xl px-20 py-5 mt-3">
