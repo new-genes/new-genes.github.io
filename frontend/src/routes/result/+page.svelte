@@ -248,7 +248,7 @@
             /> 
           </div>
         </div>
-        <hr class="mb-5 mt-0 border-violet-200"/>
+        <hr class="mb-5 mt-1 border-violet-100"/>
         <div class="mt-5 ml-3 mb-3 flex">
           <p class="ml-10 mt-16 justify-center text-2xl text-center font-semibold text-violet-800 font-medium mt-5">{patientIDnumberstr[calculateIndex(currentPage)]}'s Analysis Result</p>
         </div>
