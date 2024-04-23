@@ -207,31 +207,20 @@
       {$selectedmethod} Based Probability of Each Class
     </p>  
     {#if $patientIDnumber[calculateIndex(currentPage)]}
-      <div class="bg-violet-100 mx-10 rounded-2xl border px-5 pb-5 pt-3 mt-8 border-violet-100">
+      <div class="bg-violet-50 mx-10 rounded-2xl border px-5 pb-5 pt-3 mt-8 border-violet-50">
         <div class="ml-0 mr-5 justify-between flex rounded-3xl py-1 mt-0">
           <div class="rounded-2xl py-1 cursor-pointer -mt-1 w-52 flex text-left justify-start text-xl font-medium text-violet-300 h-full">
             <div class="rounded-2xl flex">
-              <Button class="focus:ring-zinc-600 text-violet-500 text-xl">Patient ID</Button>
+              <Button class="focus:ring-transparent text-violet-500 text-xl">Patient ID</Button>
               <img
               id="searchIcon"
               src="invertedtriangle2.svg"
               class="cursor-pointer w-4 h-4 mt-5 h-fit text-center"
               alt="Tutorial Logo"/> 
             </div>
-            <Dropdown class="place-items-start place-content-start justify-items-start focus:ring-inherit rounded bg-violet-100 w-48 p-1 space-y-1">
-              <li class="place-items-start place-content-start justify-items-start rounded-2xl py-1 text-neutral-300 hover:bg-zinc-600 dark:hover:bg-gray-600">
-                <input id="Patient" class="-ml-7 mr-2 focus:ring-transparent rounded-2xl text-neutral-300" type="radio" name="group2" bind:group={group2} value={1}/>
-                <label class="text-base text-violet-400 peer-checked/draft:text-sky-500" for="Patient">Patient ID</label>
-              </li>
-              <li class="place-content-start justify-start rounded-2xl py-1 hover:bg-zinc-600 dark:hover:bg-gray-600">
-                <input id="Page" class="focus:ring-transparent rounded-2xl text-neutral-300" type="radio" name="group2" bind:group={group2} value={2}/>
-                <label class="mr-2 text-base text-violet-400 peer-checked/draft:text-sky-500" for="Page">Page Number</label>
-              </li>
-            </Dropdown> 
-            
           </div>
           <div class="text-left ml-5 mt-3 w-full">
-            <Button class="text-left -my-3 py-2 bg-violet-50 text-violet-400 focus:text-violet-800 text-base border-violet-200 focus:outline-none focus:border-violet-200 focus:ring-1 focus:ring-violet-200 focus:bg-violet-50 rounded-full w-full">Click to find the PatientID!</Button>
+            <Button class="text-left -my-3 py-2 bg-[#FBFAFF] text-violet-400 focus:text-violet-500 text-base border-violet-200 focus:outline-none focus:border-2 focus:border-violet-100 focus:ring-1 focus:ring-violet-100 focus:bg-white rounded-full w-full">Click to find the PatientID!</Button>
             <Dropdown class="text-left overflow-y-auto px-3 pb-3 text-sm h-40 w-full ml-auto"> <!-- 드롭다운 요소에 ml-auto 클래스 추가 -->
               <div class="bg-white outline-none px-1" slot="header">
                 <Search class="h-10 text-left bg-white text-neutral-500 focus:text-neutral-500 text-base border-white focus:outline-none focus:border-white focus:ring-1 focus:ring-white focus:bg-whiite" size="md"  bind:value={searchTerm} />
@@ -264,57 +253,67 @@
           <p class="ml-10 mt-16 justify-center text-2xl text-center font-semibold text-violet-800 font-medium mt-5">{patientIDnumberstr[calculateIndex(currentPage)]}'s Analysis Result</p>
         </div>
         <div class="cursor-pointer rounded-2xl justify-end text-lg mx-12 flex">
-          <div class="border border-violet-200 bg-white rounded-2xl px-3 py-1 mx-1 flex">
+          <div class="bg-white rounded-2xl px-3 py-1 mx-1 flex">
             <img
             id = "ABL1_star"
-            src="Star_yellow.svg"
+            src="Star_yellow3.svg"
             class="cursor-pointer w-4 h-4 mr-1 h-fit text-center"
             alt="Tutorial Logo2"
             />
-            <p class="cursor-pointer text-sm text-violet-500">ABL1 Class</p>
+            <p class="cursor-pointer text-xs font-semibold text-violet-300">ABL1 Class</p>
           </div>
-          <div class="border border-violet-200 bg-white ursor-pointer rounded-2xl px-3 py-1 mx-1 flex">
+          <div class="bg-white ursor-pointer rounded-2xl px-3 py-1 mx-1 flex">
             <img
             id = "CRLF2_star"
-            src="Star_red.svg"
+            src="Star_red3.svg"
             class="cursor-pointer w-4 h-4 mr-1 h-fit text-center"
             alt="Tutorial Logo2"
             />
-            <p class="cursor-pointer text-sm text-violet-500">CRLF2 Class</p>
+            <p class="cursor-pointer text-xs font-semibold text-violet-300">CRLF2 Class</p>
           </div>
-          <div class="border border-violet-200 bg-white cursor-pointer rounded-2xl px-3 py-1 mx-1 flex">
+          <div class="bg-white cursor-pointer rounded-2xl px-3 py-1 mx-1 flex">
             <img
             id = "ABL1_Like_star"
-            src="Star_mint.svg"
+            src="Star_mint3.svg"
             class="cursor-pointer w-4 h-4 mr-1 h-fit text-center"
             alt="Tutorial Logo2"
             />
-            <p class="cursor-pointer text-sm text-violet-500">ABL1-Like Class</p>
+            <p class="cursor-pointer text-xs font-semibold text-violet-300">ABL1-Like Class</p>
           </div>
         </div>
-        <div class="bg-violet-50 mx-10 rounded-2xl px-20 py-5 mt-3">
-          <div>
-            <p class="-ml-5 mb-3 text-lg text-violet-600 font-medium mt-3">Total class</p>
-            <div class="bg-white mt-16 ml-2 relative h-9 pt-2 flex rounded-full font-semibold text-medium text-violet-400 bg-inherit border-2 border-violet-300">
-              <p class="absolute -mt-1 left-1 text-left ml-3">-1</p>
-              <p class="absolute -mt-1 ml-3 left-[48%]">0</p>
-              <p class="absolute -mt-1 right-5 text-right">1</p>
+        <div class="bg-[#FBFAFF] mx-10 rounded-2xl px-12 py-5 mt-3">
+          <div class="mx-5">
+            <div class="-mx-7 w-fit rounded-full p-2 mb-8 text-base text-violet-500 font-medium mt-0 bg-violet-100 border-2 border-white">
+              <p class="mx-5 font-semibold">Total class</p>
+            </div>
+            <div class="relative mt-0 flex font-semibold">
+              <p class="ml-4 text-xs text-indigo-500">BALLNOS</p>
+              <p class="absolute right-2 text-xs text-pink-500">Other Classes</p>
+            </div>
+            <div class="bg-white mt-1 ml-2 relative h-12 pt-2 flex rounded-full font-semibold text-sm text-white">
+              <div class="text-center absolute left-[0%] -mt-2 h-12 w-1/2 bg-indigo-200 rounded-full border-2 border-white"><p class="text-indigo-500 mt-3 -ml-20">More Less Likely</p></div>
+              <div class="text-center absolute left-[38.5%] -mt-2 h-12 w-[11%] bg-indigo-100 border-2 border-white"><p class="text-indigo-400 text-xs mt-1 ml-0">Less <br> Likely</p></div>
+              <div class="text-center absolute right-[0%] -mt-2 h-12 w-1/2 bg-pink-200 rounded-full border-2 border-white"><p class="text-pink-500 mt-3 ml-16">High Confidence</p></div>
+              <div class="text-center absolute right-[40%] -mt-2 h-12 w-[11%] bg-pink-100 border-2 border-white"><p class="text-pink-400 text-xs mt-1 ml-0">Low <br> Confidence</p></div>
             </div>  
-            <div class="relative mt-1 flex">
-              <p class="ml-4 text-xs text-violet-300">BALLNOS</p>
-              <p class="absolute right-2 text-xs text-violet-300">Other Classes</p>
+            <div class="mb-5 relative mt-0 flex font-semibold text-xs">
+              <p class="absolute left-1 text-left ml-3 text-indigo-400">-1</p>
+              <p class="absolute ml-3 left-[37%] text-indigo-300">-0.2</p>
+              <p class="absolute ml-3 left-[48%] text-neutral-300">0</p>
+              <p class="absolute ml-3 left-[59%] text-pink-300">0.2</p>
+              <p class="absolute right-5 text-right text-pink-400">1</p>
             </div>
           </div>
-          <div class="-ml-1 mt-2 bg-inherit w-full relative">
+          <div class="-ml-3 bg-inherit w-full relative">
             {#if $ABL1selected == 'true'}
               <img
               id = "Total_ABL1"
-              src="Star_yellow.svg"
-              class="cursor-pointer absolute w-6 h-6 ml-3 -mt-20 h-fit text-center"
+              src="Star_yellow3.svg"
+              class="cursor-pointer absolute w-7 h-7 ml-3 -mt-[85px] h-fit text-center"
               style="left: {`${starlocation(ABL1averageResultstr[calculateIndex(currentPage)])}%`}"
               alt="Tutorial Logo"
               />
-              <Popover triggeredBy="#Total_ABL1" class="bg-white z-40 border-2 border-neutral-100 p-1 text-sm w-68 font-light">
+              <Popover triggeredBy="#Total_ABL1" class="bg-white z-40 border border-white p-1 text-sm w-68 font-light">
                 <div class="flex mb-1">
                   <img
                     id = "ABL1_star"
@@ -331,12 +330,12 @@
             {#if $CRLF2selected == 'true'}
               <img
               id="Total_CRLF2"
-              src="Star_red.svg"
-              class="cursor-pointer absolute w-6 h-6 ml-3 -mt-20 h-fit text-center"
+              src="Star_red3.svg"
+              class="cursor-pointer absolute w-7 h-7 ml-3 -mt-[85px] h-fit text-center"
               style="left: {`${starlocation(CRLF2averageResultstr[calculateIndex(currentPage)])}%`}"
               alt="Tutorial Logo"
               />
-              <Popover triggeredBy="#Total_CRLF2" class="bg-white z-40 border-2 border-neutral-100 p-1 text-sm w-68 font-light">
+              <Popover triggeredBy="#Total_CRLF2" class="bg-white z-40 border border-white p-1 text-sm w-68 font-light">
                 <div class="flex mb-1">
                   <img
                     id = "CRLF2_star"
@@ -353,12 +352,12 @@
             {#if $ABL1_LikeSelected == 'true'}
             <img
             id="Total_ABL1_Like"
-            src="Star_mint.svg"
-            class="cursor-pointer absolute w-6 h-6 ml-3 -mt-20 h-fit text-center"
+            src="Star_mint3.svg"
+            class="cursor-pointer absolute w-7 h-7 ml-3 -mt-[85px] h-fit text-center"
             style="left: {`${starlocation(ABL1_LikeaverageResultstr[calculateIndex(currentPage)])}%`}"
             alt="Tutorial Logo"
             />
-            <Popover triggeredBy="#Total_ABL1_Like" class="bg-white z-40 border-2 border-neutral-100 p-1 text-sm w-68 font-light">
+            <Popover triggeredBy="#Total_ABL1_Like" class="bg-white z-40 border border-white p-1 text-sm w-68 font-light">
               <div class="flex mb-1">
                 <img
                   id = "ABL1_Like_star"
@@ -374,42 +373,59 @@
             {/if}
           </div>
         </div>              
-        <div class="bg-violet-50 mx-10 rounded-2xl px-20 py-5 mt-5">
+        <div class="bg-[#FBFAFF] mx-10 rounded-2xl px-20 py-5 mt-8">
           {#if $ABL1selected == 'true'}
-            <div class="mb-10">
-              <div class="-ml-5 flex mt-5">
-                <p class="ml-3 text-lg text-violet-600 font-medium">ABL1 Class</p>
-                <p class="ml-1 text-lg text-violet-400 font-lg">: {ABL1averageResultstr[calculateIndex(currentPage)].toFixed(4)}</p>
-              </div>
-              <div class="-mx-5 mt-5 cursor-pointer py-1 relative flex bg-violet-300 text-white flex rounded-full rounded-full">
-                <div class="flex ml-3 justify-start">
-                  <img
-                    id="Star_purple"
-                    src="Star_violet.svg"
-                    class="w-4 h-4 mx-2 mt-1 text-center"
-                    alt="Tutorial Logo"
-                    />
-                  <p class="font-medium text-base">5 out of 10 gene of the model matched</p>
-                  <p class="ml-1 text-violet-500 text-base font-semibold">(50%)</p>
+            <div class="my-3">
+              <div>
+                <div class="-mx-5 relative flex">
+                  <div class="w-fit">
+                    <div class="border-2 border-white py-2 px-4 flex -mx-5 w-fit rounded-full text-base text-violet-500 font-medium mt-0 bg-violet-100">
+                      <p class="ml-3 text-base text-violet-500 font-semibold">ABL1 Class</p>
+                      <p class="ml-1 mr-2 text-base text-violet-400 font-semibold">: {ABL1averageResultstr[calculateIndex(currentPage)].toFixed(4)}</p>
+                    </div>
+                  </div>
+                  <div class="absolute right-0 mt-5 cursor-pointer justify-start w-fit">
+                    <div class="ml-10 border-2 border-white py-1 px-4 flex w-fit rounded-full text-base text-violet-500 font-medium mt-0 bg-violet-300">
+                      <img
+                      id="Star_purple"
+                      src="Star_violet.svg"
+                      class="w-4 h-4 mr-2 text-center"
+                      alt="Tutorial Logo"
+                      />
+                      <p class="text-white font-medium text-sm">5 out of 10 gene of the model matched</p>
+                      <p class="ml-1 text-violet-500 text-sm font-semibold">(50%)</p>
+                      <img
+                        id = "ABL1_star"
+                        src="under_arrow2.svg"
+                        class="cursor-pointer mt-2 ml-2 w-4 h-4 mr-1 h-fit text-center"
+                        alt="Tutorial Logo2"
+                      />
+                    </div>
+                  </div>
                 </div>
-                <div class="absolute right-12 cursor-pointer ml-2 justify-end">
-                  <p class="ml-1 -mr-8 text-white font-medium text-base underline justify-end">More...</p>
+                <div class="relative font-semibold mt-12 flex">
+                  <p class="ml-4 text-xs text-indigo-500">BALLNOS</p>
+                  <p class="absolute right-2 text-xs text-pink-500">ABL1</p>
                 </div>
-              </div>           
-              <div class="bg-white mt-16 ml-3 relative h-9 pt-2 flex rounded-full font-semibold text-medium text-violet-400 bg-inherit border-2 border-violet-300">
-                <p class="absolute -mt-1 left-1 text-left ml-3">-1</p>
-                <p class="absolute -mt-1 ml-4 left-[47.7%]">0</p>
-                <p class="absolute -mt-1 right-4 text-right">1</p>
-              </div>  
-              <div class="relative mt-1 flex">
-                <p class="ml-5 text-xs text-violet-300">BALLNOS</p>
-                <p class="absolute right-2 text-xs text-violet-300">ABL1</p>
-              </div>
-              <div class="my-2 bg-inherit w-full relative">
+                <div class="bg-white mt-1 relative h-12 pt-2 flex rounded-full font-semibold text-sm text-white">
+                  <div class="text-center absolute left-[0%] -mt-2 h-12 w-1/2 bg-indigo-200 rounded-full border-2 border-white"><p class="text-indigo-500 mt-3 -ml-20">More Less Likely</p></div>
+                  <div class="text-center absolute left-[38.5%] -mt-2 h-12 w-[11%] bg-indigo-100 border-2 border-white"><p class="text-indigo-400 text-xs mt-2 ml-0">Less <br> Likely</p></div>
+                  <div class="text-center absolute right-[0%] -mt-2 h-12 w-1/2 bg-pink-200 rounded-full border-2 border-white"><p class="text-pink-500 mt-3 ml-16">High Confidence</p></div>
+                  <div class="text-center absolute right-[40%] -mt-2 h-12 w-[11%] bg-pink-100 border-2 border-white"><p class="text-pink-400 text-xs mt-2 ml-0">Low <br> Confidence</p></div>
+                </div>   
+                <div class="-ml-3 mb-7 relative mt-0 flex font-semibold text-xs">
+                  <p class="absolute left-1 text-left ml-5 text-indigo-400">-1</p>
+                  <p class="absolute ml-2 left-[37%] text-indigo-300">-0.2</p>
+                  <p class="absolute ml-3 left-[48%] text-neutral-300">0</p>
+                  <p class="absolute ml-2 left-[59%] text-pink-300">0.2</p>
+                  <p class="absolute right-5 text-right text-pink-400">1</p>
+                </div>
+              </div>   
+              <div class="my-2 -mt-0 mb-5 bg-inherit w-full relative">
                 <img
                 id="ABL1"
-                src="Star_yellow.svg"
-                class="cursor-pointer absolute w-6 h-6 ml-3 -mt-20 h-fit text-center"
+                src="Star_yellow3.svg"
+                class="cursor-pointer absolute w-7 h-7 -ml-1 -mt-[92px] h-fit text-center"
                 style="left: {`${starlocation(ABL1averageResultstr[calculateIndex(currentPage)])}%`}"
                 alt="Tutorial Logo"
                 />
@@ -427,51 +443,68 @@
                   <p class="text-xs text-neutral-400">The probability of ABL1 class is <span class="ml-0 font-semibold text-neutral-500 dark:text-white">{ABL1averageResultstr[calculateIndex(currentPage)].toFixed(4)}</span>.</p>
                 </Popover>
               </div>
-              <hr class="-mx-5 my-10 border-violet-200"/>
+              <hr class="-mx-10 mt-16 mb-12 border-violet-100"/>
             </div>              
           {/if}
           {#if $CRLF2selected == 'true'}
-            <div class="my-10">
-              <div class="-ml-5 flex mt-10">
-                <p class="ml-3 text-lg text-violet-600 font-medium mt-5">CRLF2 Class</p>
-                <p class="mt-5 ml-1 text-lg text-violet-400 font-lg mt-5">: {CRLF2averageResultstr[calculateIndex(currentPage)].toFixed(4)}</p>
-              </div>
-              <div class="-mx-5 mt-5 cursor-pointer py-1 relative flex bg-violet-300 text-white flex rounded-full rounded-full">
-                <div class="flex ml-3 justify-start">
-                  <img
-                    id="Star_purple"
-                    src="Star_violet.svg"
-                    class="w-4 h-4 mx-2 mt-1 text-center"
-                    alt="Tutorial Logo"
-                    />
-                  <p class="font-medium text-base">5 out of 10 gene of the model matched</p>
-                  <p class="ml-1 text-violet-500 text-base font-semibold">(50%)</p>
+            <div class="mb-10">
+              <div>
+                <div class="-mx-5 relative flex">
+                  <div class="w-fit">
+                    <div class="border-2 border-white py-2 px-4 flex -mx-5 w-fit rounded-full text-base text-violet-500 font-medium mt-0 bg-violet-100">
+                      <p class="ml-3 text-base text-violet-500 font-semibold">CRLF2 Class</p>
+                      <p class="ml-1 mr-2 text-base text-violet-400 font-semibold">: {CRLF2averageResultstr[calculateIndex(currentPage)].toFixed(4)}</p>
+                    </div>
+                  </div>
+                  <div class="-mr-5 absolute right-0 mt-5 cursor-pointer justify-start w-fit">
+                    <div class="ml-10 border-2 border-white py-1 px-4 flex w-fit rounded-full text-base text-violet-500 font-medium mt-0 bg-violet-300">
+                      <img
+                      id="Star_purple"
+                      src="Star_violet.svg"
+                      class="w-4 h-4 mr-2 text-center"
+                      alt="Tutorial Logo"
+                      />
+                      <p class="text-white font-medium text-sm">5 out of 10 gene of the model matched</p>
+                      <p class="ml-1 text-violet-500 text-sm font-semibold">(50%)</p>
+                      <img
+                        id = "ABL1_star"
+                        src="under_arrow2.svg"
+                        class="cursor-pointer mt-2 ml-2 w-4 h-4 mr-1 h-fit text-center"
+                        alt="Tutorial Logo2"
+                      />
+                    </div>
+                  </div>
+                </div>      
+                <div class="relative font-semibold mt-10 flex">
+                  <p class="ml-4 text-xs text-indigo-500">BALLNOS</p>
+                  <p class="absolute right-2 text-xs text-pink-500">CRLF2</p>
                 </div>
-                <div class="absolute right-12 cursor-pointer ml-2 justify-end">
-                  <p class="ml-1 -mr-8 text-white font-medium text-base underline justify-end">More...</p>
+                <div class="bg-white mt-1 relative h-12 pt-2 flex rounded-full font-semibold text-sm text-white">
+                  <div class="text-center absolute left-[0%] -mt-2 h-12 w-1/2 bg-indigo-200 rounded-full border-2 border-white"><p class="text-indigo-500 mt-3 -ml-20">More Less Likely</p></div>
+                  <div class="text-center absolute left-[38.5%] -mt-2 h-12 w-[11%] bg-indigo-100 border-2 border-white"><p class="text-indigo-400 text-xs mt-2 ml-0">Less <br> Likely</p></div>
+                  <div class="text-center absolute right-[0%] -mt-2 h-12 w-1/2 bg-pink-200 rounded-full border-2 border-white"><p class="text-pink-500 mt-3 ml-16">High Confidence</p></div>
+                  <div class="text-center absolute right-[40%] -mt-2 h-12 w-[11%] bg-pink-100 border-2 border-white"><p class="text-pink-400 text-xs mt-2 ml-0">Low <br> Confidence</p></div>
+                </div>  
+                <div class="-ml-3 mb-7 relative mt-0 flex font-semibold text-xs">
+                  <p class="absolute left-1 text-left ml-5 text-indigo-400">-1</p>
+                  <p class="absolute ml-2 left-[37%] text-indigo-300">-0.2</p>
+                  <p class="absolute ml-3 left-[48%] text-neutral-300">0</p>
+                  <p class="absolute ml-2 left-[59%] text-pink-300">0.2</p>
+                  <p class="absolute right-5 text-right text-pink-400">1</p>
                 </div>
-              </div>
-              <div class="bg-white mt-16 ml-3 relative h-9 pt-2 flex rounded-full font-semibold text-medium text-violet-400 bg-inherit border-2 border-violet-300">
-                <p class="absolute -mt-1 left-1 text-left ml-3">-1</p>
-                <p class="absolute -mt-1 ml-4 left-[47.7%]">0</p>
-                <p class="absolute -mt-1 right-4 text-right">1</p>
-              </div>  
-              <div class="relative mt-1 flex">
-                <p class="ml-5 text-xs text-violet-300">BALLNOS</p>
-                <p class="absolute right-2 text-xs text-violet-300">CRLF2</p>
-              </div>
-              <div class="mt-2 bg-inherit w-full relative">
+              </div>   
+              <div class="my-2 -mt-0 mb-5 bg-inherit w-full relative">
                 <img
                 id="CRLF2"
-                src="Star_red.svg"
-                class="cursor-pointer absolute w-6 h-6 ml-3 -mt-20 h-fit text-center"
+                src="Star_red3.svg"
+                class="cursor-pointer absolute w-7 h-7 -ml-1 -mt-[92px] h-fit text-center"
                 style="left: {`${starlocation(CRLF2averageResultstr[calculateIndex(currentPage)])}%`}"
                 alt="Tutorial Logo"
                 />
                 <Popover triggeredBy="#CRLF2" class="bg-white z-40 border-2 border-neutral-100 p-1 text-sm w-68 font-light">
                   <div class="flex mb-1">
                     <img
-                      id = "CRLF2_star"
+                      id = "ABL1_star"
                       src="Star_red.svg"
                       class="cursor-pointer w-4 h-4 mr-1 h-fit text-center"
                       alt="Tutorial Logo2"
@@ -479,47 +512,63 @@
                       <p class="text-sm text-[#FF3F34] font-semibold">CRLF2 Class</p>
                   </div>
                   <hr class="mb-2 border-1 border-neutral-200" />
-                  <p class="text-xs text-neutral-400">The probability of CRLF2 class is   <span class="ml-0 font-semibold text-neutral-500 dark:text-white">{CRLF2averageResultstr[calculateIndex(currentPage)].toFixed(4)}</span>.</p>
+                  <p class="text-xs text-neutral-400">The probability of CRLF2 class is <span class="ml-0 font-semibold text-neutral-500 dark:text-white">{CRLF2averageResultstr[calculateIndex(currentPage)].toFixed(4)}</span>.</p>
                 </Popover>
               </div>
-              <hr class="-mx-5 my-10 border-violet-200"/>
-            </div>              
+              <hr class="-mx-10 mt-16 mb-12 border-violet-100"/>
+            </div>            
           {/if}  
           {#if $ABL1_LikeSelected == 'true'}
-            <div class="my-10">
-              <div class="-ml-5 flex mt-10">
-                <p class="ml-3 text-lg text-violet-600 font-medium mt-5">ABL1-Like Class</p>
-                <p class="mt-5 ml-1 text-lg text-violet-400 font-lg mt-5">: {ABL1_LikeaverageResultstr[calculateIndex(currentPage)].toFixed(4)}</p>
-              </div>
-              <div class="-mx-5 mt-5 cursor-pointer py-1 relative flex bg-violet-300 text-white flex rounded-full rounded-full">
-                <div class="flex ml-3 justify-start">
-                  <img
+            <div class="my-12">
+              <div class="-mx-5 relative flex">
+                <div class="w-fit">
+                  <div class="border-2 border-white py-2 px-4 flex -mx-5 w-fit rounded-full text-base text-violet-500 font-medium mt-0 bg-violet-100">
+                    <p class="ml-3 text-base text-violet-500 font-semibold">ABL1-Like Class</p>
+                    <p class="ml-1 mr-2 text-base text-violet-400 font-semibold">: {ABL1_LikeaverageResultstr[calculateIndex(currentPage)].toFixed(4)}</p>
+                  </div>
+                </div>
+                <div class="-mr-5 absolute right-0 mt-5 cursor-pointer justify-start w-fit">
+                  <div class="ml-10 border-2 border-white py-1 px-4 flex w-fit rounded-full text-base text-violet-500 font-medium mt-0 bg-violet-300">
+                    <img
                     id="Star_purple"
                     src="Star_violet.svg"
-                    class="w-4 h-4 mx-2 mt-1 text-center"
+                    class="w-4 h-4 mr-2 text-center"
                     alt="Tutorial Logo"
                     />
-                  <p class="font-medium text-base">5 out of 10 gene of the model matched</p>
-                  <p class="ml-1 text-violet-500 text-base font-semibold">(50%)</p>
+                    <p class="text-white font-medium text-sm">5 out of 10 gene of the model matched</p>
+                    <p class="ml-1 text-violet-500 text-sm font-semibold">(50%)</p>
+                    <img
+                        id = "ABL1_star"
+                        src="under_arrow2.svg"
+                        class="cursor-pointer mt-2 ml-2 w-4 h-4 mr-1 h-fit text-center"
+                        alt="Tutorial Logo2"
+                      />
+                  </div>
                 </div>
-                <div class="absolute right-12 cursor-pointer ml-2 justify-end">
-                  <p class="ml-1 -mr-8 text-white font-medium text-base underline justify-end">More...</p>
-                </div>
+              </div>      
+              <div class="relative font-semibold mt-12 flex">
+                <p class="ml-4 text-xs text-indigo-500">BALLNOS</p>
+                <p class="absolute right-2 text-xs text-pink-500">ABL1-Like</p>
               </div>
-              <div class="bg-white mt-16 ml-3 relative h-9 pt-2 flex rounded-full font-semibold text-medium text-violet-400 bg-inherit border-2 border-violet-300">
-                <p class="absolute -mt-1 left-1 text-left ml-3">-1</p>
-                <p class="absolute -mt-1 ml-4 left-[47.7%]">0</p>
-                <p class="absolute -mt-1 right-4 text-right">1</p>
+              <div class="bg-white mt-1 relative h-12 pt-2 flex rounded-full font-semibold text-sm text-white">
+                <div class="text-center absolute left-[0%] -mt-2 h-12 w-1/2 bg-indigo-200 rounded-full border-2 border-white"><p class="text-indigo-500 mt-3 -ml-20">More Less Likely</p></div>
+                <div class="text-center absolute left-[38.5%] -mt-2 h-12 w-[11%] bg-indigo-100 border-2 border-white"><p class="text-indigo-400 text-xs mt-2 ml-0">Less <br> Likely</p></div>
+                <div class="text-center absolute right-[0%] -mt-2 h-12 w-1/2 bg-pink-200 rounded-full border-2 border-white"><p class="text-pink-500 mt-3 ml-16">High Confidence</p></div>
+                <div class="text-center absolute right-[40%] -mt-2 h-12 w-[11%] bg-pink-100 border-2 border-white"><p class="text-pink-400 text-xs mt-2 ml-0">Low <br> Confidence</p></div>
               </div>  
-              <div class="relative mt-1 flex">
-                <p class="ml-5 text-xs text-violet-300">BALLNOS</p>
-                <p class="absolute right-2 text-xs text-violet-300">ABL1-Like</p>
+              <div class="-ml-3 mb-7 relative mt-0 flex font-semibold text-xs">
+                <p class="absolute left-1 text-left ml-5 text-indigo-400">-1</p>
+                <p class="absolute ml-2 left-[37%] text-indigo-300">-0.2</p>
+                <p class="absolute ml-3 left-[48%] text-neutral-300">0</p>
+                <p class="absolute ml-2 left-[59%] text-pink-300">0.2</p>
+                <p class="absolute right-5 text-right text-pink-400">1</p>
               </div>
+              
               <div class="mt-2 bg-inherit w-full relative">
                 <img
                 id="ABL1_Like"
-                src="Star_mint.svg"
-                class="cursor-pointer absolute w-6 h-6 ml-3 -mt-20 h-fit text-center"
+                src="Star_mint3.svg"
+                class="cursor-pointer absolute w-7 h-7 -ml-1 -mt-[92px] h-fit text-center"
                 style="left: {`${starlocation(ABL1_LikeaverageResultstr[calculateIndex(currentPage)])}%`}"
                 alt="Tutorial Logo"
                 />
@@ -527,7 +576,7 @@
                   <div class="flex mb-1">
                     <img
                       id = "ABL1_Like_star"
-                      src="Star_mint.svg"
+                      src="Star_mint3.svg"
                       class="cursor-pointer w-4 h-4 mr-1 h-fit text-center"
                       alt="Tutorial Logo2"
                       />
