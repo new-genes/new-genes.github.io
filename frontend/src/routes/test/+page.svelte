@@ -1,197 +1,528 @@
 <script>
+  import { Toggle } from 'flowbite-svelte';
   import { onMount } from 'svelte';
-  import { writable } from 'svelte/store';
-  import { Button } from "flowbite-svelte";
-  import { P, A } from "flowbite-svelte";
-  import { Popover } from 'flowbite-svelte';
-  import { Input } from 'flowbite-svelte';
+  import { goto } from '$app/navigation';
+  import { Select } from "flowbite-svelte";
+  import { P, A, Input, Label, Helper } from "flowbite-svelte";
+  import { Fileupload, Button, Checkbox } from "flowbite-svelte";
+  import { Alert } from 'flowbite-svelte';
+  import model from '../../lib/model.json';
+  import aliase from '../../lib/aliase.json';
+  let columnNumber;
+  let rowNumber;
+  let filetype = "";
+  let file_value = "";
+  let checkcolumnidx = [];
+  let checkrowidx = [];
+  let fileContent = "";
+  let fileRows = [];
+  let selectedrowChecks;
+  let selectedcolumnChecks;
+  let tableTF; // 각 열의 선택 여부를 저장하는 배열
 
-  let ABL1averageResultstr = [];
-  let CRLF2averageResultstr = [];
-  let ABL1_LikeaverageResultstr = [];
-  let patientIDnumberstr = [];
+
+  let selectedmethod;
+  let Based = [
+    { value: "RPKM", name: "RPKM based" },
+    { value: "RANK", name: "Rank based" },
+  ];
+
+  let ABL1selected = true;
+  let CRLF2selected = true;
+  let ABL1_LikeSelected = true;
+
+  let ABL1geneScores = {};
+  let CRLF2geneScores = {};
+  let ABL1_LikegeneScores = {};
+
+  let ABL1rankScores = {};
+  let CRLF2rankScores = {};
+  let ABL1_LikerankScores = {};
+
+  let casp10Result = 0;
+  let cmtm7Result = 0;
+  let crlf2Result = 0;
   
-  // 페이지당 결과 수 설정 
-  let currentPage = 1; // 현재 페이지
-  const pagesToShow = 5; // 페이지네이션에 표시할 페이지 수
-  let totalPages = 0; // 총 페이지 수
+  
+  let ABL1averageResult = 0;
+  let CRLF2averageResult = 0;
+  let ABL1_LikeaverageResult = 0;
 
+  let Defaultclass = "border-2 border-neutral-100 mr-2 text-sm py-2 px-5";
+  let columnCheckedclass = "font-semibold border-2 border-neutral-100 hover:bg-violet-400 bg-violet-300 text-white mr-2 text-sm py-2 px-5";
+  let rowCheckedclass = "font-semibold border-2 border-neutral-100 bg-violet-300 hover:bg-violet-400 text-white mr-2 text-sm py-2 px-5";
+  let crossCheckedclass = "font-semibold border-2 border-neutral-100 bg-violet-400 text-white mr-2 text-sm py-2 px-5";
 
-  // 변수를 reactive하게 선언합니다.
-  let ABL1averageResult = writable('');
-  let CRLF2averageResult = writable('');
-  let ABL1_LikeaverageResult = writable('');
-  let ABL1selected = writable('');
-  let CRLF2selected = writable('');
-  let ABL1_LikeSelected = writable('');
-  let selectedmethod = writable('');
-  let patientIDnumber = writable('');
+  function create2DArray(rows, columns) {
+    var arr = new Array(rows);
+    for (var i = 0; i < rows; i++) {
+        arr[i] = new Array(columns);
+    }
+    return arr;
+}
 
-  let params;
+  // gene expression 값에 대한 조건을 적용하여 결과를 반환하는 함수
+  function applyExpressionCondition(value, lower1, upper1, lower2, upper2) {
+    if (value >= lower1 && value <= upper1) {
+      return 1;
+    } else if (value > upper1 && value < lower2) {
+      return 0;
+    } else if (value >= lower2 && value <= upper2) {
+      return -1;
+    } else {
+      return 0;
+    }
+  }
 
-  onMount(() => {
-    params = new URLSearchParams(window.location.search);
+  let loading = false; // 로딩 상태를 나타내는 변수
+  let preview = false; // 파일 미리보기 상태를 나타내는 변수
 
-    // 변수 값이 변경되면 store에 새로운 값을 설정합니다.
-    ABL1averageResult.set(params.get('ABL1') || '');
-    CRLF2averageResult.set(params.get('CRLF2') || '');
-    ABL1_LikeaverageResult.set(params.get('ABL1_L') || '');
-    ABL1selected.set(params.get('ABL1s') || '');
-    CRLF2selected.set(params.get('CRLF2s') || '');
-    ABL1_LikeSelected.set(params.get('ABL1_Ls') || '');
-    selectedmethod.set(params.get('smthd') || '');
-    patientIDnumber.set(params.get('PatID') || '');
+  // 파일을 읽어서 특정 유전자의 gene expression 값을 추출하고 결과를 출력하는 함수
+  function processFile(file) {
+    checkcolumnidx = [];
+    checkrowidx = [];
+    fileContent = "";
+    fileRows = [];
 
-  });
+    const reader = new FileReader();
+    
+    reader.onload = function(event) {
+      if (filetype=="txt") {
+        fileContent = event.target.result;
+        fileRows = fileContent.split('\n').map(row => row.split('\t'));
+      }
+      else if (filetype=="csv") {
+        fileContent = event.target.result;
+        fileRows = fileContent.split('\n').map(row => row.split(','));
+      }
+      else if (filetype=="tsv") {
+        fileContent = event.target.result;
+        fileRows = fileContent.split('\n').map(row => row.split('\t'));
+      }
+      else if (filetype=="xlsx") {
+        fileContent = event.target.result;
+        fileRows = fileContent.split('\n').map(row => row.split(','));
+      }
+      else {
+        file_value = "";
+        preview = false;
+        alert("Please select right format file");
+        return;
+      }
+  
+      try {
+        columnNumber = fileRows[0].length;
+        rowNumber = fileRows.length;
+      } 
 
-  // ABL1averageResult 값이 변경될 때마다 실행됩니다.
-  ABL1averageResult.subscribe(value => {
-    // value를 decode하고 배열에 추가하는 등의 작업을 수행합니다.
-    let decodedArray = decodearray(value);
-    console.log('ABL1 Average:', decodedArray);
-    // 새로운 변수에 저장하려면 아래와 같이 할당합니다.
-    ABL1averageResultstr = decodedArray;
-    console.log('ABL1averageResultstr:', ABL1averageResultstr);
-  });
+      catch (err) {
+        file_value = "";
+        preview = false;
+        alert("Please select right format file");
+        return;
+      } 
+      tableTF = create2DArray(columnNumber, rowNumber);
 
-  // CRLF2averageResult 값이 변경될 때마다 실행됩니다.
-  CRLF2averageResult.subscribe(value => {
-    let decodedArray = decodearray(value);
-    console.log('CRLF2 Average:', decodedArray);
-    CRLF2averageResultstr = decodedArray;
-    console.log('CRLF2averageResultstr:', CRLF2averageResultstr);
-  });
+      preview = true;
+      
+      //str인 셀은 true를 뱉는 2차원 array 만들기
+      for (let i = 0; i < fileRows.length; i++) {
+        for (let j=0; j< fileRows[i].length; j++){
+          tableTF[j][i] = isNaN(fileRows[i][j]);
+        }
+      }
 
-  // ABL1_LikeaverageResult 값이 변경될 때마다 실행됩니다.
-  ABL1_LikeaverageResult.subscribe(value => {
-    let decodedArray = decodearray(value);
-    console.log('ABL1_Like Average:', decodedArray);
-    ABL1_LikeaverageResultstr = decodedArray;
-    console.log('ABL1_LikeaverageResultstr:', ABL1_LikeaverageResultstr);
-  });
+      // 열 중에서 true가 절반 이상 있는 열은 array에 담아 차후 체크박스가 나타나게 한다.
+      for (let j=0; j < fileRows[0].length; j++){
+        if (tableTF[j].filter(element => element == true).length >= parseInt(fileRows.length/2)) {
+          checkcolumnidx.push(j+1)
+        }
+      }
 
-  // ABL1selected 값이 변경될 때마다 실행됩니다.
-  ABL1selected.subscribe(value => {
-    console.log('Selected ABL1:', value);
-  });
+      // 체크박스가 나타나게 한 column의 index를 제외하고 각 row의 값에서 true가 절반 이상 있는 row의 인덱스를 저장한다.
+      for (let i=0; i < fileRows.length; i++) {
+        let removecolumnidxrow = [];
+        
+        for (let j=0; j < fileRows[0].length; j++) {
+          if (checkcolumnidx.includes(parseInt(j+1)) == true) {
+          }
+          else {
+            removecolumnidxrow.push(tableTF[j][i]) 
+          }
+        }
+        if (removecolumnidxrow.filter(element => element == true).length > parseInt((removecolumnidxrow.length)/2)) {
+          checkrowidx.push(i+1)
+        }
+      }
 
-  // CRLF2selected 값이 변경될 때마다 실행됩니다.
-  CRLF2selected.subscribe(value => {
-    console.log('Selected CRLF2:', value);
-  });
-
-  // ABL1_LikeSelected 값이 변경될 때마다 실행됩니다.
-  ABL1_LikeSelected.subscribe(value => {
-    console.log('Selected ABL1_Like:', value);
-  });
-
-  // selectedmethod 값이 변경될 때마다 실행됩니다.
-  selectedmethod.subscribe(value => {
-    console.log('Selected Method:', value);
-  });
-
-  // patientIDnumber 값이 변경될 때마다 실행됩니다.
-  patientIDnumber.subscribe(value => {
-    console.log('Patient ID:', value);
-    // +를 기준으로 split하여 첫 번째 값을 제외하고, 마지막 값의 '\r'을 제거한 나머지 값을 patientIDnumberstr에 할당합니다.
-    let splitValues = value.split('+').slice(1);
-    patientIDnumberstr = splitValues.map(item => item.replace(/\r$/, ''));
-    console.log('patientIDnumberstr:', patientIDnumberstr);
-    let resultsPerPage = 1; // 한 페이지당 결과 수
-    totalPages = Math.ceil(patientIDnumberstr.length / resultsPerPage); // 총 페이지 수
-    console.log('Total Pages:', totalPages);
-  });
-
-  function decodearray(str) {
-    let blob = atob(str);
-    let ary_buf = new ArrayBuffer(blob.length);
-    let dv = new DataView(ary_buf);
-    for (let i = 0; i < blob.length; i++) dv.setUint8(i, blob.charCodeAt(i));
-
-    // For WebGL Buffers, can skip Float32Array, just return ArrayBuffer is all thats needed.
-    let f32_ary = new Float32Array(ary_buf);
-
-    return f32_ary;
+      selectedrowChecks= Array.from({ length: rowNumber+1 }, () => false);
+      selectedrowChecks[checkrowidx[0]] = true;
+      
+      selectedcolumnChecks = Array.from({ length: columnNumber+1 }, () => false);
+      selectedcolumnChecks[checkcolumnidx[0]] = true;
+      
+    };
+    reader.readAsText(file);
   }
 
   // 파일 선택 시 호출되는 함수
-  function starlocation(number) {
-    let result = parseInt((parseFloat(number) + 1) * 47.3 + 1.5);
-    return result;
+  function handleFileSelect(event) {
+    const fileInput = event.target;
+    const file = fileInput.files[0];
+
+    if (file) {
+      processFile(file);
+    }
+  }
+
+  let transposed = false;
+
+  function tabletranspose() {
+    console.log("Transpose Button Pressed")
+    transposed = !transposed;  
+  }
+
+  // 버튼 클릭 시 결과 페이지로 이동하는 함수
+  async function handlePredictProbability() { 
+    let column_true_length = selectedcolumnChecks.filter(element => element == true).length;
+    let row_true_length = selectedrowChecks.filter(element => element == true).length;
+
+    if ((column_true_length == 0) && (row_true_length == 0)) {
+      alert("Please select 1 column and 1 row");
+      return;
+    }
+
+    else if ((column_true_length == 0) && (row_true_length == 1)) {
+      alert("Please select 1 column");
+      return;
+    }
+
+    else if ((column_true_length == 1) && (row_true_length == 0)) {
+      alert("Please select 1 row");
+      return;
+    }
+
+    else if ((column_true_length > 1) && (row_true_length > 1)) {
+      alert("Please select 1 column and 1 row");
+      return;
+    }
+
+    else {
+      // 각 체크된 row와 column의 index를 구한다
+      let truecolumnidx = selectedcolumnChecks.indexOf(true)-1;
+      let truerowidx = selectedrowChecks.indexOf(true)-1;
+
+      console.log("truecolumnidx: ", truecolumnidx)
+      console.log("truerowidx: ", truerowidx)
+
+      let geneexpressionperpatient = {};
+
+      for (let j=0; j<fileRows[0].length; j++) {
+        if (checkcolumnidx.includes(j+1) == false) {
+          console.log(fileRows[truerowidx][j])
+          geneexpressionperpatient[fileRows[truerowidx][j]] = {};
+        }
+      }
+
+      for (let i=0; i<Object.keys(geneexpressionperpatient).length; i++) {
+        for (let j=0; j<Object.keys(aliase).length; j++) {
+          geneexpressionperpatient[Object.keys(geneexpressionperpatient)[i]][Object.keys(aliase)[j]] = 0
+        }
+      }
+
+      // 파일에서 checkcolumnidx와 checkrowidx 안에 없는 인덱스의 값만 가져와 저장한다.
+      for (let i=0; i<fileRows.length; i++) {
+        //console.log("checkrowidx.includes(i+1): ", checkrowidx.includes(i+1))
+        if (checkrowidx.includes(i+1) == false) {
+          for (let j=0; j<fileRows[0].length; j++) {
+            //console.log("checkcolumnidx.includes(j+1): ", checkcolumnidx.includes(j+1))
+            if (checkcolumnidx.includes(j+1) == false) {
+              let originalgenename = "";
+              // 선택한 column의 값을 alise에 따라 변환하여 저장
+              for (let n=0; n<Object.keys(aliase).length; n++) {
+                //console.log("fileRows[i][truecolumnidx]: ", fileRows[i][truecolumnidx])
+                for (let k=0; k<aliase[Object.keys(aliase)[n]].length; k++){
+
+                  //console.log("fileRows[i][truecolumnidx]: ", fileRows[i][truecolumnidx])
+
+                  if (fileRows[i][truecolumnidx] == aliase[Object.keys(aliase)[n]][k]) {
+                    originalgenename = Object.keys(aliase)[n];
+                    //console.log("original gene name: ", originalgenename)
+                  }
+                }
+              }
+              geneexpressionperpatient[fileRows[truerowidx][j]][originalgenename] = fileRows[i][j];
+            }
+          }
+        }
+      }
+
+      console.log("geneexpressionperpatient: ", geneexpressionperpatient)
+
+      let ABL1averageResultObject = {};
+      let CRLF2averageResultObject = {};
+      let ABL1_LikeaverageResultObject = {};
+
+      // geneexpressionperpatient에 저장한 값을 기반으로 필요한 값을 구한다. 
+      for (let i=0; i<Object.keys(geneexpressionperpatient).length; i++) {
+        let geneExpressions = geneexpressionperpatient[Object.keys(geneexpressionperpatient)[i]];
+
+        if (selectedmethod == "RPKM") {
+          if (ABL1selected == true) {
+            for (let idx=0; idx<Object.keys(model["RPKM"]["ABL1"]).length; idx++) {
+              // 각 gene expression 값에 대한 조건을 적용하고 결과를 반환
+              ABL1geneScores[Object.keys(model["RPKM"]["ABL1"])[idx]] = applyExpressionCondition(geneExpressions[Object.keys(model["RPKM"]["ABL1"])[idx]], model["RPKM"]["ABL1"][Object.keys(model["RPKM"]["ABL1"])[idx]][0], model["RPKM"]["ABL1"][Object.keys(model["RPKM"]["ABL1"])[idx]][1], model["RPKM"]["ABL1"][Object.keys(model["RPKM"]["ABL1"])[idx]][2], model["RPKM"]["ABL1"][Object.keys(model["RPKM"]["ABL1"])[idx]][3]);
+            }
+
+            console.log('ABL1geneScores:', ABL1geneScores);
+
+            let ABL1sum = 0;
+
+            for (let idx = 0; idx < Object.keys(model["RPKM"]["ABL1"]).length; idx++ ) {
+              ABL1sum += ABL1geneScores[Object.keys(model["RPKM"]["ABL1"])[idx]];
+            }
+
+            ABL1averageResult = ABL1sum / Object.keys(model["RPKM"]["ABL1"]).length;
+            console.log('ABL1 Average:', ABL1averageResult);
+
+            ABL1averageResultObject[Object.keys(geneexpressionperpatient)[i]] = ABL1averageResult;
+          }
+
+          if (CRLF2selected == true) {
+            let idx; 
+            for (idx=0; idx<Object.keys(model["RPKM"]["CRLF2"]).length; idx++) {
+              // 각 gene expression 값에 대한 조건을 적용하고 결과를 반환
+              CRLF2geneScores[Object.keys(model["RPKM"]["CRLF2"])[idx]] = applyExpressionCondition(geneExpressions[Object.keys(model["RPKM"]["CRLF2"])[idx]], model["RPKM"]["CRLF2"][Object.keys(model["RPKM"]["CRLF2"])[idx]][0], model["RPKM"]["CRLF2"][Object.keys(model["RPKM"]["CRLF2"])[idx]][1], model["RPKM"]["CRLF2"][Object.keys(model["RPKM"]["CRLF2"])[idx]][2], model["RPKM"]["CRLF2"][Object.keys(model["RPKM"]["CRLF2"])[idx]][3]);
+              console.log(geneExpressions[Object.keys(model["RPKM"]["CRLF2"])[idx]]);
+            }
+            
+            console.log('CRLF2geneScores:', CRLF2geneScores);
+
+            let CRLF2sum = 0;
+
+            for (let idx = 0; idx < Object.keys(model["RPKM"]["CRLF2"]).length; idx++ ) {
+              CRLF2sum += CRLF2geneScores[Object.keys(model["RPKM"]["CRLF2"])[idx]];
+            }
+
+            CRLF2averageResult = CRLF2sum / Object.keys(model["RPKM"]["CRLF2"]).length;
+            console.log('CRLF2 Average:', CRLF2averageResult);
+
+            CRLF2averageResultObject[Object.keys(geneexpressionperpatient)[i]] = CRLF2averageResult;
+          }
+
+          if (ABL1_LikeSelected == true) {
+            let idx;
+            for (idx=0; idx<Object.keys(model["RPKM"]["ABL1_Like"]).length; idx++) {
+              // 각 gene expression 값에 대한 조건을 적용하고 결과를 반환
+              ABL1_LikegeneScores[Object.keys(model["RPKM"]["ABL1_Like"])[idx]] = applyExpressionCondition(geneExpressions[Object.keys(model["RPKM"]["ABL1_Like"])[idx]], model["RPKM"]["ABL1_Like"][Object.keys(model["RPKM"]["ABL1_Like"])[idx]][0], model["RPKM"]["ABL1_Like"][Object.keys(model["RPKM"]["ABL1_Like"])[idx]][1], model["RPKM"]["ABL1_Like"][Object.keys(model["RPKM"]["ABL1_Like"])[idx]][2], model["RPKM"]["ABL1_Like"][Object.keys(model["RPKM"]["ABL1_Like"])[idx]][3]);
+            }  
+
+            console.log('ABL1_LikegeneScores:', ABL1_LikegeneScores);
+
+            let ABL1_Likesum = 0;
+
+            for (let idx = 0; idx < Object.keys(model["RPKM"]["ABL1_Like"]).length; idx++ ) {
+              ABL1_Likesum += ABL1_LikegeneScores[Object.keys(model["RPKM"]["ABL1_Like"])[idx]];
+            }
+
+            ABL1_LikeaverageResult = ABL1_Likesum / Object.keys(model["RPKM"]["ABL1_Like"]).length;
+            console.log('ABL1_Like Average:', ABL1_LikeaverageResult);
+
+            ABL1_LikeaverageResultObject[Object.keys(geneexpressionperpatient)[i]] = ABL1_LikeaverageResult;
+          }
+        }
+        else if (selectedmethod == "RANK") {
+          const sortedGenes = Object.keys(geneExpressions).sort((a, b) => geneExpressions[b] - geneExpressions[a]);
+
+          if (ABL1selected == true) {
+            for (let idx=0; idx<Object.keys(model["RANK"]["ABL1"]).length; idx++) {
+              // 각 gene expression 값에 대한 조건을 적용하고 결과를 반환
+              ABL1rankScores[Object.keys(model["RANK"]["ABL1"])[idx]] = applyExpressionCondition(sortedGenes.indexOf(Object.keys(model["RANK"]["ABL1"])[idx]) + 1, model["RANK"]["ABL1"][Object.keys(model["RANK"]["ABL1"])[idx]][0], model["RANK"]["ABL1"][Object.keys(model["RANK"]["ABL1"])[idx]][1], model["RANK"]["ABL1"][Object.keys(model["RANK"]["ABL1"])[idx]][2], model["RANK"]["ABL1"][Object.keys(model["RANK"]["ABL1"])[idx]][3]);
+            }
+
+            let ABL1sum = 0;
+
+            for (let idx = 0; idx < Object.keys(model["RANK"]["ABL1"]).length; idx++ ) {
+              ABL1sum += ABL1rankScores[Object.keys(model["RANK"]["ABL1"])[idx]];
+            }
+
+            ABL1averageResult = ABL1sum / Object.keys(model["RPKM"]["ABL1"]).length;
+            console.log('ABL1 Average:', ABL1averageResult);
+            
+            ABL1averageResultObject[Object.keys(geneexpressionperpatient)[i]] = ABL1averageResult;
+          }
+
+          if (CRLF2selected == true) {
+            for (let idx=0; idx<Object.keys(model["RANK"]["CRLF2"]).length; idx++) {
+              // 각 gene expression 값에 대한 조건을 적용하고 결과를 반환
+              CRLF2rankScores[Object.keys(model["RANK"]["CRLF2"])[idx]] = applyExpressionCondition(sortedGenes.indexOf(Object.keys(model["RANK"]["CRLF2"])[idx]) + 1, model["RANK"]["CRLF2"][Object.keys(model["RANK"]["CRLF2"])[idx]][0], model["RANK"]["CRLF2"][Object.keys(model["RANK"]["CRLF2"])[idx]][1], model["RANK"]["CRLF2"][Object.keys(model["RANK"]["CRLF2"])[idx]][2], model["RANK"]["CRLF2"][Object.keys(model["RANK"]["CRLF2"])[idx]][3]);
+            }
+
+            let CRLF2sum = 0;
+
+            for (let idx = 0; idx < Object.keys(model["RANK"]["CRLF2"]).length; idx++ ) {
+              CRLF2sum += CRLF2rankScores[Object.keys(model["RANK"]["CRLF2"])[idx]];
+            }
+
+            CRLF2averageResult = CRLF2sum / Object.keys(model["RPKM"]["CRLF2"]).length;
+            console.log('CRLF2 Average:', CRLF2averageResult);
+            
+            CRLF2averageResultObject[Object.keys(geneexpressionperpatient)[i]] = CRLF2averageResult;
+          }
+
+          if (ABL1_LikeSelected == true) {
+            for (let idx=0; idx<Object.keys(model["RANK"]["ABL1_Like"]).length; idx++) {
+              // 각 gene expression 값에 대한 조건을 적용하고 결과를 반환
+              ABL1_LikerankScores[Object.keys(model["RANK"]["ABL1_Like"])[idx]] = applyExpressionCondition(sortedGenes.indexOf(Object.keys(model["RANK"]["ABL1_Like"])[idx]) + 1, model["RANK"]["ABL1_Like"][Object.keys(model["RANK"]["ABL1_Like"])[idx]][0], model["RANK"]["ABL1_Like"][Object.keys(model["RANK"]["ABL1_Like"])[idx]][1], model["RANK"]["ABL1_Like"][Object.keys(model["RANK"]["ABL1_Like"])[idx]][2], model["RANK"]["ABL1_Like"][Object.keys(model["RANK"]["ABL1_Like"])[idx]][3]);
+            }
+
+            let ABL1_Likesum = 0;
+
+            for (let idx = 0; idx < Object.keys(model["RANK"]["ABL1_Like"]).length; idx++ ) {
+              ABL1_Likesum += ABL1_LikerankScores[Object.keys(model["RANK"]["ABL1_Like"])[idx]];
+            }
+
+            ABL1_LikeaverageResult = ABL1_Likesum / Object.keys(model["RPKM"]["ABL1_Like"]).length;
+            console.log('ABL1_Like Average:', ABL1_LikeaverageResult);
+            
+            ABL1_LikeaverageResultObject[Object.keys(geneexpressionperpatient)[i]] = ABL1_LikeaverageResult;
+          }
+        }  
+
+        else {
+          alert("Please select the method");
+          return;
+        }
+
+        if (ABL1selected===false && CRLF2selected===false && ABL1_LikeSelected===false) {
+          alert("Please select at least one class");
+          return;
+        }
+      }
+      
+      let ABL1 = [];
+      for (let i=0; i<Object.keys(ABL1averageResultObject).length; i++) {
+        ABL1.push(ABL1averageResultObject[Object.keys(ABL1averageResultObject)[i]]);
+      }
+      
+      let CRLF2 = [];
+      for (let i=0; i<Object.keys(CRLF2averageResultObject).length; i++) {
+        CRLF2.push(CRLF2averageResultObject[Object.keys(CRLF2averageResultObject)[i]]);
+      }
+
+      let ABL1_Like = [];
+      for (let i=0; i<Object.keys(ABL1_LikeaverageResultObject).length; i++) {
+        ABL1_Like.push(ABL1_LikeaverageResultObject[Object.keys(ABL1_LikeaverageResultObject)[i]]);
+      }
+
+      let PatientID = '';
+      for (let i=0; i<Object.keys(ABL1_LikeaverageResultObject).length; i++) {
+      PatientID = PatientID+ `+${Object.keys(ABL1_LikeaverageResultObject)[i]}`;
+    }
+
+      console.log('ABL1: ', ABL1);
+      console.log('CRLF2: ', CRLF2);
+      console.log('ABL1_Like: ', ABL1_Like);
+      console.log('PatientID: ', PatientID);
+
+      ABL1 = encodearray(new Float32Array(ABL1));
+      CRLF2 = encodearray(new Float32Array(CRLF2));
+      ABL1_Like = encodearray(new Float32Array(ABL1_Like));
+
+      console.log('ABL1: ', ABL1);
+      console.log('CRLF2: ', CRLF2);
+      console.log('ABL1_Like: ', ABL1_Like);
+      console.log('PatientID: ', PatientID);
+
+      const queryParams = new URLSearchParams({
+        ABL1: ABL1,
+        CRLF2: CRLF2,
+        ABL1_L: ABL1_Like,
+        ABL1s: ABL1selected,
+        CRLF2s: CRLF2selected,
+        ABL1_Ls: ABL1_LikeSelected,
+        smthd: selectedmethod,
+        PatID: PatientID
+
+      });
+
+      loading = true; // 파일 처리가 시작되었으므로 로딩 상태를 true로 설정
+      
+      // URL에 데이터를 추가하여 다음 페이지로 이동
+      goto(`/result?${queryParams.toString()}`);
+      loading = false; // 파일 처리가 완료되었으므로 로딩 상태를 false로 설정
+    }
+  }
+   
+  function encodearray(array) {
+    // ENCODING TEST
+    console.log("Origin Data", array );
+    let uint = new Uint8Array( array.buffer );
+    console.log( "Convert F32 to Uint8 : Byte Length Test", array.length * 4, uint.length );
+
+    let str = btoa( String.fromCharCode.apply( null, uint ) ); //btoa( String.fromCharCode( ...uint ) );
+    console.log( "Base64 of Uint8 Array : ", str.length, ":", str );
+
+    return str;
   }
 
   
-  // 페이지 변경 함수
-  function changePage(pageNumber) {
-    if (pageNumber >= 1 && pageNumber <= totalPages) {
-      currentPage = pageNumber;
-      console.log('Current Page:', currentPage);
-    }
-  }
 
-  // 페이지네이션에 표시될 페이지 번호 계산 함수
-  function getPageNumbers() {
-    const halfPagesToShow = Math.floor(pagesToShow / 2);
-    let startPage = Math.max(currentPage - halfPagesToShow, 1);
-    let endPage = Math.min(startPage + pagesToShow - 1, totalPages);
+  // 파일 선택 시 파일 이름을 추출하여 레이블에 표시하는 함수
+  function updateFileName(event) {
+    const fileInput = event.target;
+    file_value = '';
+    filetype = "";
+    if (fileInput.files.length > 0) {
+      const fileName = fileInput.files[0].name;
+      
+      file_value = fileName;
+      filetype = file_value.split('.')[file_value.split('.').length - 1];
 
-    // Adjust startPage and endPage when near the beginning or end of the page list
-    if (totalPages - endPage < halfPagesToShow) {
-      startPage = Math.max(endPage - pagesToShow + 1, 1);
-    } else if (startPage <= halfPagesToShow) {
-      endPage = Math.min(startPage + pagesToShow - 1, totalPages);
-    }
-
-    return Array.from({ length: endPage - startPage + 1 }, (_, i) => startPage + i);
-  }
-
-  // 이전 페이지 그룹으로 이동하는 함수
-  function prevPageGroup() {
-    if (currentPage > pagesToShow) {
-      currentPage -= pagesToShow;
     } else {
-      currentPage = 1;
+      file_value = '';
     }
   }
 
-  // 다음 페이지 그룹으로 이동하는 함수
-  function nextPageGroup() {
-    if (currentPage + pagesToShow <= totalPages) {
-      currentPage += pagesToShow;
-    } else {
-      currentPage = totalPages;
+  // 파일 선택 이벤트에 핸들러 등록
+  onMount(() => {
+    const fileInput = document.getElementById('fileInput');
+    
+    fileInput.addEventListener('change', handleFileSelect);
+  });
+
+  
+
+  function toggleColumn(cellIndex,rowIndex) {
+    if (rowIndex == 0) {
+      selectedcolumnChecks = Array.from({ length: columnNumber+1 }, () => false);
+      selectedcolumnChecks[cellIndex] = !selectedcolumnChecks[cellIndex];
+    }
+    if (cellIndex == 0) {
+      selectedrowChecks= Array.from({ length: rowNumber+1 }, () => false);
+      selectedrowChecks[rowIndex] = !selectedrowChecks[rowIndex];
     }
   }
 
-  // 현재 페이지에서 표시할 결과 인덱스 계산
-  function calculateIndex(currentPage) {
-    return currentPage - 1;
+  let csvData = '';
+  let parsedData = [];
+
+  async function testdata() {
+    filetoggled = !filetoggled;
+    preview = !preview;
+    try {
+      const response = await fetch('/total_fpkm_uq.csv'); // CSV 파일의 경로
+      if (!response.ok) {
+        throw new Error('파일을 불러오는 데 실패했습니다.');
+      }
+      csvData = await response.text(); // CSV 데이터를 텍스트로 변환하여 저장
+      fileRows = csvData.split('\n') // 각 줄을 배열로 분할
+                          .map(row => row.split(',')); // 쉼표로 구분된 값들을 추출하여 이차원 배열로 만듦 
+    } catch (error) {
+      console.error(error.message);
+    }
   }
-
-  function scrollToTop() {
-    window.scrollTo({
-      top: 0,
-      behavior: 'smooth' // 부드러운 스크롤 적용
-    });
-  }
-
-  let searchKeyword = '';
-
-  function handleSearch() {
-  // 검색어를 가져와서 searchKeyword 변수에 저장합니다.
-  searchKeyword = document.getElementById('searchInput').value.trim().toLowerCase();
-  // 페이지를 1페이지로 초기화합니다.
-  changePage(1);
-  }
-
-  import { Dropdown, DropdownItem, Radio } from 'flowbite-svelte';
-  let group2 = 1;
-
-  import { Checkbox, Search } from 'flowbite-svelte';
-  import { UserRemoveSolid } from 'flowbite-svelte-icons';
-
-  let searchTerm = '';
-  $: filteredItems = patientIDnumberstr.filter((item) => item.toLowerCase().indexOf(searchTerm.toLowerCase()) !== -1);
+  let filetoggled = false;
 </script>
 
 <style>
@@ -199,387 +530,454 @@
   @import '../../routes/scrollbar.css'; /* scrollbar.css 파일 임포트 */
 </style>
 
-<div class="selection:bg-indigo-400 selection:text-white relative mt-12 rounded-lg border mx-5 px-8 pt-10 bg-white">
-  <p class="ml-16 text-3xl text-violet-800 font-medium mt-8">Ph(+) B-ALL Probability Calculator</p>
-  <div class="relative w-full px-10 pt-3">
-    <p class="mt-8 ml-8 text-3xl text-violet-500 font-medium">Results</p>
-    <p class="ml-8 text-violet-300 text-base font-normal mt-2">
-      {$selectedmethod} Based Probability of Each Class
-    </p>  
-    {#if $patientIDnumber[calculateIndex(currentPage)]}
-      <div class="bg-violet-100 mx-10 rounded-2xl border px-5 pb-5 pt-3 mt-8 border-violet-100">
-        <div class="relative mt-3 ml-3 mb-3 flex">
-          <p class="mb-5 ml-10 mt-5 justify-center text-2xl text-center font-semibold text-violet-800 font-medium">{patientIDnumberstr[calculateIndex(currentPage)]}'s Analysis Result</p>
-          <div class="z-40 absolute right-0 mr-10 justify-between flex rounded-sm">
-            <div class="z-40 text-left ml-5 mt-3 w-full"> <!-- 부모 요소에 flex 클래스 추가 -->
-              <Button class="px-5 text-left py-3 bg-violet-50 text-violet-400 focus:text-violet-600 text-base border border-violet-200 focus:outline-none focus:border-violet-200 focus:ring-2 focus:ring-violet-200 focus:bg-violet-50 rounded-xl">
-                Click to search the Patient ID!
-              </Button>
-              <Dropdown class="text-left overflow-y-auto px-3 pb-3 text-sm h-40 w-full ml-auto"> <!-- 드롭다운 요소에 ml-auto 클래스 추가 -->
-                <div class="bg-white outline-none px-1" slot="header">
-                  <Search class="h-10 text-left bg-white text-neutral-500 focus:text-neutral-500 text-base border-white focus:outline-none focus:border-white focus:ring-1 focus:ring-white focus:bg-whiite" size="md"  bind:value={searchTerm} />
-                </div>
-                {#each filteredItems as patientid, num}
-                <li class="text-left text-neutral-400 rounded rounded-full p-1 focus:ring-transparent hover:bg-violet-50 hover:text-violet-400 dark:hover:bg-gray-600">
-                  <Button class="focus:ring-transparent text-neutral-400 hover:text-violet-400 focus:text-violet-400 flex" 
-                    on:click={() => {
-                    changePage(patientIDnumberstr.indexOf(patientid)+1);
-                    scrollToTop(); // 페이지 변경 시 맨 위로 스크롤
-                  }}>{patientid}
-                  </Button>
-                </li>
-                {/each}
-                <a slot="footer" href="/" class="flex items-center p-3 -mb-1 text-sm font-medium text-red-600 bg-white hover:bg-gray-100 dark:bg-gray-700 dark:hover:bg-gray-600 dark:text-red-500 hover:underline">
-                </a>
-              </Dropdown>
-            </div>          
+<!-- 로딩 화면 -->
+{#if loading}
+  <div class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
+    <div class="loader ease-linear rounded-full border-8 border-t-8 border-gray-200 h-32 w-32"></div>
+  </div>
+{/if}
+
+<form type="submit">
+  <div class="mt-12 rounded-lg border mx-5 px-12 pt-10 bg-white">
+    <p class="ml-8 text-3xl text-violet-900 font-medium mt-5">Ph(+) B-ALL Probability Calculator</p>
+    <div class="mt-10">
+      <div class="w-full px-10 rounded-lg">
+        <p class="text-3xl text-violet-700 font-medium">Data</p>
+        <p class="mt-2 text-violet-400 text-base font-medium">
+          Upload your RPKM matrix file ( txt, csv, tsv, or ... )
+        </p>           
+        <Toggle class="mt-3 text-violet-300 checked:ring-transparent focus:ring-transparent" size="small" color="purple" 
+          on:click={testdata} 
+          bind:checked={filetoggled}>
+          Use Test Data!
+        </Toggle>
+        {#if filetoggled == false}
+          <div class="flex">
+            <Label for="fileInput" class="cursor-pointer font-Catamaran w-28 rounded-lg text-center text-white mt-3 py-2 bg-violet-400 hover:bg-violet-500 text-base font-semibold hover:ring-transparent">
+              Select File
+            </Label>
+            <Label class="text-neutral-300 text-center text-[16px] font-normal px-3 mt-5">{file_value}</Label>
+            <Input class="hidden" type="file" id="fileInput" style={{display:"none"}} on:change={updateFileName}/>
           </div>
-        </div>
-        <hr class="mb-5 mt-0 border-violet-200"/>
-        <div class="cursor-pointer rounded-2xl justify-end text-lg mx-12 flex">
-          <div class="border border-violet-200 bg-white rounded-2xl px-3 py-1 mx-1 flex">
-            <img
-            id = "ABL1_star"
-            src="Star_yellow.svg"
-            class="cursor-pointer w-4 h-4 mr-1 h-fit text-center"
-            alt="Tutorial Logo2"
-            />
-            <p class="cursor-pointer text-sm text-violet-500">ABL1 Class</p>
+        {/if}
+        <!-- 파일 미리보기 섹션 -->
+        {#if preview}
+          <div class="flex mt-12">
+            <p class="text-violet-400 text-lg font-medium">
+              Preview
+            </p>
+            <p class="ml-1 mt-1 text-violet-300 text-sm font-normal">
+              (Select Column & Row)
+            </p>
           </div>
-          <div class="border border-violet-200 bg-white ursor-pointer rounded-2xl px-3 py-1 mx-1 flex">
-            <img
-            id = "CRLF2_star"
-            src="Star_red.svg"
-            class="cursor-pointer w-4 h-4 mr-1 h-fit text-center"
-            alt="Tutorial Logo2"
-            />
-            <p class="cursor-pointer text-sm text-violet-500">CRLF2 Class</p>
+          {#if !transposed}
+            <div class="-ml-0 -mt-1 overflow-x-auto p-2">
+              <table class="text-sm text-neutral-400">
+                {#if fileRows.length < 10}
+                  {#each fileRows.slice(0, fileRows.length) as row, rowIndex}
+                    {#if rowIndex === 0}
+                      <tr>
+                        <th class="text-center text-white text-sm bg-transparent py-2 px-5 mr-5">
+                          <span class="sr-only">Check</span>
+                        </th>
+                        {#if row.length < 10}
+                          {#each row.slice(0, row.length) as cell, cellIndex}
+                            {#if checkcolumnidx.includes(parseInt(cellIndex+1)) == true}
+                              <th class="place-content-center text-center py-2 px-2">
+                                <Checkbox
+                                  id="column_{cellIndex+1}"
+                                  bind:checked={selectedcolumnChecks[cellIndex+1]}
+                                  class="text-center cursor-pointer mr-2 w-4 h-4 bg-inherit checked:bg-violet-500 focus:ring-transparent"
+                                  on:click={() => toggleColumn(cellIndex+1, 0)}
+                                />
+                              </th>
+                            {:else}
+                              <th class="py-2 px-5">
+                                <span class="sr-only">Check</span>
+                              </th>
+                            {/if}
+                          {/each}
+                        {:else}
+                          {#each row.slice(0, 10) as cell, cellIndex}
+                            <th class="place-content-center text-center text-white text-sm bg-transparent py-2 px-2 mr-5">
+                              <Checkbox
+                                id="column_{cellIndex+1}"
+                                bind:checked={selectedcolumnChecks[cellIndex+1]}
+                                class="text-center cursor-pointer mr-2 w-4 h-4 bg-inherit checked:bg-violet-500 focus:ring-transparent"
+                                on:click={() => toggleColumn(cellIndex+1, 0)}
+                              />
+                            </th>
+                          {/each}
+                        {/if}
+                      </tr>
+                      <tr>
+                        {#if checkrowidx.includes(parseInt(rowIndex+1)) == true}
+                          <td class="place-content-center mr-2 text-center text-sm py-2 px-2">
+                            <Checkbox
+                              id="row_{rowIndex+1}"
+                              bind:checked={selectedrowChecks[rowIndex+1]}
+                              class="text-center cursor-pointer mr-2 w-4 h-4 bg-inherit checked:bg-violet-500 focus:ring-transparent"
+                              on:click={() => toggleColumn(0, rowIndex+1)}
+                            />
+                          </td>
+                        {:else}
+                          <td class="mr-2 text-center text-sm py-2 px-2">
+                            <span class="sr-only">Check</span>
+                          </td>
+                        {/if}
+                        {#each row.slice(0, 10) as cell, cellIndex}
+                          {#if selectedcolumnChecks[cellIndex+1] == true}
+                            {#if selectedrowChecks[rowIndex+1] == true}
+                              <td class="{crossCheckedclass}">
+                                {cell}
+                              </td>
+                            {:else}
+                              <td class="{columnCheckedclass}">
+                                {cell}
+                              </td>
+                            {/if}
+                          {:else}
+                            {#if selectedrowChecks[rowIndex+1] == true}
+                              <td class="{rowCheckedclass}">
+                                {cell}
+                              </td>
+                            {:else}
+                            <td class="{Defaultclass}">
+                              {cell}
+                            </td>
+                            {/if}
+                          {/if}
+                        {/each}
+                      </tr>
+                    {:else}
+                      <tr>
+                        {#if checkrowidx.includes(parseInt(rowIndex+1)) == true}
+                          <td class="place-content-center mr-2 text-center text-sm py-2 px-2">
+                            <Checkbox
+                              id="row_{rowIndex+1}"
+                              bind:checked={selectedrowChecks[rowIndex+1]}
+                              class="text-center cursor-pointer mr-2 w-4 h-4 bg-inherit checked:bg-violet-500 focus:ring-transparent"
+                              on:click={() => toggleColumn(0, rowIndex+1)}
+                            />
+                          </td>
+                        {:else}
+                          <td class="mr-2 text-center text-sm py-2 px-2">
+                            <span class="sr-only">Check</span>
+                          </td>
+                        {/if}
+                          {#each row.slice(0, 10) as cell, cellIndex}
+                            {#if selectedcolumnChecks[cellIndex+1] == true}
+                              {#if selectedrowChecks[rowIndex+1] == true}
+                                <td class="{crossCheckedclass}">
+                                  {cell}
+                                </td>
+                              {:else}
+                                <td class="{columnCheckedclass}">
+                                  {cell}
+                                </td>
+                              {/if}
+                            {:else}
+                              {#if selectedrowChecks[rowIndex+1] == true}
+                                <td class="{rowCheckedclass}">
+                                  {cell}
+                                </td>
+                              {:else}
+                              <td class="{Defaultclass}">
+                                {cell}
+                              </td>
+                              {/if}
+                            {/if}
+                          {/each}
+                      </tr>
+                    {/if}
+                  {/each}
+                {:else}
+                  {#each fileRows.slice(0, 10) as row, rowIndex}
+                    {#if rowIndex === 0}
+                      <tr>
+                        <th class="text-center text-white text-sm bg-transparent py-2 px-5 mr-5">
+                          <span class="sr-only">Check</span>
+                        </th>
+                        {#if row.length < 10}
+                          {#each row.slice(0, row.length) as cell, cellIndex}
+                            {#if checkcolumnidx.includes(parseInt(cellIndex+1)) == true}
+                              <th class="place-content-center text-center text-white text-sm bg-transparent py-2 px-2 mr-5">
+                                <Checkbox
+                                  id="column_{cellIndex+1}"
+                                  bind:checked={selectedcolumnChecks[cellIndex+1]}
+                                  class="text-center cursor-pointer mr-2 w-4 h-4 bg-inherit checked:bg-violet-500 focus:ring-transparent"
+                                  on:click={() => toggleColumn(cellIndex+1, 0)}
+                                />
+                              </th>
+                            {:else}
+                              <th class="text-center text-white text-sm bg-transparent py-2 px-5 mr-5">
+                                <span class="sr-only">Check</span>
+                              </th>
+                            {/if}
+                          {/each}
+                        {:else}
+                          {#each row.slice(0, 10) as cell, cellIndex}
+                            <th class="place-content-center text-center text-white text-sm bg-transparent py-2 px-2 mr-5">
+                              <Checkbox
+                                id="column_{cellIndex+1}"
+                                bind:checked={selectedcolumnChecks[cellIndex+1]}
+                                class="text-center cursor-pointer mr-2 w-4 h-4 bg-inherit checked:bg-violet-500 focus:ring-transparent"
+                                on:click={() => toggleColumn(cellIndex+1, 0)}
+                              />
+                            </th>
+                          {/each}
+                        {/if}
+                      </tr>
+                      <tr>
+                        {#if checkrowidx.includes(parseInt(rowIndex+1)) == true}
+                          <td class="place-content-center mr-2 text-center text-sm py-2 px-2">
+                            <Checkbox
+                              id="row_{rowIndex+1}"
+                              bind:checked={selectedrowChecks[rowIndex+1]}
+                              class="text-center cursor-pointer mr-2 w-4 h-4 bg-inherit checked:bg-violet-500 focus:ring-transparent"
+                              on:click={() => toggleColumn(0, rowIndex+1)}
+                            />
+                          </td>
+                        {:else}
+                          <td class="mr-2 text-center text-sm py-2 px-2">
+                            <span class="sr-only">Check</span>
+                          </td>
+                        {/if}
+                        {#each row.slice(0, 10) as cell, cellIndex}
+                          {#if selectedcolumnChecks[cellIndex+1] == true}
+                            {#if selectedrowChecks[rowIndex+1] == true}
+                              <td class="{crossCheckedclass}">
+                                {cell}
+                              </td>
+                            {:else}
+                              <td class="{columnCheckedclass}">
+                                {cell}
+                              </td>
+                            {/if}
+                          {:else}
+                            {#if selectedrowChecks[rowIndex+1] == true}
+                              <td class="{rowCheckedclass}">
+                                {cell}
+                              </td>
+                            {:else}
+                            <td class="{Defaultclass}">
+                              {cell}
+                            </td>
+                            {/if}
+                          {/if}
+                        {/each}
+                      </tr>
+                    {:else}
+                      <tr>
+                        {#if checkrowidx.includes(parseInt(rowIndex+1)) == true}
+                          <td class="place-content-center mr-2 text-center text-sm py-2 px-2">
+                            <Checkbox
+                              id="row_{rowIndex+1}"
+                              bind:checked={selectedrowChecks[rowIndex+1]}
+                              class="text-center cursor-pointer mr-2 w-4 h-4 bg-inherit checked:bg-violet-500 focus:ring-transparent"
+                              on:click={() => toggleColumn(0, rowIndex+1)}
+                            />
+                          </td>
+                        {:else}
+                          <td class="mr-2 text-center text-sm py-2 px-2">
+                            <span class="sr-only">Check</span>
+                          </td>
+                        {/if}
+                          {#each row.slice(0, 10) as cell, cellIndex}
+                            {#if selectedcolumnChecks[cellIndex+1] == true}
+                              {#if selectedrowChecks[rowIndex+1] == true}
+                                <td class="{crossCheckedclass}">
+                                  {cell}
+                                </td>
+                              {:else}
+                                <td class="{columnCheckedclass}">
+                                  {cell}
+                                </td>
+                              {/if}
+                            {:else}
+                              {#if selectedrowChecks[rowIndex+1] == true}
+                                <td class="{rowCheckedclass}">
+                                  {cell}
+                                </td>
+                              {:else}
+                              <td class="{Defaultclass}">
+                                {cell}
+                              </td>
+                              {/if}
+                            {/if}
+                          {/each}
+                      </tr>
+                    {/if}
+                  {/each}
+                {/if}
+              </table>  
+            </div>
+          {:else}
+            <div class="-ml-0 -mt-1 overflow-x-auto p-2">
+              <table class="text-sm text-neutral-400">
+                  {#each Array.from({ length: Math.min(10, fileRows[0].length) }) as _, cellIndex}
+                      <tr>
+                          <th class="text-center text-white text-sm bg-transparent py-2 px-5 mr-5">
+                              <span class="sr-only">Check</span>
+                          </th>
+                          {#each fileRows as row, rowIndex}
+                              {#if rowIndex === 0}
+                                  {#if row.length < 10}
+                                      {#each row.slice(0, row.length) as cell, cellIndex}
+                                          {#if checkcolumnidx.includes(parseInt(cellIndex+1))}
+                                              <th class="place-content-center text-center py-2 px-2">
+                                                  <Checkbox
+                                                      id="column_{cellIndex+1}"
+                                                      bind:checked={selectedcolumnChecks[cellIndex+1]}
+                                                      class="text-center cursor-pointer mr-2 w-4 h-4 bg-inherit checked:bg-violet-500 focus:ring-transparent"
+                                                      on:click={() => toggleColumn(cellIndex+1, 0)}
+                                                  />
+                                              </th>
+                                          {:else}
+                                              <th class="py-2 px-5">
+                                                  <span class="sr-only">Check</span>
+                                              </th>
+                                          {/if}
+                                      {/each}
+                                  {:else}
+                                      {#each row.slice(0, 10) as cell, cellIndex}
+                                          <th class="place-content-center text-center text-white text-sm bg-transparent py-2 px-2 mr-5">
+                                              <Checkbox
+                                                  id="column_{cellIndex+1}"
+                                                  bind:checked={selectedcolumnChecks[cellIndex+1]}
+                                                  class="text-center cursor-pointer mr-2 w-4 h-4 bg-inherit checked:bg-violet-500 focus:ring-transparent"
+                                                  on:click={() => toggleColumn(cellIndex+1, 0)}
+                                              />
+                                          </th>
+                                      {/each}
+                                  {/if}
+                              {/if}
+                          {/each}
+                      </tr>
+                      {#each fileRows as row, rowIndex}
+                          <tr>
+                              {#if checkrowidx.includes(parseInt(rowIndex+1))}
+                                  <td class="place-content-center mr-2 text-center text-sm py-2 px-2">
+                                      <Checkbox
+                                          id="row_{rowIndex+1}"
+                                          bind:checked={selectedrowChecks[rowIndex+1]}
+                                          class="text-center cursor-pointer mr-2 w-4 h-4 bg-inherit checked:bg-violet-500 focus:ring-transparent"
+                                          on:click={() => toggleColumn(0, rowIndex+1)}
+                                      />
+                                  </td>
+                              {:else}
+                                  <td class="mr-2 text-center text-sm py-2 px-2">
+                                      <span class="sr-only">Check</span>
+                                  </td>
+                              {/if}
+                              {#each fileRows as row}
+                                  {#if selectedcolumnChecks[rowIndex+1]}
+                                      {#if selectedrowChecks[cellIndex+1]}
+                                          <td class="{crossCheckedclass}">{row[cellIndex]}</td>
+                                      {:else}
+                                          <td class="{columnCheckedclass}">{row[cellIndex]}</td>
+                                      {/if}
+                                  {:else}
+                                      {#if selectedrowChecks[cellIndex+1]}
+                                          <td class="{rowCheckedclass}">{row[cellIndex]}</td>
+                                      {:else}
+                                          <td class="{Defaultclass}">{row[cellIndex]}</td>
+                                      {/if}
+                                  {/if}
+                              {/each}
+                          </tr>
+                      {/each}
+                  {/each}
+              </table>  
+            </div>
+          {/if}
+          
+          <div class="mt-3 relative bg-white justify-items-end">
+            <Button class="text-xm font-semibold bg-violet-700 text-white absolute right-0 place-self-end hover:bg-violet-800 focus:ring-transparent"
+            on:click={tabletranspose}>
+              Transpose
+            </Button>
+          </div> 
+        {/if}
+        <p class="mt-20 text-3xl text-violet-700 font-medium">Settings</p>   
+        <div class="mb-10 w-full">
+          <div class="w-full mr-24">
+            <p class="mt-2 text-violet-400 text-base font-medium">
+              RPKM or RANK Based
+            </p>
+            <Select
+              id="Patient"
+              size="sm" 
+              class="cursor-pointer mt-3 text-base text-violet-500 bg-inherit border-violet-300 focus:ring-white focus:border-violet-300"
+              bind:value={selectedmethod}
+            >
+              {#each Based as { value, name }}
+                <option class="cursor-pointer group-hover:text-white group-hover:bg-neutral-200" {value}>{name}</option>
+              {/each}
+            </Select>
           </div>
-          <div class="border border-violet-200 bg-white cursor-pointer rounded-2xl px-3 py-1 mx-1 flex">
-            <img
-            id = "ABL1_Like_star"
-            src="Star_mint.svg"
-            class="cursor-pointer w-4 h-4 mr-1 h-fit text-center"
-            alt="Tutorial Logo2"
-            />
-            <p class="cursor-pointer text-sm text-violet-500">ABL1-Like Class</p>
-          </div>
-        </div>
-        <div class="bg-violet-50 mx-10 rounded-2xl px-20 py-5 mt-3">
-          <div>
-            <p class="-ml-5 mb-3 text-lg text-violet-600 font-medium mt-3">Total class</p>
-            <div class="bg-white mt-16 ml-2 relative h-9 pt-2 flex rounded-full font-semibold text-medium text-violet-400 bg-inherit border-2 border-violet-300">
-              <p class="absolute -mt-1 left-1 text-left ml-3">-1</p>
-              <p class="absolute -mt-1 ml-3 left-[48%]">0</p>
-              <p class="absolute -mt-1 right-5 text-right">1</p>
-            </div>  
-            <div class="relative mt-1 flex">
-              <p class="ml-4 text-xs text-violet-300">BALLNOS</p>
-              <p class="absolute right-2 text-xs text-violet-300">Other Classes</p>
+          <div class="w-full mt-16 mr-5">
+            <p class="text-violet-400 text-base font-medium">
+              Score Class
+            </p>
+            <div class="flex">
+              <div class="place-content-center text-center mt-4 flex">
+                <Checkbox
+                  id="boxplot-check1"
+                  bind:checked={ABL1selected}
+                  on:click={() => {
+                    ABL1selected = !ABL1selected;
+                  }}
+                  class="text-center cursor-pointer h-6 w-6 bg-inherit checked:bg-violet-800 focus:ring-white"
+                />
+                <label class="cursor-pointer ml-5 text-neutral-400 text-base font-medium" for="boxplot-check1">
+                  ABL1 Class
+                </label>
+              </div>
+              <div class="place-content-center text-center ml-36 mt-4 flex">
+                <Checkbox
+                  id="boxplot-check2"
+                  bind:checked={CRLF2selected}
+                  on:click={() => {
+                    CRLF2selected = !CRLF2selected;
+                  }}
+                  class="text-center cursor-pointer w-6 h-6 bg-inherit checked:bg-violet-500 focus:ring-white"
+                />
+                <label class="cursor-pointer ml-5 text-neutral-400 text-base font-medium" for="boxplot-check2">
+                  CRLF2 Class
+                </label>
+              </div>
+              <div class="place-content-center text-center ml-36 mt-4 flex">
+                <Checkbox
+                id="boxplot-check3"
+                bind:checked={ABL1_LikeSelected}
+                on:click={() => {
+                  ABL1_LikeSelected = !ABL1_LikeSelected;
+                }}
+                class="text-center cursor-pointer w-6 h-6 bg-inherit checked:bg-violet-300 focus:ring-white"/>
+                <label class="cursor-pointer ml-5 text-neutral-400 text-base font-medium" for="boxplot-check3">
+                  ABL1-Like Class
+                </label>
+              </div>
             </div>
           </div>
-          <div class="-ml-1 mt-2 bg-inherit w-full relative">
-            {#if $ABL1selected == 'true'}
-              <img
-              id = "Total_ABL1"
-              src="Star_yellow.svg"
-              class="cursor-pointer absolute w-6 h-6 ml-3 -mt-20 h-fit text-center"
-              style="left: {`${starlocation(ABL1averageResultstr[calculateIndex(currentPage)])}%`}"
-              alt="Tutorial Logo"
-              />
-              <Popover triggeredBy="#Total_ABL1" class="bg-white z-40 border-2 border-neutral-100 p-1 text-sm w-68 font-light">
-                <div class="flex mb-1">
-                  <img
-                    id = "ABL1_star"
-                    src="Star_yellow.svg"
-                    class="cursor-pointer w-4 h-4 mr-1 h-fit text-center"
-                    alt="Tutorial Logo2"
-                    />
-                    <p class="text-sm text-[#FFD32A] font-semibold">ABL1 Class</p>
-                </div>
-                <hr class="mb-2 border-1 border-neutral-200" />
-                <p class="text-xs text-neutral-400">The probability of ABL1 class is <span class="ml-0 font-semibold text-neutral-500 dark:text-white">{ABL1averageResultstr[calculateIndex(currentPage)]}</span>.</p>
-              </Popover>
-            {/if}
-            {#if $CRLF2selected == 'true'}
-              <img
-              id="Total_CRLF2"
-              src="Star_red.svg"
-              class="cursor-pointer absolute w-6 h-6 ml-3 -mt-20 h-fit text-center"
-              style="left: {`${starlocation(CRLF2averageResultstr[calculateIndex(currentPage)])}%`}"
-              alt="Tutorial Logo"
-              />
-              <Popover triggeredBy="#Total_CRLF2" class="bg-white z-40 border-2 border-neutral-100 p-1 text-sm w-68 font-light">
-                <div class="flex mb-1">
-                  <img
-                    id = "CRLF2_star"
-                    src="Star_red.svg"
-                    class="cursor-pointer w-4 h-4 mr-1 h-fit text-center"
-                    alt="Tutorial Logo2"
-                    />
-                    <p class="text-sm text-[#FF3F34] font-semibold">CRLF2 Class</p>
-                </div>
-                <hr class="mb-2 border-1 border-neutral-200" />
-                <p class="text-xs text-neutral-400">The probability of CRLF2 class is   <span class="ml-0 font-semibold text-neutral-500 dark:text-white">{CRLF2averageResultstr[calculateIndex(currentPage)]}</span>.</p>
-              </Popover>
-            {/if}
-            {#if $ABL1_LikeSelected == 'true'}
-            <img
-            id="Total_ABL1_Like"
-            src="Star_mint.svg"
-            class="cursor-pointer absolute w-6 h-6 ml-3 -mt-20 h-fit text-center"
-            style="left: {`${starlocation(ABL1_LikeaverageResultstr[calculateIndex(currentPage)])}%`}"
-            alt="Tutorial Logo"
-            />
-            <Popover triggeredBy="#Total_ABL1_Like" class="bg-white z-40 border-2 border-neutral-100 p-1 text-sm w-68 font-light">
-              <div class="flex mb-1">
-                <img
-                  id = "ABL1_Like_star"
-                  src="Star_mint.svg"
-                  class="cursor-pointer w-4 h-4 mr-1 h-fit text-center"
-                  alt="Tutorial Logo2"
-                  />
-                  <p class="text-sm text-[#00D8D6] font-semibold">ABL1 Like Class</p>
-              </div>
-              <hr class="mb-2 border-1 border-neutral-200" />
-              <p class="text-xs text-neutral-400">The probability of ABL1 Like class is <span class="ml-0 font-semibold text-neutral-500 dark:text-white">{ABL1_LikeaverageResultstr[calculateIndex(currentPage)]}</span>.</p>
-            </Popover>
-            {/if}
-          </div>
-        </div>              
-        <div class="bg-violet-50 mx-10 rounded-2xl px-20 py-5 mt-5">
-          {#if $ABL1selected == 'true'}
-            <div class="mb-10">
-              <div class="-ml-5 flex mt-5">
-                <p class="ml-3 text-lg text-violet-600 font-medium">ABL1 Class</p>
-                <p class="ml-1 text-lg text-violet-400 font-lg">: {ABL1averageResultstr[calculateIndex(currentPage)]}</p>
-              </div>
-              <div class="-mx-5 mt-5 cursor-pointer py-1 relative flex bg-violet-300 text-white flex rounded-full rounded-full">
-                <div class="flex ml-3 justify-start">
-                  <img
-                    id="Star_purple"
-                    src="Star_violet.svg"
-                    class="w-4 h-4 mx-2 mt-1 text-center"
-                    alt="Tutorial Logo"
-                    />
-                  <p class="font-medium text-base">5 out of 10 gene of the model matched</p>
-                  <p class="ml-1 text-violet-500 text-base font-semibold">(50%)</p>
-                </div>
-                <div class="absolute right-12 cursor-pointer ml-2 justify-end">
-                  <p class="ml-1 -mr-8 text-white font-medium text-base underline justify-end">More...</p>
-                </div>
-              </div>           
-              <div class="bg-white mt-16 ml-3 relative h-9 pt-2 flex rounded-full font-semibold text-medium text-violet-400 bg-inherit border-2 border-violet-300">
-                <p class="absolute -mt-1 left-1 text-left ml-3">-1</p>
-                <p class="absolute -mt-1 ml-4 left-[47.7%]">0</p>
-                <p class="absolute -mt-1 right-4 text-right">1</p>
-              </div>  
-              <div class="relative mt-1 flex">
-                <p class="ml-5 text-xs text-violet-300">BALLNOS</p>
-                <p class="absolute right-2 text-xs text-violet-300">ABL1</p>
-              </div>
-              <div class="my-2 bg-inherit w-full relative">
-                <img
-                id="ABL1"
-                src="Star_yellow.svg"
-                class="cursor-pointer absolute w-6 h-6 ml-3 -mt-20 h-fit text-center"
-                style="left: {`${starlocation(ABL1averageResultstr[calculateIndex(currentPage)])}%`}"
-                alt="Tutorial Logo"
-                />
-                <Popover triggeredBy="#ABL1" class="bg-white z-40 border-2 border-neutral-100 p-1 text-sm w-68 font-light">
-                  <div class="flex mb-1">
-                    <img
-                      id = "ABL1_star"
-                      src="Star_yellow.svg"
-                      class="cursor-pointer w-4 h-4 mr-1 h-fit text-center"
-                      alt="Tutorial Logo2"
-                      />
-                      <p class="text-sm text-[#FFD32A] font-semibold">ABL1 Class</p>
-                  </div>
-                  <hr class="mb-2 border-1 border-neutral-200" />
-                  <p class="text-xs text-neutral-400">The probability of ABL1 class is <span class="ml-0 font-semibold text-neutral-500 dark:text-white">{ABL1averageResultstr[calculateIndex(currentPage)]}</span>.</p>
-                </Popover>
-              </div>
-              <hr class="-mx-5 my-10 border-violet-200"/>
-            </div>              
-          {/if}
-          {#if $CRLF2selected == 'true'}
-            <div class="my-10">
-              <div class="-ml-5 flex mt-10">
-                <p class="ml-3 text-lg text-violet-600 font-medium mt-5">CRLF2 Class</p>
-                <p class="mt-5 ml-1 text-lg text-violet-400 font-lg mt-5">: {CRLF2averageResultstr[calculateIndex(currentPage)]}</p>
-              </div>
-              <div class="-mx-5 mt-5 cursor-pointer py-1 relative flex bg-violet-300 text-white flex rounded-full rounded-full">
-                <div class="flex ml-3 justify-start">
-                  <img
-                    id="Star_purple"
-                    src="Star_violet.svg"
-                    class="w-4 h-4 mx-2 mt-1 text-center"
-                    alt="Tutorial Logo"
-                    />
-                  <p class="font-medium text-base">5 out of 10 gene of the model matched</p>
-                  <p class="ml-1 text-violet-500 text-base font-semibold">(50%)</p>
-                </div>
-                <div class="absolute right-12 cursor-pointer ml-2 justify-end">
-                  <p class="ml-1 -mr-8 text-white font-medium text-base underline justify-end">More...</p>
-                </div>
-              </div>
-              <div class="bg-white mt-16 ml-3 relative h-9 pt-2 flex rounded-full font-semibold text-medium text-violet-400 bg-inherit border-2 border-violet-300">
-                <p class="absolute -mt-1 left-1 text-left ml-3">-1</p>
-                <p class="absolute -mt-1 ml-4 left-[47.7%]">0</p>
-                <p class="absolute -mt-1 right-4 text-right">1</p>
-              </div>  
-              <div class="relative mt-1 flex">
-                <p class="ml-5 text-xs text-violet-300">BALLNOS</p>
-                <p class="absolute right-2 text-xs text-violet-300">CRLF2</p>
-              </div>
-              <div class="mt-2 bg-inherit w-full relative">
-                <img
-                id="CRLF2"
-                src="Star_red.svg"
-                class="cursor-pointer absolute w-6 h-6 ml-3 -mt-20 h-fit text-center"
-                style="left: {`${starlocation(CRLF2averageResultstr[calculateIndex(currentPage)])}%`}"
-                alt="Tutorial Logo"
-                />
-                <Popover triggeredBy="#CRLF2" class="bg-white z-40 border-2 border-neutral-100 p-1 text-sm w-68 font-light">
-                  <div class="flex mb-1">
-                    <img
-                      id = "CRLF2_star"
-                      src="Star_red.svg"
-                      class="cursor-pointer w-4 h-4 mr-1 h-fit text-center"
-                      alt="Tutorial Logo2"
-                      />
-                      <p class="text-sm text-[#FF3F34] font-semibold">CRLF2 Class</p>
-                  </div>
-                  <hr class="mb-2 border-1 border-neutral-200" />
-                  <p class="text-xs text-neutral-400">The probability of CRLF2 class is   <span class="ml-0 font-semibold text-neutral-500 dark:text-white">{CRLF2averageResultstr[calculateIndex(currentPage)]}</span>.</p>
-                </Popover>
-              </div>
-              <hr class="-mx-5 my-10 border-violet-200"/>
-            </div>              
-          {/if}  
-          {#if $ABL1_LikeSelected == 'true'}
-            <div class="my-10">
-              <div class="-ml-5 flex mt-10">
-                <p class="ml-3 text-lg text-violet-600 font-medium mt-5">ABL1-Like Class</p>
-                <p class="mt-5 ml-1 text-lg text-violet-400 font-lg mt-5">: {ABL1_LikeaverageResultstr[calculateIndex(currentPage)]}</p>
-              </div>
-              <div class="-mx-5 mt-5 cursor-pointer py-1 relative flex bg-violet-300 text-white flex rounded-full rounded-full">
-                <div class="flex ml-3 justify-start">
-                  <img
-                    id="Star_purple"
-                    src="Star_violet.svg"
-                    class="w-4 h-4 mx-2 mt-1 text-center"
-                    alt="Tutorial Logo"
-                    />
-                  <p class="font-medium text-base">5 out of 10 gene of the model matched</p>
-                  <p class="ml-1 text-violet-500 text-base font-semibold">(50%)</p>
-                </div>
-                <div class="absolute right-12 cursor-pointer ml-2 justify-end">
-                  <p class="ml-1 -mr-8 text-white font-medium text-base underline justify-end">More...</p>
-                </div>
-              </div>
-              <div class="bg-white mt-16 ml-3 relative h-9 pt-2 flex rounded-full font-semibold text-medium text-violet-400 bg-inherit border-2 border-violet-300">
-                <p class="absolute -mt-1 left-1 text-left ml-3">-1</p>
-                <p class="absolute -mt-1 ml-4 left-[47.7%]">0</p>
-                <p class="absolute -mt-1 right-4 text-right">1</p>
-              </div>  
-              <div class="relative mt-1 flex">
-                <p class="ml-5 text-xs text-violet-300">BALLNOS</p>
-                <p class="absolute right-2 text-xs text-violet-300">ABL1-Like</p>
-              </div>
-              <div class="mt-2 bg-inherit w-full relative">
-                <img
-                id="ABL1_Like"
-                src="Star_mint.svg"
-                class="cursor-pointer absolute w-6 h-6 ml-3 -mt-20 h-fit text-center"
-                style="left: {`${starlocation(ABL1_LikeaverageResultstr[calculateIndex(currentPage)])}%`}"
-                alt="Tutorial Logo"
-                />
-                <Popover triggeredBy="#ABL1_Like" class="bg-white z-40 border-2 border-neutral-100 p-1 text-sm w-68 font-light">
-                  <div class="flex mb-1">
-                    <img
-                      id = "ABL1_Like_star"
-                      src="Star_mint.svg"
-                      class="cursor-pointer w-4 h-4 mr-1 h-fit text-center"
-                      alt="Tutorial Logo2"
-                      />
-                      <p class="text-sm text-[#00D8D6] font-semibold">ABL1 Like Class</p>
-                  </div>
-                  <hr class="mb-2 border-1 border-neutral-200" />
-                  <p class="text-xs text-neutral-400">The probability of ABL1 Like class is <span class="ml-0 font-semibold text-neutral-500 dark:text-white">{ABL1_LikeaverageResultstr[calculateIndex(currentPage)]}</span>.</p>
-                </Popover>
-              </div>
-            </div>              
-          {/if}
+        </div>  
+        <div class="mt-28 mb-12 text-center">
+          <Button
+          class="font-Catamaran text-xl font-semibold bg-violet-800 hover:bg-violet-900 focus:ring-transparent"
+          on:click={handlePredictProbability}
+          >Predict Probability</Button>
         </div>
-        
-        <!-- 페이지네이션 UI -->
-        <div class="flex justify-center items-center mt-5 mb-0 h-12">
-          <!-- 이전 페이지 그룹 버튼 -->
-          <button
-            class="cursor-pointer text-violet-800 mx-1 px-3 py-1 focus:outline-none focus:border-violet-500"
-            on:click={() => prevPageGroup()}
-            disabled={currentPage === 1}>
-            <img
-            src="left2.svg"
-            class="mx-5 h-7"
-            alt="SPADOMA Logo"/>
-          </button>
-          <!-- 페이지 버튼 -->
-          {#each getPageNumbers() as pageNumber}
-            {#if currentPage === pageNumber}
-              <button
-                class="font-semibold text-violet-300 rounded-full text-lg mx-2 px-4 py-2 focus:outline-none bg-violet-300 text-violet-700"
-                on:click={() => {
-                  changePage(pageNumber);
-                  scrollToTop(); // 페이지 변경 시 맨 위로 스크롤
-                }}
-              >
-                {pageNumber}
-              </button>
-            {:else}
-              <button
-                class="font-semibold text-violet-300 rounded-full text-lg mx-2 px-4 py-2 focus:outline-none hover:text-violet-700 hover:bg-violet-300"
-                on:click={() => {
-                  changePage(pageNumber);
-                  scrollToTop(); // 페이지 변경 시 맨 위로 스크롤
-                }}
-              >
-                {pageNumber}
-              </button>
-            {/if}
-          {/each}
-          <!-- 다음 페이지 그룹 버튼 -->
-          <button
-            class="cursor-pointer mx-1 px-3 py-1 focus:outline-none focus:border-violet-500"
-            on:click={() => nextPageGroup()}
-            disabled={currentPage === totalPages}>
-            <img
-            src="right2.svg"
-            class="mx-5 h-7"
-            alt="SPADOMA Logo"/>
-          </button>
-        </div>
-      </div>
-      
-    {:else}
-      <p class="mx-10 mt-8 text-center text-gray-500">No results found for this page.</p>
-    {/if}
-
-    
-    <div class="mt-12 mb-8 text-center">
-      <Button
-      href="/analysis"
-      class="text-violet-100 mb-5 px-7 py-4 text-xl font-semibold bg-violet-800 ring ring-violet-300 hover:bg-violet-700 focus:ring-white"
-      >Return</Button>
+      </div> 
     </div>
     <footer>
-      <div class="mt-16 mb-2 px-2 sm:px-4">
+      <div class="mt-20 mb-2 px-2 sm:px-4">
           <div class="mx-auto flex flex-col container">
-              <P class="text-violet-400 text-center">This website is maintained by <A class="text-violet-600 underline" href="https://pnucolab.com/" target="_blank">Computational Omics Lab</A>, Pusan National University College of Biomedical Convergence Engineering, South Korea. </P>
+              <P class="text-violet-700 text-center">This website is maintained by <A class="text-violet-400 underline" href="https://pnucolab.com/" target="_blank">Computational Omics Lab</A>, Pusan National University College of Biomedical Convergence Engineering, South Korea. </P>
           </div>
       </div>
-    </footer>
+    </footer>    
   </div>
-</div>
+</form>
+
+

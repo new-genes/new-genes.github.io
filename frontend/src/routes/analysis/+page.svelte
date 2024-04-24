@@ -505,11 +505,12 @@
   }
 
   function testdata() {
-    test_file_name = "test_data.txt";
-    updateFileName;
-    processFile("test_data.txt");
+    filetoggled = !filetoggled;
+    preview = !preview;
+    processFile("../../lib/total_fpkm_uq.csv.txt");
   }
 
+  let filetoggled = false;
 </script>
 
 <style>
@@ -524,7 +525,6 @@
   </div>
 {/if}
 
-
 <form type="submit">
   <div class="mt-12 rounded-lg border mx-5 px-12 pt-10 bg-white">
     <p class="ml-8 text-3xl text-violet-900 font-medium mt-5">Ph(+) B-ALL Probability Calculator</p>
@@ -534,14 +534,20 @@
         <p class="mt-2 text-violet-400 text-base font-medium">
           Upload your RPKM matrix file ( txt, csv, tsv, or ... )
         </p>           
-        <Toggle class="mt-3 text-violet-300 checked:ring-transparent focus:ring-transparent" size="small" color="purple" checked={false} on:click={testdata}>Use Test Data!</Toggle>
-        <div class="flex">
-          <Label for="fileInput" class="cursor-pointer font-Catamaran w-28 rounded-lg text-center text-white mt-3 py-2 bg-violet-400 hover:bg-violet-500 text-base font-semibold hover:ring-transparent">
-            Select File
-          </Label>
-          <Label class="text-neutral-300 text-center text-[16px] font-normal px-3 mt-5">{file_value}</Label>
-          <Input class="hidden" type="file" id="fileInput" style={{display:"none"}} on:change={updateFileName}/>
-        </div>
+        <Toggle class="mt-3 text-violet-300 checked:ring-transparent focus:ring-transparent" size="small" color="purple" 
+          on:click={testdata} 
+          bind:checked={filetoggled}>
+          Use Test Data!
+        </Toggle>
+        {#if filetoggled == false}
+          <div class="flex">
+            <Label for="fileInput" class="cursor-pointer font-Catamaran w-28 rounded-lg text-center text-white mt-3 py-2 bg-violet-400 hover:bg-violet-500 text-base font-semibold hover:ring-transparent">
+              Select File
+            </Label>
+            <Label class="text-neutral-300 text-center text-[16px] font-normal px-3 mt-5">{file_value}</Label>
+            <Input class="hidden" type="file" id="fileInput" style={{display:"none"}} on:change={updateFileName}/>
+          </div>
+        {/if}
         <!-- 파일 미리보기 섹션 -->
         {#if preview}
           <div class="flex mt-12">
