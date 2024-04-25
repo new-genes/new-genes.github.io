@@ -292,9 +292,9 @@
             </div>
             <div class="drop-shadow-sm bg-white mt-1 ml-2 relative h-12 pt-2 flex rounded-full font-semibold text-sm text-white">
               <div class="text-center absolute left-[0%] -mt-2 h-12 w-1/2 bg-indigo-200 rounded-full border-2 border-white"><p class="text-indigo-500 mt-3 -ml-20">More Less Likely</p></div>
-              <div class="text-center absolute left-[38.5%] -mt-2 h-12 w-[11%] bg-indigo-100 border-2 border-white"><p class="text-indigo-400 text-xs mt-1 ml-0">Less <br> Likely</p></div>
+              <div class="text-center absolute left-[38.5%] -mt-2 h-12 w-[11%] bg-indigo-100 border-2 border-white"><p class="text-indigo-400 text-xs mt-2 ml-0">Less <br> Likely</p></div>
               <div class="text-center absolute right-[0%] -mt-2 h-12 w-1/2 bg-pink-200 rounded-full border-2 border-white"><p class="text-pink-500 mt-3 ml-16">High Confidence</p></div>
-              <div class="text-center absolute right-[40%] -mt-2 h-12 w-[11%] bg-pink-100 border-2 border-white"><p class="text-pink-400 text-xs mt-1 ml-0">Low <br> Confidence</p></div>
+              <div class="text-center absolute right-[40%] -mt-2 h-12 w-[11%] bg-pink-100 border-2 border-white"><p class="text-pink-400 text-xs mt-2 ml-0">Low <br> Confidence</p></div>
             </div>  
             <div class="mb-5 relative mt-0 flex font-semibold text-xs">
               <p class="absolute left-1 text-left ml-3 text-indigo-400">-1</p>
