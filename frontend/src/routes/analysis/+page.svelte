@@ -122,8 +122,6 @@
         return;
       } 
       tableTF = create2DArray(columnNumber, rowNumber);
-
-      preview = true;
       
       //str인 셀은 true를 뱉는 2차원 array 만들기
       for (let i = 0; i < fileRows.length; i++) {
@@ -163,6 +161,7 @@
       
     };
     reader.readAsText(file);
+    preview = true;
   }
 
   // 파일 선택 시 호출되는 함수
@@ -172,6 +171,7 @@
 
     if (file) {
       processFile(file);
+      preview = true;
     }
   }
 
@@ -478,6 +478,7 @@
       
       file_value = fileName;
       filetype = file_value.split('.')[file_value.split('.').length - 1];
+      preview = true;
 
     } else {
       file_value = '';
@@ -489,6 +490,9 @@
     const fileInput = document.getElementById('fileInput');
     
     fileInput.addEventListener('change', handleFileSelect);
+    if (file_value != ''){
+      preview = true;
+    }
   });
 
   
@@ -504,12 +508,88 @@
     }
   }
 
-  function testdata() {
-    filetoggled = !filetoggled;
-    preview = !preview;
-    processFile("../../lib/total_fpkm_uq.csv.txt");
-  }
+  let csvData = '';
+  let parsedData = [];
 
+  async function testdata() {
+    filetoggled = !filetoggled;
+    file_value = '';
+    if (filetoggled == true){
+      preview = true;
+    }
+    else {
+      preview = false;
+      parsedData = [];
+    }
+
+    try {
+      const response = await fetch('/total_fpkm_uq.csv'); // CSV 파일의 경로
+      if (!response.ok) {
+        throw new Error('파일을 불러오는 데 실패했습니다.');
+      }
+      csvData = await response.text(); // CSV 데이터를 텍스트로 변환하여 저장
+      // console.log(csvData);
+      parsedData = csvData.split('\r\n') // 각 줄을 배열로 분할
+                     .map(row => row.split(',')) // 쉼표로 구분된 값들을 추출하여 이차원 배열로 만듦
+                     .map(row => row.map(val => {
+                       // 숫자로 변환 가능한 경우에만 실수값으로 변환하여 저장
+                       const parsedVal = parseFloat(val);
+                       return isNaN(parsedVal) ? val : parsedVal;
+                     }));
+      // 맨 마지막 줄이 빈 문자열인 경우, 이를 제거합니다.
+      if (parsedData[parsedData.length - 1].length === 1 && parsedData[parsedData.length - 1][0] === '') {
+        parsedData.pop();
+      }
+      fileRows = parsedData;
+      // console.log(parsedData);
+
+      
+      columnNumber = fileRows[0].length;
+      rowNumber = fileRows.length;
+       
+      tableTF = create2DArray(columnNumber, rowNumber);
+      
+      //str인 셀은 true를 뱉는 2차원 array 만들기
+      for (let i = 0; i < fileRows.length; i++) {
+        for (let j=0; j< fileRows[i].length; j++){
+          tableTF[j][i] = isNaN(fileRows[i][j]);
+        }
+      }
+
+      // 열 중에서 true가 절반 이상 있는 열은 array에 담아 차후 체크박스가 나타나게 한다.
+      for (let j=0; j < fileRows[0].length; j++){
+        if (tableTF[j].filter(element => element == true).length >= parseInt(fileRows.length/2)) {
+          checkcolumnidx.push(j+1)
+        }
+      }
+
+      // 체크박스가 나타나게 한 column의 index를 제외하고 각 row의 값에서 true가 절반 이상 있는 row의 인덱스를 저장한다.
+      for (let i=0; i < fileRows.length; i++) {
+        let removecolumnidxrow = [];
+        
+        for (let j=0; j < fileRows[0].length; j++) {
+          if (checkcolumnidx.includes(parseInt(j+1)) == true) {
+          }
+          else {
+            removecolumnidxrow.push(tableTF[j][i]) 
+          }
+        }
+        if (removecolumnidxrow.filter(element => element == true).length > parseInt((removecolumnidxrow.length)/2)) {
+          checkrowidx.push(i+1)
+        }
+      }
+
+      selectedrowChecks= Array.from({ length: rowNumber+1 }, () => false);
+      selectedrowChecks[checkrowidx[0]] = true;
+      
+      selectedcolumnChecks = Array.from({ length: columnNumber+1 }, () => false);
+      selectedcolumnChecks[checkcolumnidx[0]] = true;
+      
+    } catch (error) {
+      console.error(error.message);
+    }
+  }
+  
   let filetoggled = false;
 </script>
 
@@ -534,7 +614,7 @@
         <p class="mt-2 text-violet-400 text-base font-medium">
           Upload your RPKM matrix file ( txt, csv, tsv, or ... )
         </p>           
-        <Toggle class="mt-3 text-violet-300 checked:ring-transparent focus:ring-transparent" size="small" color="purple" 
+        <Toggle class="cursor-pointer mt-3 text-violet-300 checked:ring-transparent focus:ring-transparent" size="small" color="purple" 
           on:click={testdata} 
           bind:checked={filetoggled}>
           Use Test Data!
