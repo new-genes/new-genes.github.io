@@ -181,15 +181,18 @@
   let transposed = false;
 
   function tabletranspose() {
-    console.log(fileRows);
+    //console.log(fileRows);
 
     console.log("Transpose Button Pressed")
     transposed = !transposed;  
     fileRows = transpose(fileRows);
     
-    console.log(fileRows);
+    //console.log(fileRows);
 
     if (transposed == false) {
+      checkcolumnidx = [];
+      checkrowidx = [];
+  
       columnNumber = fileRows[0].length;
       rowNumber = fileRows.length;
       
@@ -247,7 +250,7 @@
           tableTF[i][j] = isNaN(fileRows[i][j]);
         }
       }
-      console.log(tableTF);
+      //console.log(tableTF);
         
       // 행 중에서 true가 절반 이상 있는 행은 array에 담아 차후 체크박스가 나타나게 한다.
       for (let j=0; j < fileRows.length; j++){
@@ -272,8 +275,8 @@
         }
       }
 
-      console.log(checkrowidx);
-      console.log(checkcolumnidx);
+      //console.log(checkrowidx);
+      //console.log(checkcolumnidx);
 
       selectedrowChecks= Array.from({ length: columnNumber+1 }, () => false);
       selectedrowChecks[checkrowidx[0]] = true;
@@ -281,8 +284,8 @@
       selectedcolumnChecks = Array.from({ length: rowNumber+1 }, () => false);
       selectedcolumnChecks[checkcolumnidx[0]] = true;
       
-      console.log(selectedrowChecks);
-      console.log(selectedcolumnChecks);
+      //console.log(selectedrowChecks);
+      //console.log(selectedcolumnChecks);
 
     }
   }
@@ -748,7 +751,7 @@
               Select File
             </Label>
             <Label class="text-neutral-300 text-center text-[16px] font-normal px-3 mt-5">{file_value}</Label>
-            <Input class="hidden" type="file" id="inputFile" style={{display:"none"}} on:change={updateFileName}/>
+            <Input class="hidden" type="file" id="inputFile" style={{display:"none"}} on:change={updateFileName} on:change={handleFileSelect}/>
           </div>
         {/if}
         <!-- 파일 미리보기 섹션 -->
