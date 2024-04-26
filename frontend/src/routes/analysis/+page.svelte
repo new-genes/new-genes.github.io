@@ -709,6 +709,7 @@
     else {
       preview = false;
       parsedData = [];
+      fileRows = [];
     }
   }
   
