@@ -542,8 +542,8 @@
       }
 
       let PatientID = '';
-      for (let i=0; i<Object.keys(ABL1_LikeaverageResultObject).length; i++) {
-      PatientID = PatientID+ `+${Object.keys(ABL1_LikeaverageResultObject)[i]}`;
+      for (let i=0; i<Object.keys(geneexpressionperpatient).length; i++) {
+      PatientID = PatientID+ `+${Object.keys(geneexpressionperpatient)[i]}`;
     }
 
       console.log('ABL1: ', ABL1);

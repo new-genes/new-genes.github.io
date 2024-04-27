@@ -5,6 +5,7 @@
   import { P, A } from "flowbite-svelte";
   import { Popover } from 'flowbite-svelte';
   import { Input } from 'flowbite-svelte';
+  import model from '../../lib/model.json';
 
   let ABL1averageResultstr = [];
   let CRLF2averageResultstr = [];
@@ -653,3 +654,5 @@
     </footer>
   </div>
 </div>
+
+
