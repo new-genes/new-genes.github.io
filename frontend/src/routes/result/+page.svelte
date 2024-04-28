@@ -195,7 +195,7 @@
   let searchTerm = '';
   $: filteredItems = patientIDnumberstr.filter((item) => item.toLowerCase().indexOf(searchTerm.toLowerCase()) !== -1);
 
-  let ABL1_yVals = [0.5, 0.5]
+  let ABL1_yVals = [1, 0]
   let ABL1_iVals = [0,1];
   
   let CRLF2_yVals = [0.5, 0.5]
@@ -223,7 +223,7 @@
 
   let arcPath = arc()
     .innerRadius(50)
-    .outerRadius(80);
+    .outerRadius(75);
   
   let ABL1_isDropdownOpen = true;
   let CRLF2_isDropdownOpen = true;
@@ -354,8 +354,8 @@
               style="left: {`${starlocation(ABL1averageResultstr[calculateIndex(currentPage)])}%`}"
               alt="Tutorial Logo"
               />
-              <Popover triggeredBy="#Total_ABL1" class="rounded rounded-2xl bg-white z-40 border border-white p-1 text-sm w-68 font-light">
-                <div class="justify-start rounded rounded-full bg-violet-50 mb-2 py-2 pl-5 pr-10 flex -mx-2 -mt-1">
+              <Popover triggeredBy="#Total_ABL1" class="rounded rounded-2xl bg-white z-40 border border-white p-0 text-sm w-68 font-light">
+                <div class="justify-start rounded rounded-full bg-violet-50 mb-2 py-2 px-3 flex -mx-2 -mt-1">
                   <img
                     id = "ABL1_star"
                     src="Star_yellow.svg"
@@ -364,7 +364,7 @@
                     />
                     <p class="text-sm text-violet-500 font-semibold">ABL1 Class</p>
                 </div>
-                <p class="px-2 text-xs text-violet-300">The probability of ABL1 class is <span class="ml-0 font-semibold text-violet-400 dark:text-white">{ABL1averageResultstr[calculateIndex(currentPage)].toFixed(4)}</span>.</p>
+                <p class="px-1 text-xs text-violet-300">The probability of ABL1 class is <span class="ml-0 font-semibold text-violet-400 dark:text-white">{ABL1averageResultstr[calculateIndex(currentPage)].toFixed(4)}</span>.</p>
               </Popover>
             {/if}
             {#if $CRLF2selected == 'true'}
@@ -375,8 +375,8 @@
               style="left: {`${starlocation(CRLF2averageResultstr[calculateIndex(currentPage)])}%`}"
               alt="Tutorial Logo"
               />
-              <Popover triggeredBy="#Total_CRLF2" class="rounded rounded-2xl bg-white z-40 border border-white p-1 text-sm w-68 font-light">
-                <div class="justify-start rounded rounded-full bg-violet-50 mb-2 py-2 pl-5 pr-10 flex -mx-2 -mt-1">
+              <Popover triggeredBy="#Total_CRLF2" class="rounded rounded-2xl bg-white z-40 border border-white p-0 text-sm w-68 font-light">
+                <div class="justify-start rounded rounded-full bg-violet-50 mb-2 py-2 px-3 flex -mx-2 -mt-1">
                   <img
                     id = "CRLF2_star"
                     src="Star_red.svg"
@@ -385,7 +385,7 @@
                     />
                     <p class="text-sm text-violet-500 font-semibold">CRLF2 Class</p>
                 </div>
-                <p class="px-2 text-xs text-violet-300">The probability of CRLF2 class is   <span class="ml-0 font-semibold text-violet-400 dark:text-white">{CRLF2averageResultstr[calculateIndex(currentPage)].toFixed(4)}</span>.</p>
+                <p class="px-1 text-xs text-violet-300">The probability of CRLF2 class is   <span class="ml-0 font-semibold text-violet-400 dark:text-white">{CRLF2averageResultstr[calculateIndex(currentPage)].toFixed(4)}</span>.</p>
               </Popover>
             {/if}
             {#if $ABL1_LikeSelected == 'true'}
@@ -396,8 +396,8 @@
             style="left: {`${starlocation(ABL1_LikeaverageResultstr[calculateIndex(currentPage)])}%`}"
             alt="Tutorial Logo"
             />
-            <Popover triggeredBy="#Total_ABL1_Like" class="rounded rounded-2xl bg-white z-40 border border-white p-1 text-sm w-68 font-light">
-              <div class="justify-start rounded rounded-full bg-violet-50 mb-2 py-2 pl-5 pr-10 flex -mx-2 -mt-1">
+            <Popover triggeredBy="#Total_ABL1_Like" class="rounded rounded-2xl bg-white z-40 border border-white p-0 text-sm w-68 font-light">
+              <div class="justify-start rounded rounded-full bg-violet-50 mb-2 py-2 px-3 flex -mx-2 -mt-1">
                 <img
                   id = "ABL1_Like_star"
                   src="Star_mint.svg"
@@ -406,7 +406,7 @@
                   />
                   <p class="text-sm text-violet-500 font-semibold">ABL1 Like Class</p>
               </div>
-              <p class="px-2 text-xs text-violet-300">The probability of ABL1 Like class is <span class="ml-0 font-semibold text-violet-400 dark:text-white">{ABL1_LikeaverageResultstr[calculateIndex(currentPage)].toFixed(4)}</span>.</p>
+              <p class="px-1 text-xs text-violet-300">The probability of ABL1 Like class is <span class="ml-0 font-semibold text-violet-400 dark:text-white">{ABL1_LikeaverageResultstr[calculateIndex(currentPage)].toFixed(4)}</span>.</p>
             </Popover>
             {/if}
           </div>
@@ -444,21 +444,21 @@
                         <p class="ml-5 btn text-violet-800 font-semibold text-lg mt-2">ABL1 Matched Genes & Percentage</p>
                         <div class="flex">
                           <div class="relative">
-                            <svg class="drop-shadow-md -m-5" width=250 height=250 viewBox="{-250 / 2} {-250 / 2} {250} {250}">
+                            <svg class="drop-shadow-md" width=180 height=180 viewBox="{-180 / 2} {-180 / 2} {180} {180}">
                               {#each ABL1_wedges as wedge, i}
                                 <path fill={colors[i]} d={arcPath(wedge)} />
                               {/each}
                             </svg>
-                            <div class="text-center absolute top-1/3 left-1/3 ml-2 mt-3">
+                            <div class="text-center absolute top-1/3 left-1/3 ml-0 mt-2">
                               <p class="text-2xl font-semibold text-violet-800">
-                                50%
+                                100%
                               </p>
                               <p class="text-sm font-semibold text-violet-800 -mt-2">
                                 matched
                               </p>
                             </div>
                           </div>
-                          <div class="mt-2 ml-3 bg-white w-40 overflow-y-auto py-1 h-48">
+                          <div class="mt-2 ml-3 bg-white w-40 overflow-y-auto py-1 h-40">
                             {#each Object.keys(model["RPKM"]["ABL1"]) as gene, index}
                               <div class="text-center mt-4 flex">
                                 <Checkbox
@@ -503,8 +503,8 @@
                 style="left: {`${starlocation(ABL1averageResultstr[calculateIndex(currentPage)])}%`}"
                 alt="Tutorial Logo"
                 />
-                <Popover triggeredBy="#ABL1" class="rounded rounded-2xl bg-white z-40 border border-white p-1 text-sm w-68 font-light">
-                  <div class="justify-start rounded rounded-full bg-violet-50 mb-2 py-2 pl-5 pr-10 flex -mx-2 -mt-1">
+                <Popover triggeredBy="#ABL1" class="rounded rounded-2xl bg-white z-40 border border-white p-0 text-sm w-68 font-light">
+                  <div class="justify-start rounded rounded-full bg-violet-50 mb-2 py-2 px-3 flex -mx-2 -mt-1">
                     <img
                       id = "ABL1_star"
                       src="Star_yellow.svg"
@@ -513,7 +513,7 @@
                       />
                       <p class="text-sm text-violet-500 font-semibold">ABL1 Class</p>
                   </div>
-                  <p class="px-2 text-xs text-violet-300">The probability of ABL1 class is <span class="ml-0 font-semibold text-violet-400 dark:text-white">{ABL1averageResultstr[calculateIndex(currentPage)].toFixed(4)}</span>.</p>
+                  <p class="px-1 text-xs text-violet-300">The probability of ABL1 class is <span class="ml-0 font-semibold text-violet-400 dark:text-white">{ABL1averageResultstr[calculateIndex(currentPage)].toFixed(4)}</span>.</p>
                 </Popover>
               </div>
               <hr class="-mx-10 mt-16 mb-12 border-violet-100"/>
@@ -551,12 +551,12 @@
                         <p class="ml-5 btn text-violet-800 font-semibold text-lg mt-2">CRLF2 Matched Genes & Percentage</p>
                         <div class="flex">
                           <div class="relative">
-                            <svg class="drop-shadow-md -m-5" width=250 height=250 viewBox="{-250 / 2} {-250 / 2} {250} {250}">
+                            <svg class="drop-shadow-md" width=180 height=180 viewBox="{-180 / 2} {-180 / 2} {180} {180}">
                               {#each CRLF2_wedges as wedge, i}
                                 <path fill={colors[i]} d={arcPath(wedge)} />
                               {/each}
                             </svg>
-                            <div class="text-center absolute top-1/3 left-1/3 ml-2 mt-3">
+                            <div class="text-center absolute top-1/3 left-1/3 ml-0 mt-2">
                               <p class="text-2xl font-semibold text-violet-800">
                                 50%
                               </p>
@@ -565,7 +565,7 @@
                               </p>
                             </div>
                           </div>
-                          <div class="mt-2 ml-3 bg-white w-40 overflow-y-auto py-1 h-48">
+                          <div class="mt-2 ml-3 bg-white w-40 overflow-y-auto py-1 h-40">
                             {#each Object.keys(model["RPKM"]["CRLF2"]) as gene, index}
                               <div class="text-center mt-4 flex">
                                 <Checkbox
@@ -610,8 +610,8 @@
                 style="left: {`${starlocation(CRLF2averageResultstr[calculateIndex(currentPage)])}%`}"
                 alt="Tutorial Logo"
                 />
-                <Popover triggeredBy="#CRLF2" class="rounded rounded-2xl bg-white z-40 border border-white p-1 text-sm w-68 font-light">
-                  <div class="justify-start rounded rounded-full bg-violet-50 mb-2 py-2 pl-5 pr-10 flex -mx-2 -mt-1">
+                <Popover triggeredBy="#CRLF2" class="rounded rounded-2xl bg-white z-40 border border-white p-0 text-sm w-68 font-light">
+                  <div class="justify-start rounded rounded-full bg-violet-50 mb-2 py-2 px-3 flex -mx-2 -mt-1">
                     <img
                       id = "CRLF2_star"
                       src="Star_red.svg"
@@ -620,7 +620,7 @@
                       />
                       <p class="text-sm text-violet-500 font-semibold">CRLF2 Class</p>
                   </div>
-                  <p class="px-2 text-xs text-violet-300">The probability of CRLF2 class is   <span class="ml-0 font-semibold text-violet-400 dark:text-white">{CRLF2averageResultstr[calculateIndex(currentPage)].toFixed(4)}</span>.</p>
+                  <p class="px-1 text-xs text-violet-300">The probability of CRLF2 class is   <span class="ml-0 font-semibold text-violet-400 dark:text-white">{CRLF2averageResultstr[calculateIndex(currentPage)].toFixed(4)}</span>.</p>
                 </Popover>
               </div>
               <hr class="-mx-10 mt-16 mb-12 border-violet-100"/>
@@ -656,13 +656,13 @@
                     <li>
                       <p class="ml-5 btn text-violet-800 font-semibold text-lg mt-2">ABL1_Like Matched Genes & Percentage</p>
                       <div class="flex">
-                        <div class="relative">
-                          <svg class="drop-shadow-md -m-5" width=250 height=250 viewBox="{-250 / 2} {-250 / 2} {250} {250}">
+                        <div class="mx-3 relative">
+                          <svg class="drop-shadow-md" width=180 height=180 viewBox="{-180 / 2} {-180 / 2} {180} {180}">
                             {#each ABL1_Like_wedges as wedge, i}
                               <path fill={colors[i]} d={arcPath(wedge)} />
                             {/each}
                           </svg>
-                          <div class="text-center absolute top-1/3 left-1/3 ml-2 mt-3">
+                          <div class="text-center absolute top-1/3 left-1/3 ml-0 mt-2">
                             <p class="text-2xl font-semibold text-violet-800">
                               50%
                             </p>
@@ -671,7 +671,7 @@
                             </p>
                           </div>
                         </div>
-                        <div class="mt-2 ml-3 bg-white w-40 overflow-y-auto py-1 h-48">
+                        <div class="mt-2 ml-5 bg-white w-40 overflow-y-auto py-1 h-40">
                           {#each Object.keys(model["RPKM"]["ABL1_Like"]) as gene, index}
                             <div class="text-center mt-4 flex">
                               <Checkbox
@@ -716,8 +716,8 @@
                 style="left: {`${starlocation(ABL1_LikeaverageResultstr[calculateIndex(currentPage)])}%`}"
                 alt="Tutorial Logo"
                 />
-                <Popover triggeredBy="#ABL1_Like" class="rounded rounded-2xl bg-white z-40 border border-white p-1 text-sm w-68 font-light">
-                  <div class="justify-start rounded rounded-full bg-violet-50 mb-2 py-2 pl-5 pr-10 flex -mx-2 -mt-1">
+                <Popover triggeredBy="#ABL1_Like" class="rounded rounded-2xl bg-white z-40 border border-white p-0 text-sm w-68 font-light">
+                  <div class="justify-start rounded rounded-full bg-violet-50 mb-2 py-2 px-3 flex -mx-2 -mt-1">
                     <img
                       id = "ABL1_Like_star"
                       src="Star_mint.svg"
@@ -726,7 +726,7 @@
                       />
                       <p class="text-sm text-violet-500 font-semibold">ABL1 Like Class</p>
                   </div>
-                  <p class="px-2 text-xs text-violet-300">The probability of ABL1 Like class is <span class="ml-0 font-semibold text-violet-400 dark:text-white">{ABL1_LikeaverageResultstr[calculateIndex(currentPage)].toFixed(4)}</span>.</p>
+                  <p class="px-1 text-xs text-violet-300">The probability of ABL1 Like class is <span class="ml-0 font-semibold text-violet-400 dark:text-white">{ABL1_LikeaverageResultstr[calculateIndex(currentPage)].toFixed(4)}</span>.</p>
                 </Popover>
               </div>
             </div>              
