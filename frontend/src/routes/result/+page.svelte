@@ -1,11 +1,12 @@
 <script>
   import { onMount } from 'svelte';
   import { writable } from 'svelte/store';
-  import { Button } from "flowbite-svelte";
+  import { Button, Checkbox, Dropdown } from "flowbite-svelte";
   import { P, A } from "flowbite-svelte";
   import { Popover } from 'flowbite-svelte';
   import { Input } from 'flowbite-svelte';
   import model from '../../lib/model.json';
+  import { pie, arc } from 'd3';
 
   let ABL1averageResultstr = [];
   let CRLF2averageResultstr = [];
@@ -185,14 +186,53 @@
   changePage(1);
   }
 
-  import { Dropdown, DropdownItem, Radio } from 'flowbite-svelte';
+  import { DropdownItem, Radio } from 'flowbite-svelte';
   let group2 = 1;
 
-  import { Checkbox, Search } from 'flowbite-svelte';
+  import { Search } from 'flowbite-svelte';
   import { UserRemoveSolid } from 'flowbite-svelte-icons';
 
   let searchTerm = '';
   $: filteredItems = patientIDnumberstr.filter((item) => item.toLowerCase().indexOf(searchTerm.toLowerCase()) !== -1);
+
+  let ABL1_yVals = [0.5, 0.5]
+  let ABL1_iVals = [0,1];
+  
+  let CRLF2_yVals = [0.5, 0.5]
+  let CRLF2_iVals = [0,1];
+  
+  let ABL1_Like_yVals = [0.5, 0.5]
+  let ABL1_Like_iVals = [0,1];
+  
+  let colors = ['#C3B6F7', '#FBFAFF']
+
+  let ABL1_wedges = pie().
+    padAngle(0).
+    sort(null).
+    value(i => ABL1_yVals[i])(ABL1_iVals);
+
+  let CRLF2_wedges = pie().
+    padAngle(0).
+    sort(null).
+    value(i => CRLF2_yVals[i])(CRLF2_iVals);
+
+  let ABL1_Like_wedges = pie().
+    padAngle(0).
+    sort(null).
+    value(i => ABL1_Like_yVals[i])(ABL1_Like_iVals);
+
+  let arcPath = arc()
+    .innerRadius(50)
+    .outerRadius(80);
+  
+  let ABL1_isDropdownOpen = true;
+  let CRLF2_isDropdownOpen = true;
+  let ABL1_Like_isDropdownOpen = true;
+
+
+  function handleDropdownClick(DropdownOpen) {
+    DropdownOpen = !DropdownOpen // togle state on click
+  }
 </script>
 
 <style>
@@ -383,7 +423,7 @@
                     </div>
                   </div>
                   <div class="absolute right-0 mt-5 cursor-pointer justify-start w-fit">
-                    <div class="drop-shadow-sm ml-10 border-2 border-white py-1 px-4 flex w-fit rounded-full text-base text-violet-500 font-medium mt-0 bg-violet-300">
+                    <Button class="drop-shadow-sm ml-10 border-2 border-white py-1 px-4 flex w-fit rounded-full text-base text-violet-500 font-medium mt-0 bg-violet-300 focus:outline-none focus:ring-transparent" on:click={handleDropdownClick(ABL1_isDropdownOpen)}>
                       <img
                       id="Star_purple"
                       src="Star_violet.svg"
@@ -395,10 +435,46 @@
                       <img
                         id = "ABL1_star"
                         src="under_arrow3.svg"
-                        class="cursor-pointer mt-2 ml-2 w-3 h-3 mr-0 h-fit text-center"
+                        class="cursor-pointer mt-1 ml-2 w-3 h-3 mr-0 h-fit text-center"
                         alt="Tutorial Logo2"
                       />
-                    </div>
+                    </Button>
+                    <Dropdown class="ml-0 w-fit dropdown-content menu p-1 shadow bg-white rounded-lg">
+                      <li>
+                        <p class="ml-5 btn text-violet-800 font-semibold text-lg mt-2">ABL1 Matched Genes & Percentage</p>
+                        <div class="flex">
+                          <div class="relative">
+                            <svg class="drop-shadow-md -m-5" width=250 height=250 viewBox="{-250 / 2} {-250 / 2} {250} {250}">
+                              {#each ABL1_wedges as wedge, i}
+                                <path fill={colors[i]} d={arcPath(wedge)} />
+                              {/each}
+                            </svg>
+                            <div class="text-center absolute top-1/3 left-1/3 ml-2 mt-3">
+                              <p class="text-2xl font-semibold text-violet-800">
+                                50%
+                              </p>
+                              <p class="text-sm font-semibold text-violet-800 -mt-2">
+                                matched
+                              </p>
+                            </div>
+                          </div>
+                          <div class="mt-2 ml-3 bg-white w-40 overflow-y-auto py-1 h-48">
+                            {#each Object.keys(model["RPKM"]["ABL1"]) as gene, index}
+                              <div class="text-center mt-4 flex">
+                                <Checkbox
+                                id="{gene}_boxplot-check1"
+                                class="text-center cursor-pointer checked:bg-[#A68DF2] focus:ring-white"
+                                checked=true
+                                />
+                                <label class="cursor-pointer ml-5 text-neutral-400 text-xs font-medium" for="{gene}_boxplot-check1">
+                                  {Object.keys(model["RPKM"]["ABL1"])[index]}
+                                </label>
+                              </div>            
+                            {/each}
+                          </div>        
+                        </div>
+                      </li>
+                    </Dropdown>
                   </div>
                 </div>
                 <div class="relative font-semibold mt-12 flex">
@@ -454,7 +530,7 @@
                     </div>
                   </div>
                   <div class="-mr-5 absolute right-0 mt-5 cursor-pointer justify-start w-fit">
-                    <div class="drop-shadow-sm ml-10 border-2 border-white py-1 px-4 flex w-fit rounded-full text-base text-violet-500 font-medium mt-0 bg-violet-300">
+                    <Button class="drop-shadow-sm ml-10 border-2 border-white py-1 px-4 flex w-fit rounded-full text-base text-violet-500 font-medium mt-0 bg-violet-300 focus:outline-none focus:ring-transparent" on:click={handleDropdownClick(CRLF2_isDropdownOpen)}>
                       <img
                       id="Star_purple"
                       src="Star_violet.svg"
@@ -469,7 +545,43 @@
                         class="cursor-pointer mt-2 ml-2 w-3 h-3 mr-0 h-fit text-center"
                         alt="Tutorial Logo2"
                       />
-                    </div>
+                    </Button>
+                    <Dropdown class="ml-0 w-fit dropdown-content menu p-1 shadow bg-white rounded-lg">
+                      <li>
+                        <p class="ml-5 btn text-violet-800 font-semibold text-lg mt-2">CRLF2 Matched Genes & Percentage</p>
+                        <div class="flex">
+                          <div class="relative">
+                            <svg class="drop-shadow-md -m-5" width=250 height=250 viewBox="{-250 / 2} {-250 / 2} {250} {250}">
+                              {#each CRLF2_wedges as wedge, i}
+                                <path fill={colors[i]} d={arcPath(wedge)} />
+                              {/each}
+                            </svg>
+                            <div class="text-center absolute top-1/3 left-1/3 ml-2 mt-3">
+                              <p class="text-2xl font-semibold text-violet-800">
+                                50%
+                              </p>
+                              <p class="text-sm font-semibold text-violet-800 -mt-2">
+                                matched
+                              </p>
+                            </div>
+                          </div>
+                          <div class="mt-2 ml-3 bg-white w-40 overflow-y-auto py-1 h-48">
+                            {#each Object.keys(model["RPKM"]["CRLF2"]) as gene, index}
+                              <div class="text-center mt-4 flex">
+                                <Checkbox
+                                id="{gene}_boxplot-check2"
+                                class="text-center cursor-pointer checked:bg-[#A68DF2] focus:ring-white"
+                                checked=true
+                                />
+                                <label class="cursor-pointer ml-5 text-neutral-400 text-xs font-medium" for="{gene}_boxplot-check2">
+                                  {Object.keys(model["RPKM"]["CRLF2"])[index]}
+                                </label>
+                              </div>            
+                            {/each}
+                          </div>        
+                        </div>
+                      </li>
+                    </Dropdown>
                   </div>
                 </div>      
                 <div class="relative font-semibold mt-10 flex">
@@ -524,7 +636,7 @@
                   </div>
                 </div>
                 <div class="-mr-5 absolute right-0 mt-5 cursor-pointer justify-start w-fit">
-                  <div class="drop-shadow-sm ml-10 border-2 border-white py-1 px-4 flex w-fit rounded-full text-base text-violet-500 font-medium mt-0 bg-violet-300">
+                  <Button class="drop-shadow-sm ml-10 border-2 border-white py-1 px-4 flex w-fit rounded-full text-base text-violet-500 font-medium mt-0 bg-violet-300 focus:outline-none focus:ring-transparent" on:click={handleDropdownClick(ABL1_Like_isDropdownOpen)}>
                     <img
                     id="Star_purple"
                     src="Star_violet.svg"
@@ -539,7 +651,43 @@
                         class="cursor-pointer mt-2 ml-2 w-3 h-3 mr-0 h-fit text-center"
                         alt="Tutorial Logo2"
                       />
-                  </div>
+                  </Button>
+                  <Dropdown class="ml-0 w-fit dropdown-content menu p-1 shadow bg-white rounded-lg">
+                    <li>
+                      <p class="ml-5 btn text-violet-800 font-semibold text-lg mt-2">ABL1_Like Matched Genes & Percentage</p>
+                      <div class="flex">
+                        <div class="relative">
+                          <svg class="drop-shadow-md -m-5" width=250 height=250 viewBox="{-250 / 2} {-250 / 2} {250} {250}">
+                            {#each ABL1_Like_wedges as wedge, i}
+                              <path fill={colors[i]} d={arcPath(wedge)} />
+                            {/each}
+                          </svg>
+                          <div class="text-center absolute top-1/3 left-1/3 ml-2 mt-3">
+                            <p class="text-2xl font-semibold text-violet-800">
+                              50%
+                            </p>
+                            <p class="text-sm font-semibold text-violet-800 -mt-2">
+                              matched
+                            </p>
+                          </div>
+                        </div>
+                        <div class="mt-2 ml-3 bg-white w-40 overflow-y-auto py-1 h-48">
+                          {#each Object.keys(model["RPKM"]["ABL1_Like"]) as gene, index}
+                            <div class="text-center mt-4 flex">
+                              <Checkbox
+                              id="{gene}_boxplot-check3"
+                              class="text-center cursor-pointer checked:bg-[#A68DF2] focus:ring-white"
+                              checked=true
+                              />
+                              <label class="cursor-pointer ml-5 text-neutral-400 text-xs font-medium" for="{gene}_boxplot-check3">
+                                {Object.keys(model["RPKM"]["ABL1_Like"])[index]}
+                              </label>
+                            </div>            
+                          {/each}
+                        </div>        
+                      </div>
+                    </li>
+                  </Dropdown>
                 </div>
               </div>      
               <div class="relative font-semibold mt-12 flex">

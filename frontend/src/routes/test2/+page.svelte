@@ -2,32 +2,17 @@
   import { pie, arc } from 'd3';
   import { Button, Checkbox, Dropdown } from "flowbite-svelte";
   import model from '../../lib/model.json';
-    
-  const data = [
-    { percent: 50 },
-    { percent: 100-50 }
-  ];
 
-  const y = Object.keys(data[0])[0]; // given d in data, returns the (quantitative) y-value
-  
-  let yVals = data.map((el) => Number(el[y]));
-  
-  const total = yVals.reduce((a, b) => a + b, 0);
-  yVals = yVals.map((el) => el / total);
-  
-  const iVals = data.map((el, i) => i);
-
-  // colors can be adjusted manually by creating a color array which length matches length of data set.
+  let yVals = [0.5, 0.5]
+  let iVals = [0,1];
   let colors = ['#C3B6F7', '#FBFAFF']
 
-  const wedges = pie().
+  let wedges = pie().
     padAngle(0).
     sort(null).
     value(i => yVals[i])(iVals);
 
-  console.log(wedges);
-
-  const arcPath = arc()
+  let arcPath = arc()
     .innerRadius(50)
     .outerRadius(80);
   
@@ -36,7 +21,6 @@
   function handleDropdownClick(DropdownOpen) {
     DropdownOpen = !DropdownOpen // togle state on click
   }
-
 </script>
 
 
@@ -95,6 +79,27 @@
       </div>
     </li>
   </Dropdown>
+</div>
+
+
+
+<div class="absolute right-0 mt-5 cursor-pointer justify-start w-fit">
+  <div class="drop-shadow-sm ml-10 border-2 border-white py-1 px-4 flex w-fit rounded-full text-base text-violet-500 font-medium mt-0 bg-violet-300">
+    <img
+    id="Star_purple"
+    src="Star_violet.svg"
+    class="w-4 h-4 mr-2 text-center"
+    alt="Tutorial Logo"
+    />
+    <p class="text-white font-medium text-sm">5 out of 10 gene of the model matched</p>
+    <p class="ml-1 text-violet-500 text-sm font-semibold">(50%)</p>
+    <img
+      id = "ABL1_star"
+      src="under_arrow3.svg"
+      class="cursor-pointer mt-2 ml-2 w-3 h-3 mr-0 h-fit text-center"
+      alt="Tutorial Logo2"
+    />
+  </div>
 </div>
 
 <style>
