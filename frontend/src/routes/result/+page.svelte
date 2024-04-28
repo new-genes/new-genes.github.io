@@ -355,7 +355,7 @@
               alt="Tutorial Logo"
               />
               <Popover triggeredBy="#Total_ABL1" class="rounded rounded-2xl bg-white z-40 border border-white p-0 text-sm w-68 font-light">
-                <div class="justify-start rounded rounded-full bg-violet-50 mb-2 py-2 px-3 flex -mx-2 -mt-1">
+                <div class="justify-start rounded rounded-full bg-violet-50 mb-2 py-2 px-5 flex -mx-2 -mt-1">
                   <img
                     id = "ABL1_star"
                     src="Star_yellow.svg"
@@ -376,7 +376,7 @@
               alt="Tutorial Logo"
               />
               <Popover triggeredBy="#Total_CRLF2" class="rounded rounded-2xl bg-white z-40 border border-white p-0 text-sm w-68 font-light">
-                <div class="justify-start rounded rounded-full bg-violet-50 mb-2 py-2 px-3 flex -mx-2 -mt-1">
+                <div class="justify-start rounded rounded-full bg-violet-50 mb-2 py-2 px-5 flex -mx-2 -mt-1">
                   <img
                     id = "CRLF2_star"
                     src="Star_red.svg"
@@ -397,7 +397,7 @@
             alt="Tutorial Logo"
             />
             <Popover triggeredBy="#Total_ABL1_Like" class="rounded rounded-2xl bg-white z-40 border border-white p-0 text-sm w-68 font-light">
-              <div class="justify-start rounded rounded-full bg-violet-50 mb-2 py-2 px-3 flex -mx-2 -mt-1">
+              <div class="justify-start rounded rounded-full bg-violet-50 mb-2 py-2 px-5 flex -mx-2 -mt-1">
                 <img
                   id = "ABL1_Like_star"
                   src="Star_mint.svg"
@@ -430,8 +430,8 @@
                       class="w-4 h-4 mr-2 text-center"
                       alt="Tutorial Logo"
                       />
-                      <p class="text-white font-medium text-sm">5 out of 10 gene of the model matched</p>
-                      <p class="ml-1 text-violet-500 text-sm font-semibold">(50%)</p>
+                      <p class="text-white font-medium text-sm">18 out of 18 gene of the model matched</p>
+                      <p class="ml-1 text-violet-500 text-sm font-semibold">(100%)</p>
                       <img
                         id = "ABL1_star"
                         src="under_arrow3.svg"
@@ -441,7 +441,7 @@
                     </Button>
                     <Dropdown class="ml-0 w-fit dropdown-content menu p-1 shadow bg-white rounded-lg">
                       <li>
-                        <p class="ml-5 btn text-violet-800 font-semibold text-lg mt-2">ABL1 Matched Genes & Percentage</p>
+                        <p class="ml-5 btn text-violet-800 font-semibold text-base mt-2">ABL1 Matched Genes & Percentage</p>
                         <div class="flex">
                           <div class="relative">
                             <svg class="drop-shadow-md" width=180 height=180 viewBox="{-180 / 2} {-180 / 2} {180} {180}">
@@ -504,7 +504,7 @@
                 alt="Tutorial Logo"
                 />
                 <Popover triggeredBy="#ABL1" class="rounded rounded-2xl bg-white z-40 border border-white p-0 text-sm w-68 font-light">
-                  <div class="justify-start rounded rounded-full bg-violet-50 mb-2 py-2 px-3 flex -mx-2 -mt-1">
+                  <div class="justify-start rounded rounded-full bg-violet-50 mb-2 py-2 px-5 flex -mx-2 -mt-1">
                     <img
                       id = "ABL1_star"
                       src="Star_yellow.svg"
@@ -537,18 +537,18 @@
                       class="w-4 h-4 mr-2 text-center"
                       alt="Tutorial Logo"
                       />
-                      <p class="text-white font-medium text-sm">5 out of 10 gene of the model matched</p>
-                      <p class="ml-1 text-violet-500 text-sm font-semibold">(50%)</p>
+                      <p class="text-white font-medium text-sm">3 out of 3 gene of the model matched</p>
+                      <p class="ml-1 text-violet-500 text-sm font-semibold">(100%)</p>
                       <img
                         id = "ABL1_star"
                         src="under_arrow3.svg"
-                        class="cursor-pointer mt-2 ml-2 w-3 h-3 mr-0 h-fit text-center"
+                        class="cursor-pointer mt-1 ml-2 w-3 h-3 mr-0 h-fit text-center"
                         alt="Tutorial Logo2"
                       />
                     </Button>
                     <Dropdown class="ml-0 w-fit dropdown-content menu p-1 shadow bg-white rounded-lg">
                       <li>
-                        <p class="ml-5 btn text-violet-800 font-semibold text-lg mt-2">CRLF2 Matched Genes & Percentage</p>
+                        <p class="ml-5 btn text-violet-800 font-semibold text-base mt-2">CRLF2 Matched Genes & Percentage</p>
                         <div class="flex">
                           <div class="relative">
                             <svg class="drop-shadow-md" width=180 height=180 viewBox="{-180 / 2} {-180 / 2} {180} {180}">
@@ -611,7 +611,7 @@
                 alt="Tutorial Logo"
                 />
                 <Popover triggeredBy="#CRLF2" class="rounded rounded-2xl bg-white z-40 border border-white p-0 text-sm w-68 font-light">
-                  <div class="justify-start rounded rounded-full bg-violet-50 mb-2 py-2 px-3 flex -mx-2 -mt-1">
+                  <div class="justify-start rounded rounded-full bg-violet-50 mb-2 py-2 px-5 flex -mx-2 -mt-1">
                     <img
                       id = "CRLF2_star"
                       src="Star_red.svg"
@@ -643,20 +643,20 @@
                     class="w-4 h-4 mr-2 text-center"
                     alt="Tutorial Logo"
                     />
-                    <p class="text-white font-medium text-sm">5 out of 10 gene of the model matched</p>
-                    <p class="ml-1 text-violet-500 text-sm font-semibold">(50%)</p>
+                    <p class="text-white font-medium text-sm">8 out of 8 gene of the model matched</p>
+                    <p class="ml-1 text-violet-500 text-sm font-semibold">(100%)</p>
                     <img
                         id = "ABL1_star"
                         src="under_arrow3.svg"
-                        class="cursor-pointer mt-2 ml-2 w-3 h-3 mr-0 h-fit text-center"
+                        class="cursor-pointer mt-1 ml-2 w-3 h-3 mr-0 h-fit text-center"
                         alt="Tutorial Logo2"
                       />
                   </Button>
                   <Dropdown class="ml-0 w-fit dropdown-content menu p-1 shadow bg-white rounded-lg">
                     <li>
-                      <p class="ml-5 btn text-violet-800 font-semibold text-lg mt-2">ABL1_Like Matched Genes & Percentage</p>
+                      <p class="ml-5 btn text-violet-800 font-semibold text-base mt-2">ABL1_Like Matched Genes & Percentage</p>
                       <div class="flex">
-                        <div class="mx-3 relative">
+                        <div class="mx-0 relative">
                           <svg class="drop-shadow-md" width=180 height=180 viewBox="{-180 / 2} {-180 / 2} {180} {180}">
                             {#each ABL1_Like_wedges as wedge, i}
                               <path fill={colors[i]} d={arcPath(wedge)} />
@@ -671,7 +671,7 @@
                             </p>
                           </div>
                         </div>
-                        <div class="mt-2 ml-5 bg-white w-40 overflow-y-auto py-1 h-40">
+                        <div class="mt-2 ml-3 bg-white w-40 overflow-y-auto py-1 h-40">
                           {#each Object.keys(model["RPKM"]["ABL1_Like"]) as gene, index}
                             <div class="text-center mt-4 flex">
                               <Checkbox
@@ -717,7 +717,7 @@
                 alt="Tutorial Logo"
                 />
                 <Popover triggeredBy="#ABL1_Like" class="rounded rounded-2xl bg-white z-40 border border-white p-0 text-sm w-68 font-light">
-                  <div class="justify-start rounded rounded-full bg-violet-50 mb-2 py-2 px-3 flex -mx-2 -mt-1">
+                  <div class="justify-start rounded rounded-full bg-violet-50 mb-2 py-2 px-5 flex -mx-2 -mt-1">
                     <img
                       id = "ABL1_Like_star"
                       src="Star_mint.svg"
