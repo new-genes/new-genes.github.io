@@ -79,6 +79,7 @@
 
   // 파일을 읽어서 특정 유전자의 gene expression 값을 추출하고 결과를 출력하는 함수
   function processFile(file) {
+    //console.log('processFile');
     checkcolumnidx = [];
     checkrowidx = [];
     fileContent = "";
@@ -159,6 +160,12 @@
       selectedcolumnChecks = Array.from({ length: columnNumber+1 }, () => false);
       selectedcolumnChecks[checkcolumnidx[0]] = true;
       
+      console.log('checkrowidx: ', checkrowidx);
+      console.log('checkcolumnidx: ', checkcolumnidx);
+
+      console.log('selectedrowChecks: ', selectedrowChecks);
+      console.log('selectedcolumnChecks: ', selectedcolumnChecks);
+
     };
     reader.readAsText(file);
     preview = true;
@@ -166,6 +173,7 @@
 
   // 파일 선택 시 호출되는 함수
   function handleFileSelect(event) {
+    //console.log('handleFileSelect');
     selectedrowChecks = [];
     selectedcolumnChecks = [];
   
@@ -275,8 +283,8 @@
         }
       }
 
-      //console.log(checkrowidx);
-      //console.log(checkcolumnidx);
+      console.log('checkrowidx: ', checkrowidx);
+      console.log('checkcolumnidx: ', checkcolumnidx);
 
       selectedrowChecks= Array.from({ length: columnNumber+1 }, () => false);
       selectedrowChecks[checkrowidx[0]] = true;
@@ -284,8 +292,8 @@
       selectedcolumnChecks = Array.from({ length: rowNumber+1 }, () => false);
       selectedcolumnChecks[checkcolumnidx[0]] = true;
       
-      //console.log(selectedrowChecks);
-      //console.log(selectedcolumnChecks);
+      console.log('selectedrowChecks: ', selectedrowChecks);
+      console.log('selectedcolumnChecks: ', selectedcolumnChecks);
 
     }
   }
@@ -307,9 +315,26 @@
 
   return transposedArray;
 }
-  
+
+let precheckidx;
+let preselectedChecks;
+
   // 버튼 클릭 시 결과 페이지로 이동하는 함수
   async function handlePredictProbability() { 
+    
+    if (transposed == true) { 
+      precheckidx = checkcolumnidx;
+      checkcolumnidx = checkrowidx;
+      checkrowidx = precheckidx;
+
+      preselectedChecks = selectedcolumnChecks;
+      selectedcolumnChecks = selectedrowChecks;
+      selectedrowChecks = preselectedChecks;
+
+      fileRows = transpose(fileRows);
+
+    }
+
     let column_true_length = selectedcolumnChecks.filter(element => element == true).length;
     let row_true_length = selectedrowChecks.filter(element => element == true).length;
 
@@ -413,7 +438,7 @@
 
             ABL1averageResultObject[Object.keys(geneexpressionperpatient)[i]] = ABL1averageResult;
           }
-
+          
           if (CRLF2selected == true) {
             let idx; 
             for (idx=0; idx<Object.keys(model["RPKM"]["CRLF2"]).length; idx++) {
@@ -612,16 +637,6 @@
       file_value = '';
     }
   }
-
-  // 파일 선택 이벤트에 핸들러 등록
-  onMount(() => {
-    const fileInput = document.getElementById('inputFile');
-    
-    fileInput.addEventListener('change', handleFileSelect);
-    
-  });
-
-  
 
   function toggleColumn(cellIndex,rowIndex) {
     if (rowIndex == 0) {
