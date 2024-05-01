@@ -408,54 +408,75 @@ let preselectedChecks;
         }
       }
 
-      console.log("geneexpressionperpatient: ", geneexpressionperpatient)
+      //console.log("geneexpressionperpatient: ", geneexpressionperpatient)
 
       let ABL1averageResultObject = {};
       let CRLF2averageResultObject = {};
       let ABL1_LikeaverageResultObject = {};
+      let ABL1match = {};
+      let CRLF2match = {};
+      let ABL1_Likematch = {};
 
       // geneexpressionperpatient에 저장한 값을 기반으로 필요한 값을 구한다. 
       for (let i=0; i<Object.keys(geneexpressionperpatient).length; i++) {
         let geneExpressions = geneexpressionperpatient[Object.keys(geneexpressionperpatient)[i]];
+        ABL1geneScores = {};
+        CRLF2geneScores = {};
+        ABL1_LikegeneScores = {};
+
+        ABL1match[Object.keys(geneexpressionperpatient)[i]] = 0;
+        CRLF2match[Object.keys(geneexpressionperpatient)[i]] = 0;
+        ABL1_Likematch[Object.keys(geneexpressionperpatient)[i]] = 0;
 
         if (selectedmethod == "RPKM") {
           if (ABL1selected == true) {
             for (let idx=0; idx<Object.keys(model["RPKM"]["ABL1"]).length; idx++) {
-              // 각 gene expression 값에 대한 조건을 적용하고 결과를 반환
-              ABL1geneScores[Object.keys(model["RPKM"]["ABL1"])[idx]] = applyExpressionCondition(geneExpressions[Object.keys(model["RPKM"]["ABL1"])[idx]], model["RPKM"]["ABL1"][Object.keys(model["RPKM"]["ABL1"])[idx]][0], model["RPKM"]["ABL1"][Object.keys(model["RPKM"]["ABL1"])[idx]][1], model["RPKM"]["ABL1"][Object.keys(model["RPKM"]["ABL1"])[idx]][2], model["RPKM"]["ABL1"][Object.keys(model["RPKM"]["ABL1"])[idx]][3]);
+              if (geneExpressions[Object.keys(model["RPKM"]["ABL1"])[idx]] == undefined) {
+
+              }
+              else {
+                // 각 gene expression 값에 대한 조건을 적용하고 결과를 반환
+                ABL1geneScores[Object.keys(model["RPKM"]["ABL1"])[idx]] = applyExpressionCondition(geneExpressions[Object.keys(model["RPKM"]["ABL1"])[idx]], model["RPKM"]["ABL1"][Object.keys(model["RPKM"]["ABL1"])[idx]][0], model["RPKM"]["ABL1"][Object.keys(model["RPKM"]["ABL1"])[idx]][1], model["RPKM"]["ABL1"][Object.keys(model["RPKM"]["ABL1"])[idx]][2], model["RPKM"]["ABL1"][Object.keys(model["RPKM"]["ABL1"])[idx]][3]);
+                ABL1match[Object.keys(geneexpressionperpatient)[i]] = ABL1match[Object.keys(geneexpressionperpatient)[i]] + 1;
+              }
             }
 
             console.log('ABL1geneScores:', ABL1geneScores);
 
             let ABL1sum = 0;
 
-            for (let idx = 0; idx < Object.keys(model["RPKM"]["ABL1"]).length; idx++ ) {
+            for (let idx = 0; idx < Object.keys(ABL1geneScores).length; idx++ ) {
               ABL1sum += ABL1geneScores[Object.keys(model["RPKM"]["ABL1"])[idx]];
             }
 
-            ABL1averageResult = ABL1sum / Object.keys(model["RPKM"]["ABL1"]).length;
+            ABL1averageResult = ABL1sum / Object.keys(ABL1geneScores).length;
             console.log('ABL1 Average:', ABL1averageResult);
 
             ABL1averageResultObject[Object.keys(geneexpressionperpatient)[i]] = ABL1averageResult;
           }
-          
+
           if (CRLF2selected == true) {
             let idx; 
             for (idx=0; idx<Object.keys(model["RPKM"]["CRLF2"]).length; idx++) {
-              // 각 gene expression 값에 대한 조건을 적용하고 결과를 반환
-              CRLF2geneScores[Object.keys(model["RPKM"]["CRLF2"])[idx]] = applyExpressionCondition(geneExpressions[Object.keys(model["RPKM"]["CRLF2"])[idx]], model["RPKM"]["CRLF2"][Object.keys(model["RPKM"]["CRLF2"])[idx]][0], model["RPKM"]["CRLF2"][Object.keys(model["RPKM"]["CRLF2"])[idx]][1], model["RPKM"]["CRLF2"][Object.keys(model["RPKM"]["CRLF2"])[idx]][2], model["RPKM"]["CRLF2"][Object.keys(model["RPKM"]["CRLF2"])[idx]][3]);
-              console.log(geneExpressions[Object.keys(model["RPKM"]["CRLF2"])[idx]]);
+              if (geneExpressions[Object.keys(model["RPKM"]["CRLF2"])[idx]] == undefined) {
+
+              }
+              else {
+                // 각 gene expression 값에 대한 조건을 적용하고 결과를 반환
+                CRLF2geneScores[Object.keys(model["RPKM"]["CRLF2"])[idx]] = applyExpressionCondition(geneExpressions[Object.keys(model["RPKM"]["CRLF2"])[idx]], model["RPKM"]["CRLF2"][Object.keys(model["RPKM"]["CRLF2"])[idx]][0], model["RPKM"]["CRLF2"][Object.keys(model["RPKM"]["CRLF2"])[idx]][1], model["RPKM"]["CRLF2"][Object.keys(model["RPKM"]["CRLF2"])[idx]][2], model["RPKM"]["CRLF2"][Object.keys(model["RPKM"]["CRLF2"])[idx]][3]);
+                CRLF2match[Object.keys(geneexpressionperpatient)[i]] = CRLF2match[Object.keys(geneexpressionperpatient)[i]] + 1;
+              }
             }
             
             console.log('CRLF2geneScores:', CRLF2geneScores);
 
             let CRLF2sum = 0;
 
-            for (let idx = 0; idx < Object.keys(model["RPKM"]["CRLF2"]).length; idx++ ) {
+            for (let idx = 0; idx < Object.keys(CRLF2geneScores).length; idx++ ) {
               CRLF2sum += CRLF2geneScores[Object.keys(model["RPKM"]["CRLF2"])[idx]];
             }
 
-            CRLF2averageResult = CRLF2sum / Object.keys(model["RPKM"]["CRLF2"]).length;
+            CRLF2averageResult = CRLF2sum / Object.keys(CRLF2geneScores).length;
             console.log('CRLF2 Average:', CRLF2averageResult);
 
             CRLF2averageResultObject[Object.keys(geneexpressionperpatient)[i]] = CRLF2averageResult;
@@ -464,19 +485,25 @@ let preselectedChecks;
           if (ABL1_LikeSelected == true) {
             let idx;
             for (idx=0; idx<Object.keys(model["RPKM"]["ABL1_Like"]).length; idx++) {
-              // 각 gene expression 값에 대한 조건을 적용하고 결과를 반환
-              ABL1_LikegeneScores[Object.keys(model["RPKM"]["ABL1_Like"])[idx]] = applyExpressionCondition(geneExpressions[Object.keys(model["RPKM"]["ABL1_Like"])[idx]], model["RPKM"]["ABL1_Like"][Object.keys(model["RPKM"]["ABL1_Like"])[idx]][0], model["RPKM"]["ABL1_Like"][Object.keys(model["RPKM"]["ABL1_Like"])[idx]][1], model["RPKM"]["ABL1_Like"][Object.keys(model["RPKM"]["ABL1_Like"])[idx]][2], model["RPKM"]["ABL1_Like"][Object.keys(model["RPKM"]["ABL1_Like"])[idx]][3]);
+              if (geneExpressions[Object.keys(model["RPKM"]["ABL1_Like"])[idx]] == undefined) {
+
+              }
+              else {
+                // 각 gene expression 값에 대한 조건을 적용하고 결과를 반환
+                ABL1_LikegeneScores[Object.keys(model["RPKM"]["ABL1_Like"])[idx]] = applyExpressionCondition(geneExpressions[Object.keys(model["RPKM"]["ABL1_Like"])[idx]], model["RPKM"]["ABL1_Like"][Object.keys(model["RPKM"]["ABL1_Like"])[idx]][0], model["RPKM"]["ABL1_Like"][Object.keys(model["RPKM"]["ABL1_Like"])[idx]][1], model["RPKM"]["ABL1_Like"][Object.keys(model["RPKM"]["ABL1_Like"])[idx]][2], model["RPKM"]["ABL1_Like"][Object.keys(model["RPKM"]["ABL1_Like"])[idx]][3]);
+                ABL1_Likematch[Object.keys(geneexpressionperpatient)[i]] = ABL1_Likematch[Object.keys(geneexpressionperpatient)[i]] + 1;
+              }
             }  
 
             console.log('ABL1_LikegeneScores:', ABL1_LikegeneScores);
 
             let ABL1_Likesum = 0;
 
-            for (let idx = 0; idx < Object.keys(model["RPKM"]["ABL1_Like"]).length; idx++ ) {
+            for (let idx = 0; idx < Object.keys(ABL1_LikegeneScores).length; idx++ ) {
               ABL1_Likesum += ABL1_LikegeneScores[Object.keys(model["RPKM"]["ABL1_Like"])[idx]];
             }
 
-            ABL1_LikeaverageResult = ABL1_Likesum / Object.keys(model["RPKM"]["ABL1_Like"]).length;
+            ABL1_LikeaverageResult = ABL1_Likesum / Object.keys(ABL1_LikegeneScores).length;
             console.log('ABL1_Like Average:', ABL1_LikeaverageResult);
 
             ABL1_LikeaverageResultObject[Object.keys(geneexpressionperpatient)[i]] = ABL1_LikeaverageResult;
@@ -570,7 +597,22 @@ let preselectedChecks;
       for (let i=0; i<Object.keys(geneexpressionperpatient).length; i++) {
       PatientID = PatientID+ `+${Object.keys(geneexpressionperpatient)[i]}`;
     }
+    
+      let ABL1genematch = [];
+      for (let i=0; i<Object.keys(ABL1match).length; i++) {
+        ABL1genematch.push(ABL1match[Object.keys(ABL1match)[i]]);
+      }
+    
+      let CRLF2genematch = [];
+      for (let i=0; i<Object.keys(CRLF2match).length; i++) {
+        CRLF2genematch.push(CRLF2match[Object.keys(CRLF2match)[i]]);
+      }
 
+      let ABL1_Likegenematch = [];
+      for (let i=0; i<Object.keys(ABL1_Likematch).length; i++) {
+        ABL1_Likegenematch.push(ABL1_Likematch[Object.keys(ABL1_Likematch)[i]]);
+      }
+    
       console.log('ABL1: ', ABL1);
       console.log('CRLF2: ', CRLF2);
       console.log('ABL1_Like: ', ABL1_Like);
@@ -579,11 +621,17 @@ let preselectedChecks;
       ABL1 = encodearray(new Float32Array(ABL1));
       CRLF2 = encodearray(new Float32Array(CRLF2));
       ABL1_Like = encodearray(new Float32Array(ABL1_Like));
+      ABL1genematch = encodearray(new Float32Array(ABL1genematch));
+      CRLF2genematch = encodearray(new Float32Array(CRLF2genematch));
+      ABL1_Likegenematch = encodearray(new Float32Array(ABL1_Likegenematch));
 
       console.log('ABL1: ', ABL1);
       console.log('CRLF2: ', CRLF2);
       console.log('ABL1_Like: ', ABL1_Like);
       console.log('PatientID: ', PatientID);
+      console.log('genematch: ', ABL1genematch);
+      console.log('genematch: ', CRLF2genematch);
+      console.log('genematch: ', ABL1_Likegenematch);
 
       const queryParams = new URLSearchParams({
         ABL1: ABL1,
@@ -593,8 +641,10 @@ let preselectedChecks;
         CRLF2s: CRLF2selected,
         ABL1_Ls: ABL1_LikeSelected,
         smthd: selectedmethod,
-        PatID: PatientID
-
+        PatID: PatientID,
+        ABL1gm: ABL1genematch,
+        CRLF2gm: CRLF2genematch,
+        ABL1_Lgm: ABL1_Likegenematch
       });
 
       loading = true; // 파일 처리가 시작되었으므로 로딩 상태를 true로 설정

@@ -12,6 +12,9 @@
   let CRLF2averageResultstr = [];
   let ABL1_LikeaverageResultstr = [];
   let patientIDnumberstr = [];
+  let ABL1genematchstr = [];
+  let CRLF2genematchstr = [];
+  let ABL1_Likegenematchstr = [];
   
   // 페이지당 결과 수 설정 
   let currentPage = 1; // 현재 페이지
@@ -28,6 +31,10 @@
   let ABL1_LikeSelected = writable('');
   let selectedmethod = writable('');
   let patientIDnumber = writable('');
+  let ABL1genematch = writable('');
+  let CRLF2genematch = writable('');
+  let ABL1_Likegenematch = writable('');
+     
 
   let params;
 
@@ -43,7 +50,39 @@
     ABL1_LikeSelected.set(params.get('ABL1_Ls') || '');
     selectedmethod.set(params.get('smthd') || '');
     patientIDnumber.set(params.get('PatID') || '');
+    ABL1genematch.set(params.get('ABL1gm') || '');
+    CRLF2genematch.set(params.get('CRLF2gm') || '');
+    ABL1_Likegenematch.set(params.get('ABL1_Lgm') || '');
+  });
 
+  // ABL1genematch 값이 변경될 때마다 실행됩니다.
+  ABL1genematch.subscribe(value => {
+    // value를 decode하고 배열에 추가하는 등의 작업을 수행합니다.
+    let decodedArray = decodearray(value);
+    console.log('ABL1genematch:', decodedArray);
+    // 새로운 변수에 저장하려면 아래와 같이 할당합니다.
+    ABL1genematchstr = decodedArray;
+    console.log('ABL1genematchstr:', ABL1genematchstr);
+  });
+
+  // CRLF2genematch 값이 변경될 때마다 실행됩니다.
+  CRLF2genematch.subscribe(value => {
+    // value를 decode하고 배열에 추가하는 등의 작업을 수행합니다.
+    let decodedArray = decodearray(value);
+    console.log('CRLF2genematch:', decodedArray);
+    // 새로운 변수에 저장하려면 아래와 같이 할당합니다.
+    CRLF2genematchstr = decodedArray;
+    console.log('CRLF2genematchstr:', CRLF2genematchstr);
+  });
+
+  // ABL1_Likegenematch 값이 변경될 때마다 실행됩니다.
+  ABL1_Likegenematch.subscribe(value => {
+    // value를 decode하고 배열에 추가하는 등의 작업을 수행합니다.
+    let decodedArray = decodearray(value);
+    console.log('ABL1_Likegenematch:', decodedArray);
+    // 새로운 변수에 저장하려면 아래와 같이 할당합니다.
+    ABL1_Likegenematchstr = decodedArray;
+    console.log('ABL1_Likegenematchstr:', ABL1_Likegenematchstr);
   });
 
   // ABL1averageResult 값이 변경될 때마다 실행됩니다.
@@ -177,21 +216,9 @@
     });
   }
 
-  let searchKeyword = '';
-
-  function handleSearch() {
-  // 검색어를 가져와서 searchKeyword 변수에 저장합니다.
-  searchKeyword = document.getElementById('searchInput').value.trim().toLowerCase();
-  // 페이지를 1페이지로 초기화합니다.
-  changePage(1);
-  }
-
-  import { DropdownItem, Radio } from 'flowbite-svelte';
-  let group2 = 1;
 
   import { Search } from 'flowbite-svelte';
-  import { UserRemoveSolid } from 'flowbite-svelte-icons';
-
+  
   let searchTerm = '';
   $: filteredItems = patientIDnumberstr.filter((item) => item.toLowerCase().indexOf(searchTerm.toLowerCase()) !== -1);
 
@@ -430,7 +457,7 @@
                       class="w-4 h-4 mr-2 text-center"
                       alt="Tutorial Logo"
                       />
-                      <p class="text-white font-medium text-sm">18 out of 18 gene of the model matched</p>
+                      <p class="text-white font-medium text-sm">{ABL1genematchstr[currentPage]} out of {Object.keys(model["RPKM"]["ABL1"]).length} gene of the model matched</p>
                       <p class="ml-1 text-violet-500 text-sm font-semibold">(100%)</p>
                       <img
                         id = "ABL1_star"
@@ -537,7 +564,7 @@
                       class="w-4 h-4 mr-2 text-center"
                       alt="Tutorial Logo"
                       />
-                      <p class="text-white font-medium text-sm">3 out of 3 gene of the model matched</p>
+                      <p class="text-white font-medium text-sm">{CRLF2genematchstr[currentPage]} out of {Object.keys(model["RPKM"]["CRLF2"]).length} gene of the model matched</p>
                       <p class="ml-1 text-violet-500 text-sm font-semibold">(100%)</p>
                       <img
                         id = "ABL1_star"
@@ -643,7 +670,7 @@
                     class="w-4 h-4 mr-2 text-center"
                     alt="Tutorial Logo"
                     />
-                    <p class="text-white font-medium text-sm">8 out of 8 gene of the model matched</p>
+                    <p class="text-white font-medium text-sm">{ABL1_Likegenematchstr[currentPage]} out of {Object.keys(model["RPKM"]["ABL1_Like"]).length} gene of the model matched</p>
                     <p class="ml-1 text-violet-500 text-sm font-semibold">(100%)</p>
                     <img
                         id = "ABL1_star"

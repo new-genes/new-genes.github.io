@@ -1,109 +1,70 @@
 <script>
-  import { pie, arc } from 'd3';
-  import { Button, Checkbox, Dropdown } from "flowbite-svelte";
-  import model from '../../lib/model.json';
-
-  let yVals = [0.5, 0.5]
-  let iVals = [0,1];
-  let colors = ['#C3B6F7', '#FBFAFF']
-
-  let wedges = pie().
-    padAngle(0).
-    sort(null).
-    value(i => yVals[i])(iVals);
-
-  let arcPath = arc()
-    .innerRadius(50)
-    .outerRadius(80);
-  
-  let isDropdownOpen = true;
-
-  function handleDropdownClick(DropdownOpen) {
-    DropdownOpen = !DropdownOpen // togle state on click
-  }
+  let model = { "RPKM": { "ABL1": { "WNT9A": [ 0.5654433, 58.45411, 0, 4.883518 ], 
+                                "SPATS2L": [ 13.46951, 700.5429, 0.2895722, 87.59672 ], 
+                                "SLC2A5": [ 15.26396, 205.1955, 0.1024562, 54.12377 ],
+                                "WSB2": [ 11.93495, 40.47132, 3.555556, 27.80424 ],
+                                "SOCS2": [ 171.042, 756.3316, 0.6464725, 457.4958 ],
+                                "NEURL1B": [ 48.08602, 377.4831, 0.808105, 87.74368 ],
+                                "AFAP1L2": [ 2.67134324933023, 148.361961244139, 0.276805776923961, 12.8356383275342 ],
+                                "CEACAM21": [ 15.46394, 65.26508, 4.370161, 47.89709 ],
+                                "ELFN2": [ 3.731676, 160.7782, 0.08965376, 31.71739 ],
+                                "ZFHX3": [ 1.363497, 11.44101, 0.08152398, 4.554561 ],
+                                "ABL1": [ 13.0397867876073, 100.822441272638, 7.0543970000532, 58.5511885839582 ],
+                                "DCTN4": [ 61.16148, 243.7928, 15.17781, 105.4528 ],
+                                "SLFN13": [ 4.167124, 33.07598, 0.8668036, 17.89969 ],
+                                "HPCAL1": [ 87.19817, 375.5679, 33.24991, 212.7731 ],
+                                "SH2D4A": [ 0.04547993, 9.107743, 0, 1.3434 ],
+                                "CASP10": [ 31.45275, 257.4393, 15.5387, 91.99394 ],
+                                "DEXI": [ 11.99806, 55.72624, 2.747108, 27.06386 ],
+                                "LAIR1": [ 153.355, 960.5403, 22.27905, 532.9934 ] }, 
+                          "CRLF2": {
+                                "CASP10": [ 657, 3123, 1398, 5016 ],
+                                "CMTM7": [ 832, 4060, 1325, 5452 ],
+                                "CRLF2": [ 48, 7410, 419, 13061 ] },
+                          "ABL1_Like": {
+                                "SPATS2L": [ 4.101311, 853.4433, 0.2895722, 83.71679 ],
+                                "SAV1": [ 14.06004, 76.60259, 0.3860737, 26.77266 ],
+                                "SNAP47": [ 5.299292, 59.40034, 1.991974, 20.32479 ],
+                                "JCHAIN": [ 11.55285, 2401.916, 1.834375, 814.8963 ],
+                                "WNT9A": [ 0.6469912, 56.28609, 0, 4.883518 ],
+                                "WSB2": [ 11.3198, 39.32335, 3.555556, 27.80424 ],
+                                "SOCS2": [ 73.41159, 1177.613, 0.6464725, 457.4958 ],
+                                "ABCA9": [ 0.012253011315132, 61.1093687703313, 0, 9.05664532319996 ] }
+                        },
+                "RANK" : { "ABL1" : { "WNT9A": [ 0.5654433, 58.45411, 0, 4.883518 ], 
+                              "SPATS2L": [ 13.46951, 700.5429, 0.2895722, 87.59672 ], 
+                              "SLC2A5": [ 15.26396, 205.1955, 0.1024562, 54.12377 ],
+                              "WSB2": [ 11.93495, 40.47132, 3.555556, 27.80424 ],
+                              "SOCS2": [ 171.042, 756.3316, 0.6464725, 457.4958 ],
+                              "NEURL1B": [ 48.08602, 377.4831, 0.808105, 87.74368 ],
+                              "AFAP1L2": [ 2.67134324933023, 148.361961244139, 0.276805776923961, 12.8356383275342 ],
+                              "CEACAM21": [ 15.46394, 65.26508, 4.370161, 47.89709 ],
+                              "ELFN2": [ 3.731676, 160.7782, 0.08965376, 31.71739 ],
+                              "ZFHX3": [ 1.363497, 11.44101, 0.08152398, 4.554561 ],
+                              "ABL1": [ 13.0397867876073, 100.822441272638, 7.0543970000532, 58.5511885839582 ],
+                              "DCTN4": [ 61.16148, 243.7928, 15.17781, 105.4528 ],
+                              "SLFN13": [ 4.167124, 33.07598, 0.8668036, 17.89969 ],
+                              "HPCAL1": [ 87.19817, 375.5679, 33.24991, 212.7731 ],
+                              "SH2D4A": [ 0.04547993, 9.107743, 0, 1.3434 ],
+                              "CASP10": [ 31.45275, 257.4393, 15.5387, 91.99394 ],
+                              "DEXI": [ 11.99806, 55.72624, 2.747108, 27.06386 ],
+                              "LAIR1": [ 153.355, 960.5403, 22.27905, 532.9934 ] 
+                          }, 
+                            "CRLF2": {
+                              "CASP10": [ 657, 3123, 1398, 5016 ],
+                              "CMTM7": [ 832, 4060, 1325, 5452 ],
+                              "CRLF2": [ 48, 7410, 419, 13061 ] },
+                            "ABL1_Like": {
+                              "SPATS2L": [ 4.101311, 853.4433, 0.2895722, 83.71679 ],
+                              "SAV1": [ 14.06004, 76.60259, 0.3860737, 26.77266 ],
+                              "SNAP47": [ 5.299292, 59.40034, 1.991974, 20.32479 ],
+                              "JCHAIN": [ 11.55285, 2401.916, 1.834375, 814.8963 ],
+                              "WNT9A": [ 0.6469912, 56.28609, 0, 4.883518 ],
+                              "WSB2": [ 11.3198, 39.32335, 3.555556, 27.80424 ],
+                              "SOCS2": [ 73.41159, 1177.613, 0.6464725, 457.4958 ],
+                              "ABCA9": [ 0.012253011315132, 61.1093687703313, 0, 9.05664532319996 ]
+                          }
+                  }
+                };
+console.log(model['dd']==undefined);
 </script>
-
-
-<div class="ml-16 mt-16" >
-  <Button class="mt-5 cursor-pointer justify-start w-fit focus:outline-none focus:ring-transparent" on:click={handleDropdownClick(isDropdownOpen)}>
-    <div class="drop-shadow-sm border-2 border-white py-1 px-4 flex w-fit rounded-full text-base text-violet-500 font-medium mt-0 bg-violet-300">
-      <img
-      id="Star_purple"
-      src="Star_violet.svg"
-      class="w-4 h-4 mr-2 text-center"
-      alt="Tutorial Logo"
-      />
-      <p class="text-white font-medium text-sm">5 out of 10 gene of the model matched</p>
-      <p class="ml-1 text-violet-500 text-sm font-semibold">(50%)</p>
-      <img
-        id = "ABL1_star"
-        src="under_arrow3.svg"
-        class="cursor-pointer mt-2 ml-2 w-3 h-3 mr-0 h-fit text-center"
-        alt="Tutorial Logo2"
-      />
-    </div>
-  </Button>
-  <Dropdown class="-mt-4 ml-0 w-fit dropdown-content menu p-2 shadow bg-white rounded-lg">
-    <li>
-      <p class="ml-5 btn text-violet-800 font-semibold text-xl mt-2">Matched Genes & Percentage</p>
-      <div class="flex">
-        <div class="relative">
-          <svg class="drop-shadow-md -m-10" width=280 height=280 viewBox="{-280 / 2} {-280 / 2} {280} {280}">
-            {#each wedges as wedge, i}
-              <path fill={colors[i]} d={arcPath(wedge)} />
-            {/each}
-          </svg>
-          <div class="text-center absolute top-1/3 left-1/3 ml-1 mt-2">
-            <p class="text-3xl font-semibold text-violet-800">
-              50%
-            </p>
-            <p class="text-base font-semibold text-violet-800 -mt-2">
-              matched
-            </p>
-          </div>
-        </div>
-        <div class="ml-3 bg-white w-44 overflow-y-auto py-1 h-48">
-          {#each Object.keys(model["RPKM"]["ABL1"]) as gene, index}
-            <div class="text-center mt-4 flex">
-              <Checkbox
-              id="{gene}_boxplot-check1"
-              class="text-center cursor-pointer checked:bg-[#A68DF2] focus:ring-white"
-              checked=true
-              />
-              <label class="cursor-pointer ml-5 text-neutral-400 text-sm font-medium" for="boxplot-check1">
-                {Object.keys(model["RPKM"]["ABL1"])[index]}
-              </label>
-            </div>            
-          {/each}
-        </div>        
-      </div>
-    </li>
-  </Dropdown>
-</div>
-
-
-
-<div class="absolute right-0 mt-5 cursor-pointer justify-start w-fit">
-  <div class="drop-shadow-sm ml-10 border-2 border-white py-1 px-4 flex w-fit rounded-full text-base text-violet-500 font-medium mt-0 bg-violet-300">
-    <img
-    id="Star_purple"
-    src="Star_violet.svg"
-    class="w-4 h-4 mr-2 text-center"
-    alt="Tutorial Logo"
-    />
-    <p class="text-white font-medium text-sm">5 out of 10 gene of the model matched</p>
-    <p class="ml-1 text-violet-500 text-sm font-semibold">(50%)</p>
-    <img
-      id = "ABL1_star"
-      src="under_arrow3.svg"
-      class="cursor-pointer mt-2 ml-2 w-3 h-3 mr-0 h-fit text-center"
-      alt="Tutorial Logo2"
-    />
-  </div>
-</div>
-
-<style>
-  /* YourComponent에 대한 스타일 */
-  @import '../../routes/scrollbar.css'; /* scrollbar.css 파일 임포트 */
-</style>
-
