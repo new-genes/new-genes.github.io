@@ -815,7 +815,7 @@ let preselectedChecks;
 <form type="submit">
   <div class="mt-12 rounded-lg border mx-5 px-12 pt-10 bg-white">
     <p class="ml-8 text-3xl text-violet-900 font-medium mt-5">Ph(+) B-ALL Probability Calculator</p>
-    <div class="mt-10">
+    <div class="w-full mt-10">
       <div class="w-full px-10 rounded-lg">
         <p class="text-3xl text-violet-700 font-medium">Data</p>
         <p class="mt-2 text-violet-400 text-base font-medium">
@@ -845,12 +845,12 @@ let preselectedChecks;
               (Select Column & Row)
             </p>
           </div>
-          <div class="-ml-0 -mt-1 overflow-x-auto p-2">
-            <table class="text-sm text-neutral-400">
+          <div class="w-full -mt-1 overflow-x-auto p-2" style="overflow-x: auto; max-width: 100%;">
+            <table class="w-[100%] text-sm text-neutral-400" style="overflow-x: auto; max-width: 100%;">
               {#if fileRows.length < 10}
                 {#each fileRows.slice(0, fileRows.length) as row, rowIndex}
                   {#if rowIndex === 0}
-                    <tr>
+                    <tr class="w-full" style="overflow-x: auto; max-width: 100%;">
                       <th class="text-center text-white text-sm bg-transparent py-2 px-5 mr-5">
                         <span class="sr-only">Check</span>
                       </th>
@@ -890,7 +890,7 @@ let preselectedChecks;
                         {/each}
                       {/if}
                     </tr>
-                    <tr>
+                    <tr class="w-full" style="overflow-x: auto; max-width: 100%;">
                       {#if checkrowidx.includes(parseInt(rowIndex+1)) == true}
                         <td class="place-content-center mr-2 text-center text-sm py-2 px-2">
                           <Checkbox
@@ -930,7 +930,7 @@ let preselectedChecks;
                       {/each}
                     </tr>
                   {:else}
-                    <tr>
+                    <tr class="w-full" style="overflow-x: auto; max-width: 100%;">
                       {#if checkrowidx.includes(parseInt(rowIndex+1)) == true}
                         <td class="place-content-center mr-2 text-center text-sm py-2 px-2">
                           <Checkbox
@@ -974,7 +974,7 @@ let preselectedChecks;
               {:else}
                 {#each fileRows.slice(0, 10) as row, rowIndex}
                   {#if rowIndex === 0}
-                    <tr>
+                    <tr class="w-full" style="overflow-x: auto; max-width: 100%;">
                       <th class="text-center text-white text-sm bg-transparent py-2 px-5 mr-5">
                         <span class="sr-only">Check</span>
                       </th>
@@ -1014,7 +1014,7 @@ let preselectedChecks;
                         {/each}
                       {/if}
                     </tr>
-                    <tr>
+                    <tr class="w-full" style="overflow-x: auto; max-width: 100%;">
                       {#if checkrowidx.includes(parseInt(rowIndex+1)) == true}
                         <td class="place-content-center mr-2 text-center text-sm py-2 px-2">
                           <Checkbox
@@ -1054,7 +1054,7 @@ let preselectedChecks;
                       {/each}
                     </tr>
                   {:else}
-                    <tr>
+                    <tr class="w-full" style="overflow-x: auto; max-width: 100%;">
                       {#if checkrowidx.includes(parseInt(rowIndex+1)) == true}
                         <td class="place-content-center mr-2 text-center text-sm py-2 px-2">
                           <Checkbox
