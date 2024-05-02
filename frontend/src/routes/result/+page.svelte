@@ -55,6 +55,14 @@
     ABL1_Likegenematch.set(params.get('ABL1_Lgm') || '');
   });
 
+  // 각 wedge 배열을 담을 배열들을 초기화합니다.
+  let ABL1_wedges_array = [];
+  let CRLF2_wedges_array = [];
+  let ABL1_Like_wedges_array = [];
+
+  let ABL1_percent = 0;
+  let CRLF2_percent = 0;
+  let ABL1_Like_percent = 0;
 
   // ABL1averageResult 값이 변경될 때마다 실행됩니다.
   ABL1averageResult.subscribe(value => {
@@ -114,7 +122,6 @@
     console.log('Total Pages:', totalPages);
   });
 
-
   // ABL1genematch 값이 변경될 때마다 실행됩니다.
   ABL1genematch.subscribe(value => {
     // value를 decode하고 배열에 추가하는 등의 작업을 수행합니다.
@@ -123,6 +130,28 @@
     // 새로운 변수에 저장하려면 아래와 같이 할당합니다.
     ABL1genematchstr = decodedArray;
     console.log('ABL1genematchstr:', ABL1genematchstr);
+
+    for (let j = 0; j < totalPages; j++) {
+      let abl1_yVals = [sumArray(ABL1genematchstr[currentPage])/Object.keys(model["RPKM"]["ABL1"]).length, 1-sumArray(ABL1genematchstr[currentPage])/Object.keys(model["RPKM"]["ABL1"]).length];
+      // ABL1_wedges 생성
+      let ABL1_wedges = pie()
+          .padAngle(0)
+          .sort(null)
+          .value(i => abl1_yVals[i])([0, 1]);
+
+      console.log('ABL1_wedges:', ABL1_wedges);
+    
+      // ABL1_wedges를 ABL1_wedges_array에 추가합니다.
+      ABL1_wedges_array.push(ABL1_wedges);
+
+      ABL1_percent = ((sumArray(ABL1genematchstr[currentPage])/Object.keys(model["RPKM"]["ABL1"]).length)*100).toFixed();
+    }
+
+  // 각 배열들을 출력합니다.
+  console.log('ABL1_wedges_array:', ABL1_wedges_array);
+  console.log('CRLF2_wedges_array:', CRLF2_wedges_array);
+  console.log('ABL1_Like_wedges_array:', ABL1_Like_wedges_array);
+
   });
 
   // CRLF2genematch 값이 변경될 때마다 실행됩니다.
@@ -133,6 +162,22 @@
     // 새로운 변수에 저장하려면 아래와 같이 할당합니다.
     CRLF2genematchstr = decodedArray;
     console.log('CRLF2genematchstr:', CRLF2genematchstr);
+
+    for (let j = 0; j < totalPages; j++) {
+      let CRLF2_yVals = [sumArray(CRLF2genematchstr[currentPage])/Object.keys(model["RPKM"]["CRLF2"]).length, 1-sumArray(CRLF2genematchstr[currentPage])/Object.keys(model["RPKM"]["CRLF2"]).length];
+      // ABL1_wedges 생성
+      let CRLF2_wedges = pie()
+          .padAngle(0)
+          .sort(null)
+          .value(i => CRLF2_yVals[i])([0, 1]);
+
+      console.log('CRLF2_wedges:', CRLF2_wedges);
+    
+      // ABL1_wedges를 ABL1_wedges_array에 추가합니다.
+      CRLF2_wedges_array.push(CRLF2_wedges);
+
+      CRLF2_percent = ((sumArray(CRLF2genematchstr[currentPage])/Object.keys(model["RPKM"]["CRLF2"]).length)*100).toFixed();
+    }
   });
 
   // ABL1_Likegenematch 값이 변경될 때마다 실행됩니다.
@@ -143,6 +188,22 @@
     // 새로운 변수에 저장하려면 아래와 같이 할당합니다.
     ABL1_Likegenematchstr = decodedArray;
     console.log('ABL1_Likegenematchstr:', ABL1_Likegenematchstr);
+
+    for (let j = 0; j < totalPages; j++) {
+      let ABL1_Like_yVals = [sumArray(ABL1_Likegenematchstr[currentPage])/Object.keys(model["RPKM"]["ABL1_Like"]).length, 1-sumArray(ABL1_Likegenematchstr[currentPage])/Object.keys(model["RPKM"]["ABL1_Like"]).length];
+      // ABL1_wedges 생성
+      let ABL1_Like_wedges = pie()
+          .padAngle(0)
+          .sort(null)
+          .value(i => ABL1_Like_yVals[i])([0, 1]);
+
+      console.log('ABL1_Like_wedges:', ABL1_Like_wedges);
+    
+      // ABL1_wedges를 ABL1_wedges_array에 추가합니다.
+      ABL1_Like_wedges_array.push(ABL1_Like_wedges);
+
+      ABL1_Like_percent = ((sumArray(ABL1_Likegenematchstr[currentPage])/Object.keys(model["RPKM"]["ABL1_Like"]).length)*100).toFixed();
+    }
   });
 
   function decodearray(str) {
@@ -253,43 +314,12 @@
     });
   }
 
-
   import { Search } from 'flowbite-svelte';
   
   let searchTerm = '';
   $: filteredItems = patientIDnumberstr.filter((item) => item.toLowerCase().indexOf(searchTerm.toLowerCase()) !== -1);
 
-  let ABL1_wedges_array = [];
-  let CRLF2_wedges_array = [];
-  let ABL1_Like_wedges_array = [];
-
-  for (let j = 0; j < totalPages; j++) {
-    let ABL1_yVals = [1, 0]
-    let ABL1_iVals = [0, 1];
-  
-    ABL1_wedges_array.push(pie().
-      padAngle(0).
-      sort(null).
-      value(i => ABL1_yVals[i])(ABL1_iVals));
-
-    let CRLF2_yVals = [0.5, 0.5]
-    let CRLF2_iVals = [0, 1];
-    
-    CRLF2_wedges_array.push(pie().
-    padAngle(0).
-    sort(null).
-    value(i => CRLF2_yVals[i])(CRLF2_iVals));
-
-    let ABL1_Like_yVals = [0.5, 0.5]
-    let ABL1_Like_iVals = [0, 1];
-
-    ABL1_Like_wedges.push(pie().
-    padAngle(0).
-    sort(null).
-    value(i => ABL1_Like_yVals[i])(ABL1_Like_iVals));
-  }
-
-  let colors = ['#C3B6F7', '#FBFAFF']
+  let colors = ['#C3B6F7', '#FBFAFF'];
 
   let arcPath = arc()
     .innerRadius(50)
@@ -521,7 +551,7 @@
                             </svg>
                             <div class="text-center absolute top-1/3 left-1/3 ml-0 mt-2">
                               <p class="text-2xl font-semibold text-violet-800">
-                                100%
+                                {ABL1_percent}%
                               </p>
                               <p class="text-sm font-semibold text-violet-800 -mt-2">
                                 matched
@@ -628,7 +658,7 @@
                             </svg>
                             <div class="text-center absolute top-1/3 left-1/3 ml-0 mt-2">
                               <p class="text-2xl font-semibold text-violet-800">
-                                50%
+                                {CRLF2_percent}%
                               </p>
                               <p class="text-sm font-semibold text-violet-800 -mt-2">
                                 matched
@@ -734,7 +764,7 @@
                           </svg>
                           <div class="text-center absolute top-1/3 left-1/3 ml-0 mt-2">
                             <p class="text-2xl font-semibold text-violet-800">
-                              50%
+                              {ABL1_Like_percent}%
                             </p>
                             <p class="text-sm font-semibold text-violet-800 -mt-2">
                               matched
