@@ -413,9 +413,9 @@ let preselectedChecks;
       let ABL1averageResultObject = {};
       let CRLF2averageResultObject = {};
       let ABL1_LikeaverageResultObject = {};
-      let ABL1match = {};
-      let CRLF2match = {};
-      let ABL1_Likematch = {};
+      let ABL1match = [];
+      let CRLF2match = [];
+      let ABL1_Likematch = [];
 
       // geneexpressionperpatient에 저장한 값을 기반으로 필요한 값을 구한다. 
       for (let i=0; i<Object.keys(geneexpressionperpatient).length; i++) {
@@ -424,20 +424,20 @@ let preselectedChecks;
         CRLF2geneScores = {};
         ABL1_LikegeneScores = {};
 
-        ABL1match[Object.keys(geneexpressionperpatient)[i]] = 0;
-        CRLF2match[Object.keys(geneexpressionperpatient)[i]] = 0;
-        ABL1_Likematch[Object.keys(geneexpressionperpatient)[i]] = 0;
+        ABL1match[i] = [];
+        CRLF2match[i] = [];
+        ABL1_Likematch[i] = [];
 
         if (selectedmethod == "RPKM") {
           if (ABL1selected == true) {
             for (let idx=0; idx<Object.keys(model["RPKM"]["ABL1"]).length; idx++) {
               if (geneExpressions[Object.keys(model["RPKM"]["ABL1"])[idx]] == undefined) {
-
+                ABL1match[i][idx] = 0;
               }
               else {
                 // 각 gene expression 값에 대한 조건을 적용하고 결과를 반환
                 ABL1geneScores[Object.keys(model["RPKM"]["ABL1"])[idx]] = applyExpressionCondition(geneExpressions[Object.keys(model["RPKM"]["ABL1"])[idx]], model["RPKM"]["ABL1"][Object.keys(model["RPKM"]["ABL1"])[idx]][0], model["RPKM"]["ABL1"][Object.keys(model["RPKM"]["ABL1"])[idx]][1], model["RPKM"]["ABL1"][Object.keys(model["RPKM"]["ABL1"])[idx]][2], model["RPKM"]["ABL1"][Object.keys(model["RPKM"]["ABL1"])[idx]][3]);
-                ABL1match[Object.keys(geneexpressionperpatient)[i]] = ABL1match[Object.keys(geneexpressionperpatient)[i]] + 1;
+                ABL1match[i][idx] = 1;
               }
             }
 
@@ -459,12 +459,12 @@ let preselectedChecks;
             let idx; 
             for (idx=0; idx<Object.keys(model["RPKM"]["CRLF2"]).length; idx++) {
               if (geneExpressions[Object.keys(model["RPKM"]["CRLF2"])[idx]] == undefined) {
-
+                CRLF2match[i][idx] = 0;
               }
               else {
                 // 각 gene expression 값에 대한 조건을 적용하고 결과를 반환
                 CRLF2geneScores[Object.keys(model["RPKM"]["CRLF2"])[idx]] = applyExpressionCondition(geneExpressions[Object.keys(model["RPKM"]["CRLF2"])[idx]], model["RPKM"]["CRLF2"][Object.keys(model["RPKM"]["CRLF2"])[idx]][0], model["RPKM"]["CRLF2"][Object.keys(model["RPKM"]["CRLF2"])[idx]][1], model["RPKM"]["CRLF2"][Object.keys(model["RPKM"]["CRLF2"])[idx]][2], model["RPKM"]["CRLF2"][Object.keys(model["RPKM"]["CRLF2"])[idx]][3]);
-                CRLF2match[Object.keys(geneexpressionperpatient)[i]] = CRLF2match[Object.keys(geneexpressionperpatient)[i]] + 1;
+                CRLF2match[i][idx] = 1;
               }
             }
             
@@ -486,12 +486,12 @@ let preselectedChecks;
             let idx;
             for (idx=0; idx<Object.keys(model["RPKM"]["ABL1_Like"]).length; idx++) {
               if (geneExpressions[Object.keys(model["RPKM"]["ABL1_Like"])[idx]] == undefined) {
-
+                ABL1_Likematch[i][idx] = 0;
               }
               else {
                 // 각 gene expression 값에 대한 조건을 적용하고 결과를 반환
                 ABL1_LikegeneScores[Object.keys(model["RPKM"]["ABL1_Like"])[idx]] = applyExpressionCondition(geneExpressions[Object.keys(model["RPKM"]["ABL1_Like"])[idx]], model["RPKM"]["ABL1_Like"][Object.keys(model["RPKM"]["ABL1_Like"])[idx]][0], model["RPKM"]["ABL1_Like"][Object.keys(model["RPKM"]["ABL1_Like"])[idx]][1], model["RPKM"]["ABL1_Like"][Object.keys(model["RPKM"]["ABL1_Like"])[idx]][2], model["RPKM"]["ABL1_Like"][Object.keys(model["RPKM"]["ABL1_Like"])[idx]][3]);
-                ABL1_Likematch[Object.keys(geneexpressionperpatient)[i]] = ABL1_Likematch[Object.keys(geneexpressionperpatient)[i]] + 1;
+                ABL1_Likematch[i][idx] = 1;
               }
             }  
 
@@ -600,38 +600,41 @@ let preselectedChecks;
     
       let ABL1genematch = [];
       for (let i=0; i<Object.keys(ABL1match).length; i++) {
-        ABL1genematch.push(ABL1match[Object.keys(ABL1match)[i]]);
+        ABL1genematch.push(ABL1match[i]);
       }
     
       let CRLF2genematch = [];
       for (let i=0; i<Object.keys(CRLF2match).length; i++) {
-        CRLF2genematch.push(CRLF2match[Object.keys(CRLF2match)[i]]);
+        CRLF2genematch.push(CRLF2match[i]);
       }
 
       let ABL1_Likegenematch = [];
       for (let i=0; i<Object.keys(ABL1_Likematch).length; i++) {
-        ABL1_Likegenematch.push(ABL1_Likematch[Object.keys(ABL1_Likematch)[i]]);
+        ABL1_Likegenematch.push(ABL1_Likematch[i]);
       }
     
       console.log('ABL1: ', ABL1);
       console.log('CRLF2: ', CRLF2);
       console.log('ABL1_Like: ', ABL1_Like);
       console.log('PatientID: ', PatientID);
+      console.log('ABL1genematch: ', ABL1genematch);
+      console.log('CRLF2genematch: ', CRLF2genematch);
+      console.log('ABL1_Likegenematch: ', ABL1_Likegenematch);
 
       ABL1 = encodearray(new Float32Array(ABL1));
       CRLF2 = encodearray(new Float32Array(CRLF2));
       ABL1_Like = encodearray(new Float32Array(ABL1_Like));
-      ABL1genematch = encodearray(new Float32Array(ABL1genematch));
-      CRLF2genematch = encodearray(new Float32Array(CRLF2genematch));
-      ABL1_Likegenematch = encodearray(new Float32Array(ABL1_Likegenematch));
+      ABL1genematch = encode2DArray(ABL1genematch);
+      CRLF2genematch = encode2DArray(CRLF2genematch);
+      ABL1_Likegenematch = encode2DArray(ABL1_Likegenematch);
 
       console.log('ABL1: ', ABL1);
       console.log('CRLF2: ', CRLF2);
       console.log('ABL1_Like: ', ABL1_Like);
       console.log('PatientID: ', PatientID);
-      console.log('genematch: ', ABL1genematch);
-      console.log('genematch: ', CRLF2genematch);
-      console.log('genematch: ', ABL1_Likegenematch);
+      console.log('ABL1genematch: ', ABL1genematch);
+      console.log('CRLF2genematch: ', CRLF2genematch);
+      console.log('ABL1_Likegenematch: ', ABL1_Likegenematch);
 
       const queryParams = new URLSearchParams({
         ABL1: ABL1,
@@ -666,6 +669,19 @@ let preselectedChecks;
 
     return str;
   }
+
+  function encode2DArray(array2D) {
+    // 2차원 배열을 1차원 Uint8Array로 변환
+    const flattenedArray = array2D.flat();
+    const uint = new Uint8Array(flattenedArray.length * 4);
+    flattenedArray.forEach((value, index) => uint.set(new Uint8Array(new Float32Array([value]).buffer), index * 4));
+
+    // Uint8Array를 Base64 문자열로 인코딩
+    const str = btoa(String.fromCharCode.apply(null, uint));
+    
+    console.log("Encoded:", str);
+    return str;
+}
 
   
 

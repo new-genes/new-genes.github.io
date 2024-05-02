@@ -55,35 +55,6 @@
     ABL1_Likegenematch.set(params.get('ABL1_Lgm') || '');
   });
 
-  // ABL1genematch 값이 변경될 때마다 실행됩니다.
-  ABL1genematch.subscribe(value => {
-    // value를 decode하고 배열에 추가하는 등의 작업을 수행합니다.
-    let decodedArray = decodearray(value);
-    console.log('ABL1genematch:', decodedArray);
-    // 새로운 변수에 저장하려면 아래와 같이 할당합니다.
-    ABL1genematchstr = decodedArray;
-    console.log('ABL1genematchstr:', ABL1genematchstr);
-  });
-
-  // CRLF2genematch 값이 변경될 때마다 실행됩니다.
-  CRLF2genematch.subscribe(value => {
-    // value를 decode하고 배열에 추가하는 등의 작업을 수행합니다.
-    let decodedArray = decodearray(value);
-    console.log('CRLF2genematch:', decodedArray);
-    // 새로운 변수에 저장하려면 아래와 같이 할당합니다.
-    CRLF2genematchstr = decodedArray;
-    console.log('CRLF2genematchstr:', CRLF2genematchstr);
-  });
-
-  // ABL1_Likegenematch 값이 변경될 때마다 실행됩니다.
-  ABL1_Likegenematch.subscribe(value => {
-    // value를 decode하고 배열에 추가하는 등의 작업을 수행합니다.
-    let decodedArray = decodearray(value);
-    console.log('ABL1_Likegenematch:', decodedArray);
-    // 새로운 변수에 저장하려면 아래와 같이 할당합니다.
-    ABL1_Likegenematchstr = decodedArray;
-    console.log('ABL1_Likegenematchstr:', ABL1_Likegenematchstr);
-  });
 
   // ABL1averageResult 값이 변경될 때마다 실행됩니다.
   ABL1averageResult.subscribe(value => {
@@ -143,6 +114,37 @@
     console.log('Total Pages:', totalPages);
   });
 
+
+  // ABL1genematch 값이 변경될 때마다 실행됩니다.
+  ABL1genematch.subscribe(value => {
+    // value를 decode하고 배열에 추가하는 등의 작업을 수행합니다.
+    let decodedArray = decode2DArray(value, totalPages);
+    console.log('ABL1genematch:', decodedArray);
+    // 새로운 변수에 저장하려면 아래와 같이 할당합니다.
+    ABL1genematchstr = decodedArray;
+    console.log('ABL1genematchstr:', ABL1genematchstr);
+  });
+
+  // CRLF2genematch 값이 변경될 때마다 실행됩니다.
+  CRLF2genematch.subscribe(value => {
+    // value를 decode하고 배열에 추가하는 등의 작업을 수행합니다.
+    let decodedArray = decode2DArray(value, totalPages);
+    console.log('CRLF2genematch:', decodedArray);
+    // 새로운 변수에 저장하려면 아래와 같이 할당합니다.
+    CRLF2genematchstr = decodedArray;
+    console.log('CRLF2genematchstr:', CRLF2genematchstr);
+  });
+
+  // ABL1_Likegenematch 값이 변경될 때마다 실행됩니다.
+  ABL1_Likegenematch.subscribe(value => {
+    // value를 decode하고 배열에 추가하는 등의 작업을 수행합니다.
+    let decodedArray = decode2DArray(value, totalPages);
+    console.log('ABL1_Likegenematch:', decodedArray);
+    // 새로운 변수에 저장하려면 아래와 같이 할당합니다.
+    ABL1_Likegenematchstr = decodedArray;
+    console.log('ABL1_Likegenematchstr:', ABL1_Likegenematchstr);
+  });
+
   function decodearray(str) {
     let blob = atob(str);
     let ary_buf = new ArrayBuffer(blob.length);
@@ -155,6 +157,41 @@
     return f32_ary;
   }
 
+  function decode2DArray(encodedString, numRows) {
+    // Base64 문자열을 Uint8Array로 디코딩
+    const uintArray = new Uint8Array(atob(encodedString).split('').map(char => char.charCodeAt(0)));
+
+    // Uint8Array를 Float32Array로 변환
+    const floatArray = new Float32Array(uintArray.buffer);
+
+    // 1차원 배열을 2차원 배열로 재구성
+    const array2D = [];
+    let index = 0;
+    for (let i = 0; i < numRows; i++) {
+        const row = [];
+        for (let j = 0; j < floatArray.length / numRows; j++) {
+            row.push(floatArray[index]);
+            index++;
+        }
+        array2D.push(row);
+    }
+
+    return array2D; 
+  }
+
+  function sumArray(array) {
+    // 배열의 합을 저장할 변수 초기화
+    let sum = 0;
+
+    // 배열의 모든 요소를 더함
+    for (let i = 0; i < array.length; i++) {
+        sum += array[i];
+    }
+
+    // 합 반환
+    return sum;
+  }
+  
   // 파일 선택 시 호출되는 함수
   function starlocation(number) {
     let result = parseInt((parseFloat(number) + 1) * 47.3 + 1.5);
@@ -222,31 +259,37 @@
   let searchTerm = '';
   $: filteredItems = patientIDnumberstr.filter((item) => item.toLowerCase().indexOf(searchTerm.toLowerCase()) !== -1);
 
-  let ABL1_yVals = [1, 0]
-  let ABL1_iVals = [0,1];
+  let ABL1_wedges_array = [];
+  let CRLF2_wedges_array = [];
+  let ABL1_Like_wedges_array = [];
+
+  for (let j = 0; j < totalPages; j++) {
+    let ABL1_yVals = [1, 0]
+    let ABL1_iVals = [0, 1];
   
-  let CRLF2_yVals = [0.5, 0.5]
-  let CRLF2_iVals = [0,1];
-  
-  let ABL1_Like_yVals = [0.5, 0.5]
-  let ABL1_Like_iVals = [0,1];
-  
+    ABL1_wedges_array.push(pie().
+      padAngle(0).
+      sort(null).
+      value(i => ABL1_yVals[i])(ABL1_iVals));
+
+    let CRLF2_yVals = [0.5, 0.5]
+    let CRLF2_iVals = [0, 1];
+    
+    CRLF2_wedges_array.push(pie().
+    padAngle(0).
+    sort(null).
+    value(i => CRLF2_yVals[i])(CRLF2_iVals));
+
+    let ABL1_Like_yVals = [0.5, 0.5]
+    let ABL1_Like_iVals = [0, 1];
+
+    ABL1_Like_wedges.push(pie().
+    padAngle(0).
+    sort(null).
+    value(i => ABL1_Like_yVals[i])(ABL1_Like_iVals));
+  }
+
   let colors = ['#C3B6F7', '#FBFAFF']
-
-  let ABL1_wedges = pie().
-    padAngle(0).
-    sort(null).
-    value(i => ABL1_yVals[i])(ABL1_iVals);
-
-  let CRLF2_wedges = pie().
-    padAngle(0).
-    sort(null).
-    value(i => CRLF2_yVals[i])(CRLF2_iVals);
-
-  let ABL1_Like_wedges = pie().
-    padAngle(0).
-    sort(null).
-    value(i => ABL1_Like_yVals[i])(ABL1_Like_iVals);
 
   let arcPath = arc()
     .innerRadius(50)
@@ -457,7 +500,7 @@
                       class="w-4 h-4 mr-2 text-center"
                       alt="Tutorial Logo"
                       />
-                      <p class="text-white font-medium text-sm">{ABL1genematchstr[currentPage]} out of {Object.keys(model["RPKM"]["ABL1"]).length} gene of the model matched</p>
+                      <p class="text-white font-medium text-sm">{sumArray(ABL1genematchstr[currentPage])} out of {Object.keys(model["RPKM"]["ABL1"]).length} gene of the model matched</p>
                       <p class="ml-1 text-violet-500 text-sm font-semibold">(100%)</p>
                       <img
                         id = "ABL1_star"
@@ -472,7 +515,7 @@
                         <div class="flex">
                           <div class="relative">
                             <svg class="drop-shadow-md" width=180 height=180 viewBox="{-180 / 2} {-180 / 2} {180} {180}">
-                              {#each ABL1_wedges as wedge, i}
+                              {#each ABL1_wedges_array[currentPage] as wedge, i}
                                 <path fill={colors[i]} d={arcPath(wedge)} />
                               {/each}
                             </svg>
@@ -564,7 +607,7 @@
                       class="w-4 h-4 mr-2 text-center"
                       alt="Tutorial Logo"
                       />
-                      <p class="text-white font-medium text-sm">{CRLF2genematchstr[currentPage]} out of {Object.keys(model["RPKM"]["CRLF2"]).length} gene of the model matched</p>
+                      <p class="text-white font-medium text-sm">{sumArray(CRLF2genematchstr[currentPage])} out of {Object.keys(model["RPKM"]["CRLF2"]).length} gene of the model matched</p>
                       <p class="ml-1 text-violet-500 text-sm font-semibold">(100%)</p>
                       <img
                         id = "ABL1_star"
@@ -579,7 +622,7 @@
                         <div class="flex">
                           <div class="relative">
                             <svg class="drop-shadow-md" width=180 height=180 viewBox="{-180 / 2} {-180 / 2} {180} {180}">
-                              {#each CRLF2_wedges as wedge, i}
+                              {#each CRLF2_wedges_array[currentPage] as wedge, i}
                                 <path fill={colors[i]} d={arcPath(wedge)} />
                               {/each}
                             </svg>
@@ -670,7 +713,7 @@
                     class="w-4 h-4 mr-2 text-center"
                     alt="Tutorial Logo"
                     />
-                    <p class="text-white font-medium text-sm">{ABL1_Likegenematchstr[currentPage]} out of {Object.keys(model["RPKM"]["ABL1_Like"]).length} gene of the model matched</p>
+                    <p class="text-white font-medium text-sm">{sumArray(ABL1_Likegenematchstr[currentPage])} out of {Object.keys(model["RPKM"]["ABL1_Like"]).length} gene of the model matched</p>
                     <p class="ml-1 text-violet-500 text-sm font-semibold">(100%)</p>
                     <img
                         id = "ABL1_star"
@@ -685,7 +728,7 @@
                       <div class="flex">
                         <div class="mx-0 relative">
                           <svg class="drop-shadow-md" width=180 height=180 viewBox="{-180 / 2} {-180 / 2} {180} {180}">
-                            {#each ABL1_Like_wedges as wedge, i}
+                            {#each ABL1_Like_wedges_array[currentPage] as wedge, i}
                               <path fill={colors[i]} d={arcPath(wedge)} />
                             {/each}
                           </svg>
