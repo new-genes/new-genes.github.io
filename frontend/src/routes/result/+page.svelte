@@ -561,11 +561,19 @@
                           <div class="mt-2 ml-3 bg-white w-40 overflow-y-auto py-1 h-40">
                             {#each Object.keys(model["RPKM"]["ABL1"]) as gene, index}
                               <div class="text-center mt-4 flex">
-                                <Checkbox
-                                id="{gene}_boxplot-check1"
-                                class="text-center cursor-pointer checked:bg-[#A68DF2] focus:ring-white"
-                                checked=true
-                                />
+                                {#if ABL1genematchstr[currentPage][index] == 1}
+                                  <Checkbox
+                                  id="{gene}_boxplot-check1"
+                                  class="text-center cursor-pointer checked:bg-[#A68DF2] focus:ring-white"
+                                  checked=true
+                                  />
+                                {:else}
+                                  <Checkbox
+                                  id="{gene}_boxplot-check1"
+                                  class="text-center cursor-pointer checked:bg-[#A68DF2] focus:ring-white"
+                                  checked=false
+                                  />
+                                {/if}
                                 <label class="cursor-pointer ml-5 text-neutral-400 text-xs font-medium" for="{gene}_boxplot-check1">
                                   {Object.keys(model["RPKM"]["ABL1"])[index]}
                                 </label>
@@ -668,11 +676,19 @@
                           <div class="mt-2 ml-3 bg-white w-40 overflow-y-auto py-1 h-40">
                             {#each Object.keys(model["RPKM"]["CRLF2"]) as gene, index}
                               <div class="text-center mt-4 flex">
-                                <Checkbox
-                                id="{gene}_boxplot-check2"
-                                class="text-center cursor-pointer checked:bg-[#A68DF2] focus:ring-white"
-                                checked=true
-                                />
+                                {#if CRLF2genematchstr[currentPage][index] == 1}
+                                  <Checkbox
+                                  id="{gene}_boxplot-check2"
+                                  class="text-center cursor-pointer checked:bg-[#A68DF2] focus:ring-white"
+                                  checked=true
+                                  />
+                                {:else}
+                                  <Checkbox
+                                  id="{gene}_boxplot-check2"
+                                  class="text-center cursor-pointer checked:bg-[#A68DF2] focus:ring-white"
+                                  checked=false
+                                  />
+                                {/if}
                                 <label class="cursor-pointer ml-5 text-neutral-400 text-xs font-medium" for="{gene}_boxplot-check2">
                                   {Object.keys(model["RPKM"]["CRLF2"])[index]}
                                 </label>
@@ -774,11 +790,19 @@
                         <div class="mt-2 ml-3 bg-white w-40 overflow-y-auto py-1 h-40">
                           {#each Object.keys(model["RPKM"]["ABL1_Like"]) as gene, index}
                             <div class="text-center mt-4 flex">
-                              <Checkbox
-                              id="{gene}_boxplot-check3"
-                              class="text-center cursor-pointer checked:bg-[#A68DF2] focus:ring-white"
-                              checked=true
-                              />
+                              {#if CRLF2genematchstr[currentPage][index] == 1}
+                                <Checkbox
+                                id="{gene}_boxplot-check3"
+                                class="text-center cursor-pointer checked:bg-[#A68DF2] focus:ring-white"
+                                checked=true
+                                />
+                              {:else}
+                                <Checkbox
+                                id="{gene}_boxplot-check3"
+                                class="text-center cursor-pointer checked:bg-[#A68DF2] focus:ring-white"
+                                checked=false
+                                />
+                              {/if}
                               <label class="cursor-pointer ml-5 text-neutral-400 text-xs font-medium" for="{gene}_boxplot-check3">
                                 {Object.keys(model["RPKM"]["ABL1_Like"])[index]}
                               </label>
