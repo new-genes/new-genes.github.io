@@ -362,7 +362,7 @@
           </div>
           <div class="text-left ml-5 mt-3 w-full">
             <Button class="drop-shadow-sm text-left -my-3 py-2 bg-[#FBFAFF] text-violet-400 focus:text-violet-500 text-base border-violet-200 focus:outline-none focus:border-2 focus:border-violet-100 focus:ring-1 focus:ring-violet-100 focus:bg-white rounded-full w-full">Click to find the PatientID!</Button>
-            <Dropdown class="text-left overflow-y-auto px-3 pb-3 text-sm h-40 w-full ml-auto"> <!-- 드롭다운 요소에 ml-auto 클래스 추가 -->
+            <Dropdown class="text-left overflow-y-auto px-3 pb-3 text-sm h-40 w-full ml-auto">
               <div class="bg-white outline-none px-1" slot="header">
                 <Search class="h-10 text-left bg-white text-neutral-500 focus:text-neutral-500 text-base border-white focus:outline-none focus:border-white focus:ring-1 focus:ring-white focus:bg-whiite" size="md"  bind:value={searchTerm} />
               </div>
